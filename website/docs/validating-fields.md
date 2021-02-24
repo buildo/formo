@@ -9,7 +9,7 @@ abstraction layer over `ReaderTaskEither` from `fp-ts`.
 Here's a quick example of a validator in action:
 
 ```ts
-import { useFormo, validators } from "formo";
+import { useFormo, validators } from "@buildo/formo";
 
 const { fieldProps } = useFormo(
   {
@@ -158,7 +158,7 @@ quite simple to do it. For example, let's define a validator for the
 [`io-ts-types`](https://github.com/gcanti/io-ts-types) library.
 
 ```ts
-import { validators } from "formo";
+import { validators } from "@buildo/formo";
 import { NonEmptyString } from "io-ts-types/NonEmptyString";
 import { either } from "fp-ts";
 import { flow } from "fp-ts/function";

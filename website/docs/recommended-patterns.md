@@ -23,7 +23,7 @@ your form elements.
 For example, you may define your own `TextField` field as:
 
 ```ts
-import { FieldProps } from "formo";
+import { FieldProps } from "@buildo/formo";
 import { option, array } from "fp-ts";
 
 type Props = FieldProps<string, string, string> & {
@@ -75,7 +75,7 @@ Once you've done that, you can now see how `formo` utility methods (such as
 `fieldProps`) become very convenient to use:
 
 ```tsx
-import { useFormo, validators } from "formo";
+import { useFormo, validators } from "@buildo/formo";
 import { taskEither } from "fp-ts";
 
 function MyForm() {

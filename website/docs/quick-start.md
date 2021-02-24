@@ -26,7 +26,7 @@ In the next sections we will see some reccomendations on how to make it even
 more convenient to use.
 
 ```tsx
-import { validations, useFormo } from "formo";
+import { validations, useFormo } from "@buildo/formo";
 import { taskEither, option, array } from "fp-ts";
 import { pipe, constNull } from "fp-ts/function";
 
