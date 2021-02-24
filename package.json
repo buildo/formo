@@ -1,8 +1,16 @@
 {
   "name": "@buildo/formo",
-  "version": "1.0.0",
-  "main": "index.js",
+  "version": "1.0.0-beta.1",
+  "main": "lib/index.js",
   "license": "MIT",
+  "files": [
+    "lib"
+  ],
+  "scripts": {
+    "test": "jest",
+    "build": "tsc",
+    "prepublish": "yarn test && yarn build"
+  },
   "devDependencies": {
     "@testing-library/react-hooks": "^5.0.3",
     "@types/jest": "^26.0.20",
