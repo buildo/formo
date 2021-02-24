@@ -4,7 +4,7 @@ import { constant, pipe } from "fp-ts/function";
 import { nonEmptyArray, option, taskEither } from "fp-ts";
 import { Option } from "fp-ts/Option";
 
-describe("useForm", () => {
+describe("formo", () => {
   test("it works when calling multiple fields' onChange ", () => {
     const { result } = renderHook(() =>
       useFormo(

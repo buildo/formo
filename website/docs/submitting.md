@@ -7,7 +7,7 @@ When defining a form, you are expected to return a `TaskEither` from the
 `onSubmit` function.
 
 ```ts
-import { useFormo } from "useFormo";
+import { useFormo } from "formo";
 
 function login(
   username: string;

@@ -3,13 +3,13 @@ id: validating-fields
 title: Validating fields
 ---
 
-`useFormo` supports validation of fields using using `Validator`s, a thin
+`formo` supports validation of fields using using `Validator`s, a thin
 abstraction layer over `ReaderTaskEither` from `fp-ts`.
 
 Here's a quick example of a validator in action:
 
 ```ts
-import { useFormo, validators } from "useFormo";
+import { useFormo, validators } from "formo";
 
 const { fieldProps } = useFormo(
   {
@@ -128,7 +128,7 @@ types some useful information you checked during validation.
 
 ## Defining custom validations
 
-`useFormo` comes with a set of common validators, but you can of course augment
+`formo` comes with a set of common validators, but you can of course augment
 them by providing your own.
 
 For instance, you may leverage existing validators:
@@ -158,7 +158,7 @@ quite simple to do it. For example, let's define a validator for the
 [`io-ts-types`](https://github.com/gcanti/io-ts-types) library.
 
 ```ts
-import { validators } from "useFormo";
+import { validators } from "formo";
 import { NonEmptyString } from "io-ts-types/NonEmptyString";
 import { either } from "fp-ts";
 import { flow } from "fp-ts/function";

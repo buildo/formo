@@ -1,23 +1,23 @@
 module.exports = {
-  title: "useFormo",
-  tagline: "useFormo",
+  title: "formo",
+  tagline: "formo",
   url: "https://buildo.github.io",
-  baseUrl: "/useFormo/",
+  baseUrl: "/formo/",
   onBrokenLinks: "throw",
   onBrokenMarkdownLinks: "warn",
   favicon: "img/favicon.ico",
   organizationName: "buildo",
-  projectName: "useFormo",
+  projectName: "formo",
   themeConfig: {
     navbar: {
-      title: "useFormo",
+      title: "formo",
       logo: {
-        alt: "useFormo",
+        alt: "formo",
         src: "img/logo.svg",
       },
       items: [
         {
-          href: "https://github.com/buildo/useFormo",
+          href: "https://github.com/buildo/formo",
           label: "GitHub",
           position: "right",
         },
@@ -35,7 +35,7 @@ module.exports = {
       {
         docs: {
           sidebarPath: require.resolve("./sidebars.js"),
-          editUrl: "https://github.com/buildo/useFormo/edit/main/website/",
+          editUrl: "https://github.com/buildo/formo/edit/main/website/",
           routeBasePath: "/",
         },
         theme: {

@@ -3,13 +3,13 @@ id: recommended-patterns
 title: Recommended patterns
 ---
 
-In order to make the best out of `useFormo` we recommend a few patterns.
+In order to make the best out of `formo` we recommend a few patterns.
 
 ## Avoid using native form elements directly
 
-`useFormo`'s utility functions are designed to return precise and type-safe
-data. For instance, you may notice that `onChange` accepts a precise type
-(matching `value`), as opposed to a more generic `Event`.
+`formo`'s utility functions are designed to return precise and type-safe data.
+For instance, you may notice that `onChange` accepts a precise type (matching
+`value`), as opposed to a more generic `Event`.
 
 For this reason, we recommend defining your own wrappers for native form
 elements, in order to gain type-safety.
@@ -17,13 +17,13 @@ elements, in order to gain type-safety.
 It's likely that you are already be doing this in order to provide other
 customizations for your project, so this is normally not a great change.
 
-`useFormo` provides a `FieldProps` type that helps you create custom components
-for your form elements.
+`formo` provides a `FieldProps` type that helps you create custom components for
+your form elements.
 
 For example, you may define your own `TextField` field as:
 
 ```ts
-import { FieldProps } from "useFormo";
+import { FieldProps } from "formo";
 import { option, array } from "fp-ts";
 
 type Props = FieldProps<string, string, string> & {
@@ -71,11 +71,11 @@ may have more specific types for the label (think of something like
 
 :::
 
-Once you've done that, you can now see how `useFormo` utility methods (such as
+Once you've done that, you can now see how `formo` utility methods (such as
 `fieldProps`) become very convenient to use:
 
 ```tsx
-import { useFormo, validators } from "useFormo";
+import { useFormo, validators } from "formo";
 import { taskEither } from "fp-ts";
 
 function MyForm() {
@@ -107,7 +107,7 @@ function MyForm() {
 
 ## Define a shared type for field issues
 
-`useFormo` is agnostic in the specific type you use for field issues, but it's
+`formo` is agnostic in the specific type you use for field issues, but it's
 highly recommended to define a fixed type for this and re-use it across your
 application.
 

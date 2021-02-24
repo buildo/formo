@@ -8,25 +8,25 @@ slug: /
 ## Installation
 
 ```
-yarn install useFormo
+yarn install formo
 ```
 
 :::important
 
-`useFormo` assumes `fp-ts` and `react` as peer dependencies, so make you have
-them installed
+`formo` assumes `fp-ts` and `react` as peer dependencies, so make you have them
+installed
 
 :::
 
 ## Example
 
-Here's a very basic example of how you _may_ use `useFormo`.
+Here's a very basic example of how you _may_ use `formo`.
 
 In the next sections we will see some reccomendations on how to make it even
 more convenient to use.
 
 ```tsx
-import { validations, useFormo } from "useFormo";
+import { validations, useFormo } from "formo";
 import { taskEither, option, array } from "fp-ts";
 import { pipe, constNull } from "fp-ts/function";
 
