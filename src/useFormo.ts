@@ -8,7 +8,7 @@ import { Validator } from "./Validator";
 import { sequenceS } from "fp-ts/Apply";
 import { TaskEither } from "fp-ts/TaskEither";
 
-export type ComputedFieldProps<V, Label, Issues> = Pick<
+type ComputedFieldProps<V, Label, Issues> = Pick<
   FieldProps<V, Label, Issues>,
   "name" | "value" | "onChange" | "onBlur" | "issues"
 > & { isTouched: boolean; disabled: boolean };
@@ -126,7 +126,7 @@ type FormAction<Values, FormErrors, FieldError> =
       isSubmitting: boolean;
     };
 
-export type FieldArray<
+type FieldArray<
   Values extends Record<string, unknown>,
   K extends ArrayRecordKeys<Values>,
   Label,

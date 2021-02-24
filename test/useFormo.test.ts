@@ -1,6 +1,5 @@
 import { renderHook, act } from "@testing-library/react-hooks";
-import { useFormo } from "../src/useFormo";
-import { validators } from "../src/validators";
+import { useFormo, validators } from "../src";
 import { constant, pipe } from "fp-ts/function";
 import { nonEmptyArray, option, taskEither } from "fp-ts";
 import { Option } from "fp-ts/Option";

@@ -1,7 +1,6 @@
-import { either, taskEither } from "fp-ts";
-import { useFormo } from "../src/useFormo";
-import { validators } from "../src/validators";
+import { useFormo, validators } from "../src";
 import { expectType } from "tsd";
+import { either, taskEither } from "fp-ts";
 import { NonEmptyArray } from "fp-ts/NonEmptyArray";
 import { Option } from "fp-ts/Option";
 
