@@ -125,6 +125,10 @@ type FormAction<Values, FormErrors, FieldError> =
   | {
       type: "setSubmitting";
       isSubmitting: boolean;
+    }
+  | {
+      type: "reset";
+      state: FormState<Values, FormErrors, FieldError>;
     };
 
 type FieldArray<
@@ -258,6 +262,8 @@ function formReducer<Values, FormErrors, FieldError>(
       };
     case "setSubmitting":
       return { ...state, isSubmitting: action.isSubmitting };
+    case "reset":
+      return action.state;
   }
 }
 
@@ -345,6 +351,22 @@ export function useFormo<
       Record<keyof ArrayRecordValues<Values>, unknown>[]
     >;
 
+  const initialState = {
+    values: initialValues,
+    touched: pipe(initialValues, record.map(constFalse)) as Touched,
+    errors: pipe(initialValues, record.map(constant(option.none))) as Errors,
+    formErrors: option.none,
+    isSubmitting: false,
+    fieldArrayErrors: pipe(
+      arrayValues(initialValues),
+      record.map(array.map(record.map(constant(option.none))))
+    ) as FieldArrayErrors,
+    fieldArrayTouched: pipe(
+      arrayValues(initialValues),
+      record.map(array.map(record.map(constFalse)))
+    ) as FieldArrayTouched,
+  };
+
   const [
     {
       values,
@@ -361,21 +383,7 @@ export function useFormo<
       FormState<Values, FormErrors, FieldError>,
       FormAction<Values, FormErrors, FieldError>
     >
-  >(formReducer, {
-    values: initialValues,
-    touched: pipe(initialValues, record.map(constFalse)) as Touched,
-    errors: pipe(initialValues, record.map(constant(option.none))) as Errors,
-    formErrors: option.none,
-    isSubmitting: false,
-    fieldArrayErrors: pipe(
-      arrayValues(initialValues),
-      record.map(array.map(record.map(constant(option.none))))
-    ) as FieldArrayErrors,
-    fieldArrayTouched: pipe(
-      arrayValues(initialValues),
-      record.map(array.map(record.map(constFalse)))
-    ) as FieldArrayTouched,
-  });
+  >(formReducer, initialState);
 
   const setValues = (partialValues: Partial<Values>) => {
     dispatch({ type: "setValues", values: partialValues });
@@ -822,7 +830,9 @@ export function useFormo<
       })
   );
 
-  const resetForm: IO<void> = () => setValues(initialValues);
+  const resetForm: IO<void> = () => {
+    dispatch({ type: "reset", state: initialState });
+  };
 
   return {
     values,
