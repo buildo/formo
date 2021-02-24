@@ -1,4 +1,4 @@
-import { useReducer, Reducer } from "react";
+import { useReducer, Reducer, useState } from "react";
 import { taskEither, record, option, array, nonEmptyArray, task } from "fp-ts";
 import { FieldProps } from "./FieldProps";
 import { pipe, constFalse, constant, constTrue } from "fp-ts/function";
@@ -281,6 +281,7 @@ type UseFormReturn<
   formErrors: Option<FormErrors>;
   fieldErrors: Record<keyof Values, Option<NonEmptyArray<FieldError>>>;
   resetForm: IO<void>;
+  submissionCount: number;
 };
 
 type ValidatorErrorType<
@@ -323,6 +324,8 @@ export function useFormo<
 
   const { initialValues, fieldValidators, fieldArrayValidators } = args[0];
   const { onSubmit } = args[1];
+
+  const [submissionCount, setSubmissionCount] = useState(0);
 
   function isArrayValue(v: unknown): v is Record<string, unknown>[] {
     // NOTE(gabro): this is a loose check, we are not really checking all
@@ -809,6 +812,7 @@ export function useFormo<
     taskEither.rightIO(() => {
       setAllTouched();
       dispatch({ type: "setSubmitting", isSubmitting: true });
+      setSubmissionCount((count) => count + 1);
     }),
     () =>
       pipe(validateAllFields(values), taskEither.chainW(validateFormAndSubmit)),
@@ -831,5 +835,6 @@ export function useFormo<
     formErrors,
     fieldErrors: errors,
     resetForm,
+    submissionCount,
   };
 }
