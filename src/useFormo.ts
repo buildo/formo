@@ -7,6 +7,7 @@ import { Option } from "fp-ts/Option";
 import { Validator } from "./Validator";
 import { sequenceS } from "fp-ts/Apply";
 import { TaskEither } from "fp-ts/TaskEither";
+import { IO } from "fp-ts/lib/IO";
 
 type ComputedFieldProps<V, Label, Issues> = Pick<
   FieldProps<V, Label, Issues>,
@@ -279,6 +280,7 @@ type UseFormReturn<
   ) => FieldArray<Values, K, Label, FieldError>;
   formErrors: Option<FormErrors>;
   fieldErrors: Record<keyof Values, Option<NonEmptyArray<FieldError>>>;
+  resetForm: IO<void>;
 };
 
 type ValidatorErrorType<
@@ -816,6 +818,8 @@ export function useFormo<
       })
   );
 
+  const resetForm: IO<void> = () => setValues(initialValues);
+
   return {
     values,
     setValues,
@@ -826,5 +830,6 @@ export function useFormo<
     fieldArray,
     formErrors,
     fieldErrors: errors,
+    resetForm,
   };
 }
