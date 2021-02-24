@@ -1,5 +1,5 @@
 import { useReducer, Reducer } from "react";
-import { taskEither, record, option, array, nonEmptyArray } from "fp-ts";
+import { taskEither, record, option, array, nonEmptyArray, task } from "fp-ts";
 import { FieldProps } from "./FieldProps";
 import { pipe, constFalse, constant, constTrue } from "fp-ts/function";
 import { NonEmptyArray } from "fp-ts/NonEmptyArray";
@@ -377,7 +377,7 @@ export function useFormo<
     const newValues = { ...values, ...partialValues };
     pipe(
       partialValues as Values,
-      record.traverseWithIndex(taskEither.taskEitherSeq)((key) =>
+      record.traverseWithIndex(task.taskSeq)((key) =>
         validateField(key, newValues)
       )
     )();
