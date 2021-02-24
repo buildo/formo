@@ -278,6 +278,7 @@ type UseFormReturn<
     name: K
   ) => FieldArray<Values, K, Label, FieldError>;
   formErrors: Option<FormErrors>;
+  fieldErrors: Record<keyof Values, Option<NonEmptyArray<FieldError>>>;
 };
 
 type ValidatorErrorType<
@@ -824,5 +825,6 @@ export function useFormo<
     isSubmitting,
     fieldArray,
     formErrors,
+    fieldErrors: errors,
   };
 }

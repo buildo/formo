@@ -4,7 +4,7 @@ import { either, taskEither } from "fp-ts";
 import { NonEmptyArray } from "fp-ts/NonEmptyArray";
 import { Option } from "fp-ts/Option";
 
-const { fieldProps } = useFormo(
+const { fieldProps, fieldErrors } = useFormo(
   {
     initialValues: {
       name: "",
@@ -33,3 +33,5 @@ expectType<Option<NonEmptyArray<boolean>>>(fieldProps("name").issues);
 expectType<number>(fieldProps("age").value);
 expectType<(v: number) => unknown>(fieldProps("age").onChange);
 expectType<Option<NonEmptyArray<boolean>>>(fieldProps("age").issues);
+
+expectType<Record<"name" | "age", Option<NonEmptyArray<boolean>>>>(fieldErrors);
