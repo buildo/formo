@@ -8,7 +8,7 @@ slug: /
 ## Installation
 
 ```
-yarn install formo
+yarn install @buildo/formo
 ```
 
 :::important
