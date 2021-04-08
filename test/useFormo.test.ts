@@ -396,6 +396,62 @@ describe("formo", () => {
           .issues
       ).toEqual(option.none);
     });
+
+    test("validateOnChange and validateOnBlur work", async () => {
+      const { result } = renderHook(() =>
+        useFormo(
+          {
+            initialValues: {
+              promoCode: "",
+            },
+            fieldValidators: constant({
+              promoCode: validators.minLength(1, "required"),
+            }),
+            validateOnBlur: false,
+            validateOnChange: false,
+          },
+          {
+            onSubmit: ({ promoCode }) => taskEither.right(promoCode),
+          }
+        )
+      );
+
+      await act(async () => {
+        await result.current.fieldProps("promoCode").onBlur();
+      });
+
+      expect(result.current.fieldProps("promoCode").value).toBe("");
+      expect(result.current.fieldProps("promoCode").issues).toEqual(
+        option.none
+      );
+
+      await act(async () => {
+        await result.current.fieldProps("promoCode").onChange("some value");
+      });
+
+      expect(result.current.fieldProps("promoCode").value).toBe("some value");
+      expect(result.current.fieldProps("promoCode").issues).toEqual(
+        option.none
+      );
+
+      await act(async () => {
+        await result.current.fieldProps("promoCode").onChange("");
+      });
+
+      expect(result.current.fieldProps("promoCode").value).toBe("");
+      expect(result.current.fieldProps("promoCode").issues).toEqual(
+        option.none
+      );
+
+      await act(async () => {
+        await result.current.handleSubmit();
+      });
+
+      expect(result.current.fieldProps("promoCode").value).toBe("");
+      expect(result.current.fieldProps("promoCode").issues).toEqual(
+        option.some(["required"])
+      );
+    });
   });
 
   describe("form validation", () => {
