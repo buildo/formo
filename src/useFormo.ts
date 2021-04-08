@@ -63,6 +63,8 @@ type FormOptions<
     initialValues: Values;
     fieldValidators: (values: Values) => Validators;
     fieldArrayValidators?: (values: Values, index: number) => ArrayValidators;
+    validateOnChange?: boolean;
+    validateOnBlur?: boolean;
   },
   {
     onSubmit: (
@@ -328,8 +330,18 @@ export function useFormo<
     Record<keyof ArrayRecordValues<Values>, boolean>[]
   >;
 
-  const { initialValues, fieldValidators, fieldArrayValidators } = args[0];
-  const { onSubmit } = args[1];
+  const [
+    {
+      initialValues,
+      fieldValidators,
+      fieldArrayValidators,
+      validateOnBlur: validateOnBlur_,
+      validateOnChange: validateOnChange_,
+    },
+    { onSubmit },
+  ] = args;
+  const validateOnChange = validateOnChange_ != null ? validateOnChange_ : true;
+  const validateOnBlur = validateOnBlur_ != null ? validateOnBlur_ : true;
 
   const [submissionCount, setSubmissionCount] = useState(0);
 
@@ -389,12 +401,14 @@ export function useFormo<
     dispatch({ type: "setValues", values: partialValues });
 
     const newValues = { ...values, ...partialValues };
-    pipe(
-      partialValues as Values,
-      record.traverseWithIndex(task.taskSeq)((key) =>
-        validateField(key, newValues)
-      )
-    )();
+    if (validateOnChange) {
+      pipe(
+        partialValues as Values,
+        record.traverseWithIndex(task.taskSeq)((key) =>
+          validateField(key, newValues)
+        )
+      )();
+    }
   };
 
   const setTouched = (partialTouched: Partial<Touched>) => {
@@ -438,11 +452,19 @@ export function useFormo<
       onChange: (v: Values[K]) => {
         setValues(({ [name]: v } as unknown) as Partial<Values>);
         const newValues = { ...values, [name]: v } as Values;
-        return validateField(name, newValues)();
+        if (validateOnChange) {
+          return validateField(name, newValues)();
+        } else {
+          return Promise.resolve();
+        }
       },
       onBlur: () => {
         setTouched(({ [name]: true } as unknown) as Partial<Touched>);
-        return validateField(name, values)();
+        if (validateOnBlur) {
+          return validateField(name, values)();
+        } else {
+          return Promise.resolve();
+        }
       },
       issues: pipe(
         errors[name],
@@ -683,10 +705,12 @@ export function useFormo<
               option.map((updatedArray) => {
                 const newValues = { [name]: updatedArray } as Partial<Values>;
                 setValues(newValues);
-                validateSubfield(name, index, subfieldName, {
-                  ...values,
-                  ...newValues,
-                })();
+                if (validateOnChange) {
+                  validateSubfield(name, index, subfieldName, {
+                    ...values,
+                    ...newValues,
+                  })();
+                }
               })
             );
           },
@@ -725,11 +749,13 @@ export function useFormo<
           option.map((updatedArray) => {
             const newValues = { [name]: updatedArray } as Partial<Values>;
             setValues(newValues);
-            validateSubform<SK, K, V>(
-              { ...values, ...newValues } as V,
-              index,
-              name
-            )();
+            if (validateOnChange) {
+              validateSubform<SK, K, V>(
+                { ...values, ...newValues } as V,
+                index,
+                name
+              )();
+            }
           })
         );
     }
