@@ -629,8 +629,8 @@ export function useFormo<
         sequenceS(
           taskEither.getTaskValidation(nonEmptyArray.getSemigroup<FieldError>())
         )({
-          ...validateAllSubforms(values),
           ...fieldValidations,
+          ...validateAllSubforms(values),
         } as any)
     ) as any;
 

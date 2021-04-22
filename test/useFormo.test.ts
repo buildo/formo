@@ -452,6 +452,45 @@ describe("formo", () => {
         option.some(["required"])
       );
     });
+
+    test("validations of array fields that are not subforms", async () => {
+      const { result } = renderHook(() =>
+        useFormo(
+          {
+            initialValues: {
+              users: [] as Array<{ value: string }>,
+            },
+            fieldValidators: () => ({
+              users: validators.fromPredicate(
+                (v: Array<{ value: string }>) => v.length > 0,
+                "error"
+              ),
+            }),
+          },
+          {
+            onSubmit: ({ users }) => taskEither.right(users),
+          }
+        )
+      );
+
+      await act(async () => {
+        await result.current.fieldProps("users").onBlur();
+      });
+
+      expect(result.current.fieldProps("users").value).toEqual([]);
+      expect(result.current.fieldProps("users").issues).toEqual(
+        option.some(["error"])
+      );
+
+      await act(async () => {
+        await result.current.fieldProps("users").onChange([{ value: "UserA" }]);
+      });
+
+      expect(result.current.fieldProps("users").value).toEqual([
+        { value: "UserA" },
+      ]);
+      expect(result.current.fieldProps("users").issues).toEqual(option.none);
+    });
   });
 
   describe("form validation", () => {
