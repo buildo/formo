@@ -1,7 +1,7 @@
 import { renderHook, act } from "@testing-library/react-hooks";
 import { useFormo, validators } from "../src";
 import { constant, pipe } from "fp-ts/function";
-import { nonEmptyArray, option, taskEither } from "fp-ts";
+import { nonEmptyArray, option, task, taskEither } from "fp-ts";
 import { Option } from "fp-ts/Option";
 
 describe("formo", () => {
@@ -123,6 +123,36 @@ describe("formo", () => {
     expect(
       result.current.fieldArray("apples").items[0].fieldProps("quantity").value
     ).toBe(10);
+  });
+
+  test("it works without referring to staleness state", () => {
+    const { result } = renderHook(() =>
+      useFormo(
+        {
+          initialValues: {
+            city: "Milan",
+          },
+          fieldValidators: constant({}),
+        },
+        {
+          onSubmit: () => taskEither.of(null),
+        }
+      )
+    );
+
+    expect(result.current.fieldProps("city").value).toBe("Milan");
+    expect(result.current.fieldProps("city").isTouched).toBe(false);
+
+    act(() => {
+      result.current.setTouched({ city: true });
+      expect(result.current.fieldProps("city").isTouched).toBe(true);
+    });
+
+    act(() => {
+      result.current.setValues({ city: "Rome" });
+      expect(result.current.fieldProps("city").value).toBe("Rome");
+      expect(result.current.values.city).toBe("Rome");
+    });
   });
 
   describe("field validations", () => {
