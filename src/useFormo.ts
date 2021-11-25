@@ -17,7 +17,7 @@ type ComputedFieldProps<V, Label, Issues> = Pick<
 > & { isTouched: boolean; disabled: boolean };
 
 type FieldValidators<Values> = {
-  [k in keyof Values]?: Validator<Values[k], unknown, unknown>;
+  [k in keyof Values]: Validator<Values[k], unknown, unknown>;
 };
 
 type FieldArrayValidators<Values> = {
