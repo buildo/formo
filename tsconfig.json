@@ -1,6 +1,7 @@
 {
   "compilerOptions": {
     "target": "es5",
+    "lib": ["es2020"],
     "module": "commonjs",
     "strict": true,
     "esModuleInterop": true,
@@ -9,5 +10,5 @@
     "outDir": "lib",
     "declaration": true
   },
-  "include": ["src/**/*"]
+  "include": ["src/**/*", "test/**/*"]
 }
