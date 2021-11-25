@@ -1,13 +1,15 @@
 import { useReducer, Reducer, useState } from "react";
-import { taskEither, record, option, array, nonEmptyArray, task } from "fp-ts";
 import { FieldProps } from "./FieldProps";
-import { pipe, constFalse, constant, constTrue } from "fp-ts/function";
-import { NonEmptyArray } from "fp-ts/NonEmptyArray";
-import { Option } from "fp-ts/Option";
+import { NonEmptyArray } from "./NonEmptyArray";
 import { Validator } from "./Validator";
-import { sequenceS } from "fp-ts/Apply";
-import { TaskEither } from "fp-ts/TaskEither";
-import { IO } from "fp-ts/lib/IO";
+import {
+  failure,
+  isFailure,
+  isSuccess,
+  matchResult,
+  Result,
+  success,
+} from "./Result";
 
 type ComputedFieldProps<V, Label, Issues> = Pick<
   FieldProps<V, Label, Issues>,
@@ -15,7 +17,7 @@ type ComputedFieldProps<V, Label, Issues> = Pick<
 > & { isTouched: boolean; disabled: boolean };
 
 type FieldValidators<Values> = {
-  [k in keyof Values]: Validator<Values[k], unknown, unknown>;
+  [k in keyof Values]?: Validator<Values[k], unknown, unknown>;
 };
 
 type FieldArrayValidators<Values> = {
@@ -69,7 +71,7 @@ type FormOptions<
   {
     onSubmit: (
       values: ValidatedValues<Values, Validators, ArrayValidators>
-    ) => TaskEither<FormErrors, unknown>;
+    ) => Promise<Result<FormErrors, unknown>>;
   }
 ];
 
@@ -104,7 +106,7 @@ type FormAction<Values, FormErrors, FieldError> =
   | {
       type: "setErrors";
       field: keyof Values;
-      errors: Option<NonEmptyArray<FieldError>>;
+      errors?: NonEmptyArray<FieldError>;
     }
   | {
       type: "setFieldArrayTouched";
@@ -118,11 +120,11 @@ type FormAction<Values, FormErrors, FieldError> =
       field: ArrayRecordKeys<Values>;
       index: number;
       subfield: string;
-      errors: Option<NonEmptyArray<FieldError>>;
+      errors?: NonEmptyArray<FieldError>;
     }
   | {
       type: "setFormError";
-      errors: Option<FormErrors>;
+      errors?: FormErrors;
     }
   | {
       type: "setSubmitting";
@@ -173,20 +175,20 @@ type FieldArray<
 interface FormState<Values, FormErrors, FieldError> {
   values: Values;
   touched: Record<keyof Values, boolean>;
-  errors: Record<keyof Values, Option<NonEmptyArray<FieldError>>>;
-  formErrors: Option<FormErrors>;
+  errors: Partial<Record<keyof Values, NonEmptyArray<FieldError>>>;
+  formErrors?: FormErrors;
   isSubmitting: boolean;
   fieldArrayTouched: Record<
     ArrayRecordKeys<Values>,
-    Partial<Record<keyof ArrayRecordValues<Values>, boolean>>[]
+    Array<Partial<Record<keyof ArrayRecordValues<Values>, boolean>>>
   >;
   fieldArrayErrors: Record<
     ArrayRecordKeys<Values>,
-    {
+    Array<{
       [K in keyof ArrayRecordValues<Values>]?:
-        | Option<NonEmptyArray<FieldError>>
+        | NonEmptyArray<FieldError>
         | undefined;
-    }[]
+    }>
   >;
 }
 
@@ -205,58 +207,53 @@ function formReducer<Values, FormErrors, FieldError>(
         errors: { ...state.errors, [action.field]: action.errors },
       };
     case "setFieldArrayTouched":
-      const updatedTouchedField = pipe(
-        state.fieldArrayTouched[action.field][action.index],
-        option.fromNullable,
-        option.alt(constant(option.some({}))),
-        option.map((v) =>
-          array.unsafeUpdateAt(
-            action.index,
-            { ...v, [action.subfield]: action.touched },
-            state.fieldArrayTouched[action.field]
-          )
-        )
-      );
-      return pipe(
-        updatedTouchedField,
-        option.fold(
-          () => state,
-          (updatedField) => ({
-            ...state,
-            fieldArrayTouched: {
-              ...state.fieldArrayTouched,
-              [action.field]: updatedField,
-            },
-          })
-        )
-      );
-    case "setFieldArrayErrors":
-      const updatedErrorsField = pipe(
-        state.fieldArrayErrors[action.field][action.index],
-        option.fromNullable,
-        option.alt(constant(option.some({}))),
-        option.map((v) =>
-          array.unsafeUpdateAt(
-            action.index,
-            { ...v, [action.subfield]: action.errors },
-            state.fieldArrayErrors[action.field]
-          )
-        )
-      );
+      const touchedSubfields =
+        state.fieldArrayTouched[action.field][action.index] ?? {};
 
-      return pipe(
-        updatedErrorsField,
-        option.fold(
-          () => state,
-          (updatedField) => ({
-            ...state,
-            fieldArrayErrors: {
-              ...state.fieldArrayErrors,
-              [action.field]: updatedField,
-            },
-          })
-        )
-      );
+      const updatedTouchedField = [
+        ...state.fieldArrayTouched[action.field].slice(0, action.index),
+        {
+          ...touchedSubfields,
+          [action.subfield]: action.touched,
+        },
+        ...state.fieldArrayTouched[action.field].slice(
+          action.index + 1,
+          state.fieldArrayTouched[action.field].length
+        ),
+      ];
+
+      return {
+        ...state,
+        fieldArrayTouched: {
+          ...state.fieldArrayTouched,
+          [action.field]: updatedTouchedField,
+        },
+      };
+
+    case "setFieldArrayErrors":
+      const errorsSubfields =
+        state.fieldArrayErrors[action.field][action.index] ?? {};
+
+      const updatedErrorsField = [
+        ...state.fieldArrayErrors[action.field].slice(0, action.index),
+        {
+          ...errorsSubfields,
+          [action.subfield]: action.errors,
+        },
+        ...state.fieldArrayErrors[action.field].slice(
+          action.index + 1,
+          state.fieldArrayErrors[action.field].length
+        ),
+      ];
+
+      return {
+        ...state,
+        fieldArrayErrors: {
+          ...state.fieldArrayErrors,
+          [action.field]: updatedErrorsField,
+        },
+      };
+
     case "setFormError":
       return {
         ...state,
@@ -281,27 +278,36 @@ type UseFormReturn<
   fieldProps: <K extends keyof Values & string>(
     name: K
   ) => ComputedFieldProps<Values[K], Label, NonEmptyArray<FieldError>>;
-  handleSubmit: TaskEither<unknown, unknown>;
+  handleSubmit: () => Promise<Result<unknown, unknown>>;
   isSubmitting: boolean;
   fieldArray: <K extends ArrayRecordKeys<Values>>(
     name: K
   ) => FieldArray<Values, K, Label, FieldError>;
-  formErrors: Option<FormErrors>;
-  fieldErrors: Record<keyof Values, Option<NonEmptyArray<FieldError>>>;
-  resetForm: IO<void>;
+  formErrors?: FormErrors;
+  fieldErrors: Partial<Record<keyof Values, NonEmptyArray<FieldError>>>;
+  resetForm: () => void;
   submissionCount: number;
 };
 
 type ValidatorErrorType<
   Values extends Record<string, unknown>,
   V extends Partial<FieldValidators<Values>>
-> = V extends Partial<
-  {
-    [k in keyof Values]: Validator<Values[k], unknown, infer E>;
-  }
->
+> = V extends Partial<{
+  [k in keyof Values]: Validator<Values[k], unknown, infer E>;
+}>
   ? E
   : null;
+
+function mapRecord<R extends Record<string, unknown>, B>(
+  r: R,
+  map: (v: R[keyof R], k: keyof R) => B
+): Record<keyof R, B> {
+  const result: Record<keyof R, B> = {} as any;
+  for (let k in r) {
+    result[k] = map(r[k], k);
+  }
+  return result;
+}
 
 export function useFormo<
   Values extends Record<string, unknown>,
@@ -320,10 +326,14 @@ export function useFormo<
   type Touched = Record<keyof Values, boolean>;
   type FieldError = ValidatorErrorType<Values, Validators>;
 
-  type Errors = Record<keyof Values, Option<NonEmptyArray<FieldError>>>;
+  type Errors = Partial<Record<keyof Values, NonEmptyArray<FieldError>>>;
   type FieldArrayErrors = Record<
     ArrayRecordKeys<Values>,
-    Record<keyof ArrayRecordValues<Values>, Option<NonEmptyArray<FieldError>>>[]
+    Array<
+      Partial<
+        Record<keyof ArrayRecordValues<Values>, NonEmptyArray<FieldError>>
+      >
+    >
   >;
   type FieldArrayTouched = Record<
     ArrayRecordKeys<Values>,
@@ -352,30 +362,31 @@ export function useFormo<
     return Array.isArray(v);
   }
 
-  const arrayValues = (
-    values: Values
-  ): Record<
+  type ArrayValues = Record<
     ArrayRecordKeys<Values>,
-    Record<keyof ArrayRecordValues<Values>, unknown>[]
-  > =>
-    pipe(values, record.filter(isArrayValue)) as Record<
-      ArrayRecordKeys<Values>,
-      Record<keyof ArrayRecordValues<Values>, unknown>[]
-    >;
+    Array<Record<keyof ArrayRecordValues<Values>, unknown>>
+  >;
+
+  const arrayValues = (values: Values): ArrayValues => {
+    const arrayValues: ArrayValues = {} as any;
+    for (let k in values) {
+      if (isArrayValue(values[k])) {
+        (arrayValues as any)[k] = values[k];
+      }
+    }
+    return arrayValues;
+  };
 
   const initialState = {
     values: initialValues,
-    touched: pipe(initialValues, record.map(constFalse)) as Touched,
-    errors: pipe(initialValues, record.map(constant(option.none))) as Errors,
-    formErrors: option.none,
+    touched: mapRecord(initialValues, () => false) as Touched,
+    errors: {} as Errors,
     isSubmitting: false,
-    fieldArrayErrors: pipe(
-      arrayValues(initialValues),
-      record.map(array.map(record.map(constant(option.none))))
+    fieldArrayErrors: mapRecord(arrayValues(initialValues), (arrayValues) =>
+      arrayValues.map(() => ({}))
     ) as FieldArrayErrors,
-    fieldArrayTouched: pipe(
-      arrayValues(initialValues),
-      record.map(array.map(record.map(constFalse)))
+    fieldArrayTouched: mapRecord(arrayValues(initialValues), (arrayValues) =>
+      arrayValues.map((arrayValue) => mapRecord(arrayValue, () => false))
     ) as FieldArrayTouched,
   };
 
@@ -402,22 +413,20 @@ export function useFormo<
 
     const newValues = { ...values, ...partialValues };
     if (validateOnChange) {
-      pipe(
-        partialValues as Values,
-        record.traverseWithIndex(task.taskSeq)((key) =>
-          validateField(key, newValues)
-        )
-      )();
+      Object.keys(partialValues).forEach((name) =>
+        validateField(name, newValues)
+      );
     }
   };
 
   const setTouched = (partialTouched: Partial<Touched>): void => {
-    const partialTouchedChanged = pipe(
-      partialTouched,
-      record.filterWithIndex((k, isTouch) => touched[k] !== isTouch)
+    const partialTouchedChanged = Object.fromEntries(
+      Object.entries(partialTouched).filter(
+        ([k, isTouch]) => touched[k] !== isTouch
+      )
     ) as Partial<Touched>;
 
-    if (!record.size(partialTouchedChanged)) {
+    if (Object.keys(partialTouchedChanged).length === 0) {
       return;
     }
 
@@ -426,17 +435,17 @@ export function useFormo<
 
   const setErrors = <K extends keyof Values & string>(
     k: K,
-    newErrors: Option<NonEmptyArray<FieldError>>
+    newErrors?: NonEmptyArray<FieldError>
   ): void => {
-    if (option.isNone(errors[k]) && option.isNone(newErrors)) {
+    if (errors[k] == null && newErrors == null) {
       return;
     }
 
     dispatch({ type: "setErrors", field: k, errors: newErrors });
   };
 
-  const setFormErrors = (errors: Option<FormErrors>): void => {
-    if (option.isNone(formErrors) && option.isNone(errors)) {
+  const setFormErrors = (errors?: FormErrors): void => {
+    if (formErrors == null && errors == null) {
       return;
     }
 
@@ -450,80 +459,50 @@ export function useFormo<
       name,
       value: values[name],
       onChange: (v: Values[K]) => {
-        setValues(({ [name]: v } as unknown) as Partial<Values>);
+        setValues({ [name]: v } as unknown as Partial<Values>);
         const newValues = { ...values, [name]: v } as Values;
         if (validateOnChange) {
-          return validateField(name, newValues)();
+          return validateField(name, newValues);
         } else {
           return Promise.resolve();
         }
       },
       onBlur: () => {
-        setTouched(({ [name]: true } as unknown) as Partial<Touched>);
+        setTouched({ [name]: true } as unknown as Partial<Touched>);
         if (validateOnBlur) {
-          return validateField(name, values)();
+          return validateField(name, values);
         } else {
           return Promise.resolve();
         }
       },
-      issues: pipe(
-        errors[name],
-        option.filter(() => touched[name])
-      ),
+      issues: touched[name] ? errors[name] : undefined,
       isTouched: touched[name],
       disabled: isSubmitting,
     };
   };
 
-  const getValidations = (values: Values): Option<Validators> =>
-    pipe(
-      fieldValidators,
-      option.fromNullable,
-      option.map((validator) => validator(values))
-    );
-
-  const validateField = <K extends keyof Values & string>(
+  async function validateField<K extends keyof Values & string>(
     name: K,
     values: Values
-  ): TaskEither<
-    nonEmptyArray.NonEmptyArray<ValidatorErrorType<Values, Validators>>,
-    Values[K]
-  > =>
-    pipe(
-      getValidations(values),
-      option.chain((validations) => option.fromNullable(validations[name])),
-      option.map(
-        (fieldValidation) =>
-          pipe(
-            values[name],
-            fieldValidation,
-            taskEither.bimap(
-              (errors) => {
-                setErrors(
-                  name,
-                  option.some(errors as NonEmptyArray<FieldError>)
-                );
-                return errors;
-              },
-              (a) => {
-                setErrors(name, option.none);
-                return a;
-              }
-            )
-          ) as TaskEither<
-            nonEmptyArray.NonEmptyArray<ValidatorErrorType<Values, Validators>>,
-            Values[K]
-          >
-      ),
-      option.getOrElseW(() =>
-        taskEither.rightIO<NonEmptyArray<FieldError>, Values[K]>(() => {
-          setErrors(name, option.none);
-          return values[name];
-        })
-      )
-    );
+  ): Promise<
+    Result<NonEmptyArray<ValidatorErrorType<Values, Validators>>, Values[K]>
+  > {
+    const fieldValidation = fieldValidators(values)[name];
+    const result = fieldValidation
+      ? await fieldValidation(values[name])
+      : success(values[name]);
+    if (result.type === "failure") {
+      setErrors(name, result.failure as any);
+    } else {
+      setErrors(name, undefined);
+    }
+    return result as Result<
+      NonEmptyArray<ValidatorErrorType<Values, Validators>>,
+      Values[K]
+    >;
+  }
 
-  const validateSubfield = <
+  async function validateSubfield<
     SK extends keyof ArrayRecordValues<Values> & string,
     K extends ArrayRecordKeys<Values>,
     V extends ArrayRecord<Values, SK>
@@ -532,57 +511,55 @@ export function useFormo<
     index: number,
     subfieldName: SK,
     values: Values
-  ): TaskEither<NonEmptyArray<FieldError>, Values[K]> =>
-    pipe(
-      fieldArrayValidators,
-      option.fromNullable,
-      option.chainNullableK((validators) => validators(values, index)),
-      option.chainNullableK((validations) => validations[name]),
-      option.chainNullableK((validation) => validation![subfieldName]),
-      option.map((subfieldValidation) =>
-        pipe(
-          (values as V)[name][index][subfieldName] as any,
-          subfieldValidation as any,
-          taskEither.bimap(
-            (e: NonEmptyArray<FieldError>) => {
-              dispatch({
-                type: "setFieldArrayErrors",
-                field: name,
-                index,
-                subfield: subfieldName,
-                errors: option.some(e),
-              });
-              return e;
-            },
-            (a) => {
-              dispatch({
-                type: "setFieldArrayErrors",
-                field: name,
-                index,
-                subfield: subfieldName,
-                errors: option.none,
-              });
-              return a as Values[K];
-            }
-          )
-        )
-      ),
-      option.getOrElseW(() =>
-        taskEither.rightIO<NonEmptyArray<FieldError>, Values[K]>(() => {
-          setErrors(name, option.none);
+  ): Promise<Result<NonEmptyArray<FieldError>, Values[K]>> {
+    if (
+      fieldArrayValidators != null &&
+      fieldArrayValidators(values, index) != null &&
+      fieldArrayValidators(values, index)[name] != null &&
+      fieldArrayValidators(values, index)[name]![subfieldName] != null
+    ) {
+      const subfieldValidation = fieldArrayValidators(values, index)[name]![
+        subfieldName
+      ]!;
+      const result = (await subfieldValidation(
+        (values as V)[name][index][subfieldName] as any
+      )) as Result<NonEmptyArray<FieldError>, Values[K]>;
+      return matchResult(result, {
+        failure: (e) => {
           dispatch({
             type: "setFieldArrayErrors",
             field: name,
             index,
             subfield: subfieldName,
-            errors: option.none,
+            errors: e,
           });
-          return values[name];
-        })
-      )
-    );
+          return failure(e);
+        },
+        success: (a) => {
+          dispatch({
+            type: "setFieldArrayErrors",
+            field: name,
+            index,
+            subfield: subfieldName,
+            errors: undefined,
+          });
+          return success(a);
+        },
+      });
+    } else {
+      setErrors(name, undefined);
+      dispatch({
+        type: "setFieldArrayErrors",
+        field: name,
+        index,
+        subfield: subfieldName,
+        errors: undefined,
+      });
+      return success(values[name]);
+    }
+  }
 
-  const validateSubform = <
+  async function validateSubform<
     SK extends keyof ArrayRecordValues<Values> & string,
     K extends ArrayRecordKeys<Values>,
     V extends ArrayRecord<Values, SK>
@@ -590,86 +567,131 @@ export function useFormo<
     values: V,
     index: number,
     name: K
-  ): TaskEither<
-    NonEmptyArray<FieldError>,
-    ValidatedValues<
-      ArrayRecord<Values, keyof ArrayRecordValues<Values> & string>[K][number],
-      GetOrElse<ArrayValidators[K], {}>,
-      {}
+  ): Promise<
+    Result<
+      NonEmptyArray<FieldError>,
+      ValidatedValues<
+        ArrayRecord<
+          Values,
+          keyof ArrayRecordValues<Values> & string
+        >[K][number],
+        GetOrElse<ArrayValidators[K], {}>,
+        {}
+      >
     >
-  > => {
-    return record.traverseWithIndex(
-      taskEither.getTaskValidation(nonEmptyArray.getSemigroup<FieldError>())
-    )((subfieldName) => validateSubfield(name, index, subfieldName, values))(
-      values[name][index]
-    ) as any;
-  };
+  > {
+    let failures: Array<FieldError> = [];
+    let validatedValues = mapRecord(values[name][index], (v) => v);
+    for (let subfieldName in values[name][index]) {
+      const result = await validateSubfield(name, index, subfieldName, values);
+      if (result.type === "failure") {
+        failures = failures.concat(result.failure);
+      } else {
+        (validatedValues as any)[name] = result.success;
+      }
+    }
+    if (failures.length > 0) {
+      return failure(failures as NonEmptyArray<FieldError>);
+    }
+    return success(validatedValues) as any;
+  }
 
-  const validateAllSubforms = <
+  async function validateAllSubforms<
     SK extends keyof ArrayRecordValues<Values> & string,
     K extends ArrayRecordKeys<Values>,
     V extends ArrayRecord<Values, SK>
   >(
     values: Values
-  ): Record<K, TaskEither<NonEmptyArray<FieldError>, any>> =>
-    pipe(
-      arrayValues(values),
-      record.mapWithIndex((name, subforms) =>
-        pipe(
-          subforms,
-          array.traverseWithIndex(
-            taskEither.getTaskValidation(
-              nonEmptyArray.getSemigroup<FieldError>()
-            )
-          )((index) => validateSubform<SK, K, V>(values as V, index, name))
+  ): Promise<Record<K, Result<NonEmptyArray<FieldError>, any>>> {
+    const arrValues = arrayValues(values);
+    const results: Record<
+      K,
+      Result<NonEmptyArray<FieldError>, any>
+    > = {} as any;
+    for (const name_ in arrValues) {
+      const name: K = name_ as K;
+      const subforms = arrValues[name];
+      const arrayResult = await Promise.all(
+        subforms.map((_, index) =>
+          validateSubform<SK, K, V>(values as V, index, name)
         )
-      )
-    );
+      );
+      const arrayFailures = arrayResult
+        .filter(isFailure)
+        .flatMap((r) => r.failure);
+      if (arrayFailures.length > 0) {
+        results[name] = failure(arrayFailures as NonEmptyArray<FieldError>);
+      } else {
+        results[name] = success(
+          arrayResult.filter(isSuccess).map((r) => r.success)
+        );
+      }
+    }
+    return results;
+  }
 
-  const validateAllFields = (
+  async function validateAllFields(
     values: Values
-  ): TaskEither<
-    NonEmptyArray<FieldError>,
-    ValidatedValues<Values, Validators, ArrayValidators>
-  > =>
-    pipe(
-      values,
-      record.mapWithIndex((name) => validateField(name, values)),
-      (fieldValidations) =>
-        sequenceS(
-          taskEither.getTaskValidation(nonEmptyArray.getSemigroup<FieldError>())
-        )({
-          ...fieldValidations,
-          ...validateAllSubforms(values),
-        } as any)
-    ) as any;
+  ): Promise<
+    Result<
+      NonEmptyArray<FieldError>,
+      ValidatedValues<Values, Validators, ArrayValidators>
+    >
+  > {
+    let failures: Array<FieldError> = [];
+
+    const plainValues = {} as Partial<
+      ValidatedValues<Values, Validators, ArrayValidators>
+    >;
+    for (const name in values) {
+      const result = await validateField(name, values);
+      if (result.type === "failure") {
+        failures = failures.concat(result.failure);
+      } else {
+        (plainValues as any)[name] = result.success;
+      }
+    }
+
+    const subFormValidations = await validateAllSubforms(values);
+    let subFormValues = {};
+    for (const name in subFormValidations) {
+      const result: Result<
+        NonEmptyArray<ValidatorErrorType<Values, Validators>>,
+        any
+      > = (subFormValidations as any)[name];
+      if (result.type === "failure") {
+        failures = failures.concat(result.failure);
+      } else {
+        (subFormValues as any)[name] = result.success;
+      }
+    }
+
+    if (failures.length > 0) {
+      return failure(failures as NonEmptyArray<FieldError>);
+    }
+
+    return success({
+      ...plainValues,
+      ...subFormValues,
+    }) as any;
+  }
 
   const setAllTouched = (): void => {
-    setTouched(
-      (pipe(values, record.map(constTrue)) as unknown) as Partial<Touched>
-    );
-    pipe(
-      arrayValues(values),
-      record.mapWithIndex((field, v) =>
-        pipe(
-          v,
-          array.mapWithIndex((index, r) =>
-            pipe(
-              r,
-              record.mapWithIndex((subfield) =>
-                dispatch({
-                  type: "setFieldArrayTouched",
-                  field,
-                  index,
-                  subfield,
-                  touched: true,
-                })
-              )
-            )
-          )
-        )
-      )
-    );
+    setTouched(mapRecord(values, () => true));
+
+    mapRecord(arrayValues(values), (v, field) => {
+      v.map((r, index) => {
+        mapRecord(r, (_, subfield) => {
+          dispatch({
+            type: "setFieldArrayTouched",
+            field,
+            index,
+            subfield: subfield as string,
+            touched: true,
+          });
+        });
+      });
+    });
   };
 
   const fieldArray = <K extends ArrayRecordKeys<Values>>(
@@ -692,37 +714,31 @@ export function useFormo<
       NonEmptyArray<FieldError>
     >) => {
       return (subfieldName) => {
-        const isTouched = pipe(
-          fieldArrayTouched[name][index],
-          option.fromNullable,
-          option.chainNullableK((e) => e[subfieldName]),
-          option.exists((e) => !!e)
+        const fieldArrayTouchedIndex = fieldArrayTouched[name][index];
+        const isTouched = Boolean(
+          fieldArrayTouchedIndex != null && fieldArrayTouchedIndex[subfieldName]
         );
 
         return {
           name: `${namePrefix(index)}.${subfieldName}`,
           value: (values as V)[name][index][subfieldName] as V[K][number][SK],
           onChange: (value: V[K][number][SK]) => {
-            pipe(
-              (values as V)[name][index] as V[K][number],
-              record.updateAt(subfieldName, value),
-              option.chain((value) =>
-                array.updateAt(
-                  index,
-                  value
-                )(values[name] as Array<Record<SK, V[K][number][SK]>>)
-              ),
-              option.map((updatedArray) => {
-                const newValues = { [name]: updatedArray } as Partial<Values>;
-                setValues(newValues);
-                if (validateOnChange) {
-                  validateSubfield(name, index, subfieldName, {
-                    ...values,
-                    ...newValues,
-                  })();
-                }
-              })
-            );
+            const valuesArrary = (values as V)[name];
+            const fieldValue = { ...(valuesArrary[index] as V[K][number]) };
+            fieldValue[subfieldName] = value;
+            const updatedArray = [
+              ...valuesArrary.slice(0, index),
+              fieldValue,
+              ...valuesArrary.slice(index + 1, valuesArrary.length),
+            ];
+            const newValues = { [name]: updatedArray } as Partial<Values>;
+            setValues(newValues);
+            if (validateOnChange) {
+              validateSubfield(name, index, subfieldName, {
+                ...values,
+                ...newValues,
+              });
+            }
           },
           onBlur: () => {
             dispatch({
@@ -733,13 +749,9 @@ export function useFormo<
               touched: true,
             });
           },
-          issues: pipe(
-            fieldArrayErrors[name][index],
-            option.fromNullable,
-            option.chain((e) => option.fromNullable(e[subfieldName])),
-            option.flatten,
-            option.filter(() => isTouched)
-          ),
+          issues: isTouched
+            ? (fieldArrayErrors[name][index] || {})[subfieldName]
+            : undefined,
           isTouched,
           disabled: isSubmitting,
         };
@@ -749,86 +761,79 @@ export function useFormo<
     function onChangeValues<
       SK extends keyof ArrayRecordValues<Values> & string,
       V extends ArrayRecord<Values, SK>
-    >(index: number): (elementValues: V[K][number]) => void {
-      return (elementValues) =>
-        pipe(
-          array.updateAt(
+    >(
+      index: number
+    ): FieldArray<
+      Values,
+      K,
+      Label,
+      FieldError
+    >["items"][number]["onChangeValues"] {
+      return (elementValues) => {
+        const currentValues = values[name] as Array<
+          Record<SK, V[K][number][SK]>
+        >;
+        const updatedArray = [
+          ...currentValues.slice(0, index),
+          elementValues,
+          ...currentValues.slice(index + 1, currentValues.length),
+        ];
+        const newValues = { [name]: updatedArray } as Partial<Values>;
+        setValues(newValues);
+        if (validateOnChange) {
+          validateSubform<SK, K, V>(
+            { ...values, ...newValues } as V,
             index,
-            elementValues
-          )(values[name] as Array<Record<SK, V[K][number][SK]>>),
-          option.map((updatedArray) => {
-            const newValues = { [name]: updatedArray } as Partial<Values>;
-            setValues(newValues);
-            if (validateOnChange) {
-              validateSubform<SK, K, V>(
-                { ...values, ...newValues } as V,
-                index,
-                name
-              )();
-            }
-          })
-        );
+            name
+          );
+        }
+      };
     }
 
     function remove<
       SK extends keyof ArrayRecordValues<Values> & string,
       V extends ArrayRecord<Values, SK>
     >(index: number): () => void {
-      return () =>
-        pipe(
-          (values as V)[name],
-          array.deleteAt(index),
-          option.map((updatedArray) => {
-            setValues({ [name]: updatedArray } as Partial<Values>);
-            const newValues = {
-              ...values,
-              [name]: updatedArray,
-            } as Values;
-            record.sequence(
-              taskEither.getTaskValidation(
-                nonEmptyArray.getSemigroup<FieldError>()
-              )
-            )(validateAllSubforms(newValues))();
-          })
-        );
+      return () => {
+        const currentArray = (values as V)[name];
+        const updatedArray = [
+          ...currentArray.slice(0, index),
+          ...currentArray.slice(index + 1, currentArray.length),
+        ];
+        setValues({ [name]: updatedArray } as Partial<Values>);
+        const newValues = {
+          ...values,
+          [name]: updatedArray,
+        } as Values;
+        validateAllSubforms(newValues);
+      };
     }
 
-    const items: FieldArray<
-      Values,
-      K,
-      Label,
-      FieldError
-    >["items"] = (values as ArrayRecord<Values, string>)[name].map(
-      (_value, index) => ({
-        fieldProps: fieldProps(index),
-        onChangeValues: onChangeValues(index),
-        remove: remove(index),
-        namePrefix: namePrefix(index),
-      })
-    );
+    const items: FieldArray<Values, K, Label, FieldError>["items"] = (
+      values as ArrayRecord<Values, string>
+    )[name].map((_value, index) => ({
+      fieldProps: fieldProps(index),
+      onChangeValues: onChangeValues(index),
+      remove: remove(index),
+      namePrefix: namePrefix(index),
+    }));
 
-    const insertAt: FieldArray<Values, K, Label, FieldError>["insertAt"] = <
-      SK extends keyof ArrayRecordValues<Values> & string,
-      V extends ArrayRecord<Values, SK>
-    >(
-      index: number,
-      value: V[K][number]
+    const insertAt: FieldArray<Values, K, Label, FieldError>["insertAt"] = (
+      index,
+      value
     ): void => {
-      pipe(
-        (values as V)[name],
-        array.insertAt(index, value),
-        option.map((updatedArray) => {
-          setValues({ [name]: updatedArray } as Partial<Values>);
-        })
-      );
+      const array = values[name] as unknown[];
+      setValues({
+        [name]: [
+          ...array.slice(0, index),
+          value,
+          ...array.slice(index, array.length),
+        ],
+      } as Partial<Values>);
     };
 
-    const push: FieldArray<Values, K, Label, FieldError>["push"] = <
-      SK extends keyof ArrayRecordValues<Values> & string,
-      V extends ArrayRecord<Values, SK>
-    >(
-      value: V[K][number]
-    ): void => insertAt<SK, V>((values as V)[name].length, value);
+    const push: FieldArray<Values, K, Label, FieldError>["push"] = (value) =>
+      insertAt((values[name] as unknown[]).length, value as any);
 
     return {
       items,
@@ -837,36 +842,34 @@ export function useFormo<
     };
   };
 
-  const validateFormAndSubmit = (
+  async function validateFormAndSubmit(
     values: ValidatedValues<Values, Validators, ArrayValidators>
-  ): TaskEither<void, void> =>
-    pipe(
-      onSubmit(values),
-      taskEither.bimap(
-        (errors) => {
-          setFormErrors(option.some(errors));
-        },
-        () => {
-          setFormErrors(option.none);
-        }
-      )
-    );
+  ): Promise<Result<unknown, unknown>> {
+    const result = await onSubmit(values);
+    if (result.type === "failure") {
+      setFormErrors(result.failure);
+    } else {
+      setFormErrors(undefined);
+    }
+    return result;
+  }
 
-  const handleSubmit: TaskEither<unknown, void> = taskEither.bracket(
-    taskEither.rightIO(() => {
-      setAllTouched();
-      dispatch({ type: "setSubmitting", isSubmitting: true });
-      setSubmissionCount((count) => count + 1);
-    }),
-    () =>
-      pipe(validateAllFields(values), taskEither.chainW(validateFormAndSubmit)),
-    () =>
-      taskEither.rightIO(() => {
-        dispatch({ type: "setSubmitting", isSubmitting: false });
-      })
-  );
+  async function handleSubmit(): Promise<Result<unknown, unknown>> {
+    setAllTouched();
+    dispatch({ type: "setSubmitting", isSubmitting: true });
+    setSubmissionCount((count) => count + 1);
+    try {
+      const validatedFieldValues = await validateAllFields(values);
+      if (validatedFieldValues.type === "failure") {
+        return validatedFieldValues;
+      }
+      return validateFormAndSubmit(validatedFieldValues.success);
+    } finally {
+      dispatch({ type: "setSubmitting", isSubmitting: false });
+    }
+  }
 
-  const resetForm: IO<void> = () => {
+  const resetForm: () => void = () => {
     dispatch({ type: "reset", state: initialState });
   };
 
