@@ -120,9 +120,7 @@ const notRegex = <S extends string, E>(
 const checked = <E>(errorMessage: E): Validator<boolean, true, E> =>
   fromPredicate((s): s is true => s, errorMessage);
 
-const defined = <A, E>(
-  errorMessage: E
-): Validator<A | null | undefined, A, E> =>
+const defined = <A, E>(errorMessage: E): Validator<A, NonNullable<A>, E> =>
   fromPredicate((i): i is NonNullable<A> => i != null, errorMessage);
 
 const validateIfDefined =

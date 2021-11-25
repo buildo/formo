@@ -35,7 +35,7 @@ type ValidatedValues<
   Validators extends Partial<FieldValidators<Values>>,
   ArrayValidators extends Partial<FieldArrayValidators<Values>>
 > = {
-  [k in keyof Values]: Validators[k] extends Validator<
+  [k in keyof Required<Values>]: Validators[k] extends Validator<
     Values[k],
     infer O,
     infer _E
