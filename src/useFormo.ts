@@ -35,6 +35,10 @@ type ValidatedValues<
   Validators extends Partial<FieldValidators<Values>>,
   ArrayValidators extends Partial<FieldArrayValidators<Values>>
 > = {
+  // The `Required<>` is needed to remove the optionality on the values received
+  // onSubmit while keeping the possibly undefined type for non-validated fields.
+  // Without this e.g. `field?: string | undefined`, if validated using `defined()`,
+  // would still appear as `field?: string` and thus `string | undefined` in `onSubmit`
   [k in keyof Required<Values>]: Validators[k] extends Validator<
     Values[k],
     infer O,
