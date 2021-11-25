@@ -397,7 +397,7 @@ export function useFormo<
     >
   >(formReducer, initialState);
 
-  const setValues = (partialValues: Partial<Values>) => {
+  const setValues = (partialValues: Partial<Values>): void => {
     dispatch({ type: "setValues", values: partialValues });
 
     const newValues = { ...values, ...partialValues };
@@ -411,7 +411,7 @@ export function useFormo<
     }
   };
 
-  const setTouched = (partialTouched: Partial<Touched>) => {
+  const setTouched = (partialTouched: Partial<Touched>): void => {
     const partialTouchedChanged = pipe(
       partialTouched,
       record.filterWithIndex((k, isTouch) => touched[k] !== isTouch)
@@ -427,7 +427,7 @@ export function useFormo<
   const setErrors = <K extends keyof Values & string>(
     k: K,
     newErrors: Option<NonEmptyArray<FieldError>>
-  ) => {
+  ): void => {
     if (option.isNone(errors[k]) && option.isNone(newErrors)) {
       return;
     }
@@ -435,7 +435,7 @@ export function useFormo<
     dispatch({ type: "setErrors", field: k, errors: newErrors });
   };
 
-  const setFormErrors = (errors: Option<FormErrors>) => {
+  const setFormErrors = (errors: Option<FormErrors>): void => {
     if (option.isNone(formErrors) && option.isNone(errors)) {
       return;
     }
@@ -475,7 +475,7 @@ export function useFormo<
     };
   };
 
-  const getValidations = (values: Values) =>
+  const getValidations = (values: Values): Option<Validators> =>
     pipe(
       fieldValidators,
       option.fromNullable,
@@ -485,25 +485,35 @@ export function useFormo<
   const validateField = <K extends keyof Values & string>(
     name: K,
     values: Values
-  ) =>
+  ): TaskEither<
+    nonEmptyArray.NonEmptyArray<ValidatorErrorType<Values, Validators>>,
+    Values[K]
+  > =>
     pipe(
       getValidations(values),
       option.chain((validations) => option.fromNullable(validations[name])),
-      option.map((fieldValidation) =>
-        pipe(
-          values[name],
-          fieldValidation,
-          taskEither.bimap(
-            (errors) => {
-              setErrors(name, option.some(errors as NonEmptyArray<FieldError>));
-              return errors;
-            },
-            (a) => {
-              setErrors(name, option.none);
-              return a;
-            }
-          )
-        )
+      option.map(
+        (fieldValidation) =>
+          pipe(
+            values[name],
+            fieldValidation,
+            taskEither.bimap(
+              (errors) => {
+                setErrors(
+                  name,
+                  option.some(errors as NonEmptyArray<FieldError>)
+                );
+                return errors;
+              },
+              (a) => {
+                setErrors(name, option.none);
+                return a;
+              }
+            )
+          ) as TaskEither<
+            nonEmptyArray.NonEmptyArray<ValidatorErrorType<Values, Validators>>,
+            Values[K]
+          >
       ),
       option.getOrElseW(() =>
         taskEither.rightIO<NonEmptyArray<FieldError>, Values[K]>(() => {
@@ -522,7 +532,7 @@ export function useFormo<
     index: number,
     subfieldName: SK,
     values: Values
-  ) =>
+  ): TaskEither<NonEmptyArray<FieldError>, Values[K]> =>
     pipe(
       fieldArrayValidators,
       option.fromNullable,
@@ -532,7 +542,7 @@ export function useFormo<
       option.map((subfieldValidation) =>
         pipe(
           (values as V)[name][index][subfieldName] as any,
-          subfieldValidation!,
+          subfieldValidation as any,
           taskEither.bimap(
             (e: NonEmptyArray<FieldError>) => {
               dispatch({
@@ -552,7 +562,7 @@ export function useFormo<
                 subfield: subfieldName,
                 errors: option.none,
               });
-              return a;
+              return a as Values[K];
             }
           )
         )
@@ -634,7 +644,7 @@ export function useFormo<
         } as any)
     ) as any;
 
-  const setAllTouched = () => {
+  const setAllTouched = (): void => {
     setTouched(
       (pipe(values, record.map(constTrue)) as unknown) as Partial<Touched>
     );
@@ -803,7 +813,7 @@ export function useFormo<
     >(
       index: number,
       value: V[K][number]
-    ) => {
+    ): void => {
       pipe(
         (values as V)[name],
         array.insertAt(index, value),
@@ -818,7 +828,7 @@ export function useFormo<
       V extends ArrayRecord<Values, SK>
     >(
       value: V[K][number]
-    ) => insertAt<SK, V>((values as V)[name].length, value);
+    ): void => insertAt<SK, V>((values as V)[name].length, value);
 
     return {
       items,
