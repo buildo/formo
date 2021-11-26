@@ -70,6 +70,8 @@ type FormOptions<
     onSubmit: (
       values: ValidatedValues<Values, Validators, ArrayValidators>
     ) => TaskEither<FormErrors, unknown>;
+    onSubmissionStart?: IO<void>;
+    onSubmissionEnd?: IO<void>;
   }
 ];
 
@@ -338,7 +340,7 @@ export function useFormo<
       validateOnBlur: validateOnBlur_,
       validateOnChange: validateOnChange_,
     },
-    { onSubmit },
+    { onSubmit, onSubmissionStart, onSubmissionEnd },
   ] = args;
   const validateOnChange = validateOnChange_ != null ? validateOnChange_ : true;
   const validateOnBlur = validateOnBlur_ != null ? validateOnBlur_ : true;
@@ -845,6 +847,7 @@ export function useFormo<
   const handleSubmit: TaskEither<unknown, void> = taskEither.bracket(
     taskEither.rightIO(() => {
       setAllTouched();
+      if (onSubmissionStart != undefined) onSubmissionStart();
       dispatch({ type: "setSubmitting", isSubmitting: true });
       setSubmissionCount((count) => count + 1);
     }),
@@ -853,6 +856,7 @@ export function useFormo<
     () =>
       taskEither.rightIO(() => {
         dispatch({ type: "setSubmitting", isSubmitting: false });
+        if (onSubmissionEnd != undefined) onSubmissionEnd();
       })
   );
 
