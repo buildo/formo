@@ -125,7 +125,7 @@ describe("formo", () => {
     ).toBe(10);
   });
 
-  test("it works without referring to staleness state", () => {
+  test("handleSubmit does not refer to stale values", async () => {
     const { result } = renderHook(() =>
       useFormo(
         {
@@ -135,23 +135,19 @@ describe("formo", () => {
           fieldValidators: constant({}),
         },
         {
-          onSubmit: () => taskEither.of(null),
+          onSubmit: (values) => {
+            expect(values.city).toBe("Rome");
+            return taskEither.of(null);
+          },
         }
       )
     );
 
     expect(result.current.fieldProps("city").value).toBe("Milan");
-    expect(result.current.fieldProps("city").isTouched).toBe(false);
 
-    act(() => {
-      result.current.setTouched({ city: true });
-      expect(result.current.fieldProps("city").isTouched).toBe(true);
-    });
-
-    act(() => {
+    await act(async () => {
       result.current.setValues({ city: "Rome" });
-      expect(result.current.fieldProps("city").value).toBe("Rome");
-      expect(result.current.values.city).toBe("Rome");
+      result.current.handleSubmit();
     });
   });
 

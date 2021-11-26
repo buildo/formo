@@ -378,23 +378,6 @@ export function useFormo<
     ) as FieldArrayTouched,
   };
 
-  // const [
-  //   {
-  //     values,
-  //     isSubmitting,
-  //     touched,
-  //     errors,
-  //     formErrors,
-  //     fieldArrayErrors,
-  //     fieldArrayTouched,
-  //   },
-  //   dispatch,
-  // ] = useReducer<
-  //   Reducer<
-  //     FormState<Values, FormErrors, FieldError>,
-  //     FormAction<Values, FormErrors, FieldError>
-  //   >
-  // >(formReducer, initialState);
   const [state, dispatch] = useRefReducer<
     Reducer<
       FormState<Values, FormErrors, FieldError>,
@@ -446,7 +429,6 @@ export function useFormo<
     if (option.isNone(state.current.formErrors) && option.isNone(errors)) {
       return;
     }
-
     dispatch({ type: "setFormError", errors });
   };
 
@@ -845,7 +827,6 @@ export function useFormo<
       onSubmit(values),
       taskEither.bimap(
         (errors) => {
-          console.log(errors);
           setFormErrors(option.some(errors));
         },
         () => {
@@ -874,7 +855,6 @@ export function useFormo<
   const resetForm: IO<void> = () => {
     dispatch({ type: "reset", state: initialState });
   };
-
   return {
     values: state.current.values,
     setValues,
