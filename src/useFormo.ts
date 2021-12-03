@@ -388,12 +388,11 @@ export function useFormo<
   const setValues = (partialValues: Partial<Values>) => {
     dispatch({ type: "setValues", values: partialValues });
 
-    const newValues = { ...state.current.values, ...partialValues };
     if (validateOnChange) {
       pipe(
         partialValues as Values,
         record.traverseWithIndex(task.taskSeq)((key) =>
-          validateField(key, newValues)
+          validateField(key, state.current.values)
         )
       )();
     }
@@ -440,9 +439,8 @@ export function useFormo<
       value: state.current.values[name],
       onChange: (v: Values[K]) => {
         setValues({ [name]: v } as unknown as Partial<Values>);
-        const newValues = { ...state.current.values, [name]: v } as Values;
         if (validateOnChange) {
-          return validateField(name, newValues)();
+          return validateField(name, state.current.values)();
         } else {
           return Promise.resolve();
         }
@@ -704,10 +702,12 @@ export function useFormo<
                 const newValues = { [name]: updatedArray } as Partial<Values>;
                 setValues(newValues);
                 if (validateOnChange) {
-                  validateSubfield(name, index, subfieldName, {
-                    ...state.current.values,
-                    ...newValues,
-                  })();
+                  validateSubfield(
+                    name,
+                    index,
+                    subfieldName,
+                    state.current.values
+                  )();
                 }
               })
             );
@@ -749,7 +749,7 @@ export function useFormo<
             setValues(newValues);
             if (validateOnChange) {
               validateSubform<SK, K, V>(
-                { ...state.current.values, ...newValues } as V,
+                state.current.values as V,
                 index,
                 name
               )();
@@ -768,15 +768,11 @@ export function useFormo<
           array.deleteAt(index),
           option.map((updatedArray) => {
             setValues({ [name]: updatedArray } as Partial<Values>);
-            const newValues = {
-              ...state.current.values,
-              [name]: updatedArray,
-            } as Values;
             record.sequence(
               taskEither.getTaskValidation(
                 nonEmptyArray.getSemigroup<FieldError>()
               )
-            )(validateAllSubforms(newValues))();
+            )(validateAllSubforms(state.current.values))();
           })
         );
     }
