@@ -2,6 +2,7 @@ import {
   MutableRefObject,
   useCallback,
   useEffect,
+  useReducer,
   useRef,
   useState,
 } from "react";
@@ -38,13 +39,13 @@ export const useRefReducer: <R extends RefReducer<any, any>>(
   initialState
 ) => {
   const state = useRef(initialState);
-  const [refresh, refreshHook] = useState(false);
+  const [_, forceUpdate] = useReducer((x) => x + 1, 0);
 
   const setState: <R extends RefReducer<any, any>>(
     action: RefReducerAction<R>
   ) => void = (action) => {
     state.current = refReducer(state.current, action);
-    refreshHook(!refresh);
+    forceUpdate();
   };
 
   const dispatch = useCallback(setState, [refReducer]);
