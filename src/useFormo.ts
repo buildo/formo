@@ -1,4 +1,4 @@
-import { Reducer, useEffect, useState } from "react";
+import { Reducer, useState } from "react";
 import { taskEither, record, option, array, nonEmptyArray, task } from "fp-ts";
 import { FieldProps } from "./FieldProps";
 import { pipe, constFalse, constant, constTrue } from "fp-ts/function";
