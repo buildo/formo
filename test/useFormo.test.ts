@@ -123,6 +123,33 @@ describe("formo", () => {
     ).toBe(10);
   });
 
+  test("handleSubmit does not refer to stale values", async () => {
+    const onSubmit = jest.fn(async () => success(null));
+    const { result } = renderHook(() =>
+      useFormo(
+        {
+          initialValues: {
+            city: "Milan",
+          },
+          fieldValidators: (_) => ({}),
+        },
+        {
+          onSubmit,
+        }
+      )
+    );
+
+    expect(result.current.fieldProps("city").value).toBe("Milan");
+
+    await act(async () => {
+      result.current.setValues({ city: "Rome" });
+      result.current.handleSubmit();
+    });
+
+    expect(onSubmit).toHaveBeenCalledTimes(1);
+    expect(onSubmit).toHaveBeenCalledWith({ city: "Rome" });
+  });
+
   describe("field validations", () => {
     test("validation shows field error and prevents submit", async () => {
       const onSubmit = jest.fn(() => Promise.resolve(success(null)));

@@ -1,4 +1,5 @@
-import { useReducer, Reducer, useState } from "react";
+import { Reducer, useState } from "react";
+import { useRefReducer } from "./useRefReducer";
 import { FieldProps } from "./FieldProps";
 import { NonEmptyArray } from "./NonEmptyArray";
 import { Validator } from "./Validator";
@@ -394,18 +395,7 @@ export function useFormo<
     ) as FieldArrayTouched,
   };
 
-  const [
-    {
-      values,
-      isSubmitting,
-      touched,
-      errors,
-      formErrors,
-      fieldArrayErrors,
-      fieldArrayTouched,
-    },
-    dispatch,
-  ] = useReducer<
+  const [state, dispatch] = useRefReducer<
     Reducer<
       FormState<Values, FormErrors, FieldError>,
       FormAction<Values, FormErrors, FieldError>
@@ -415,7 +405,7 @@ export function useFormo<
   const setValues = (partialValues: Partial<Values>): void => {
     dispatch({ type: "setValues", values: partialValues });
 
-    const newValues = { ...values, ...partialValues };
+    const newValues = { ...state.current.values, ...partialValues };
     if (validateOnChange) {
       Object.keys(partialValues).forEach((name) =>
         validateField(name, newValues)
@@ -426,7 +416,7 @@ export function useFormo<
   const setTouched = (partialTouched: Partial<Touched>): void => {
     const partialTouchedChanged = Object.fromEntries(
       Object.entries(partialTouched).filter(
-        ([k, isTouch]) => touched[k] !== isTouch
+        ([k, isTouch]) => state.current.touched[k] !== isTouch
       )
     ) as Partial<Touched>;
 
@@ -441,7 +431,7 @@ export function useFormo<
     k: K,
     newErrors?: NonEmptyArray<FieldError>
   ): void => {
-    if (errors[k] == null && newErrors == null) {
+    if (state.current.errors[k] == null && newErrors == null) {
       return;
     }
 
@@ -449,7 +439,7 @@ export function useFormo<
   };
 
   const setFormErrors = (errors?: FormErrors): void => {
-    if (formErrors == null && errors == null) {
+    if (state.current.formErrors == null && errors == null) {
       return;
     }
 
@@ -461,10 +451,10 @@ export function useFormo<
   ): ComputedFieldProps<Values[K], Label, NonEmptyArray<FieldError>> => {
     return {
       name,
-      value: values[name],
+      value: state.current.values[name],
       onChange: (v: Values[K]) => {
         setValues({ [name]: v } as unknown as Partial<Values>);
-        const newValues = { ...values, [name]: v } as Values;
+        const newValues = { ...state.current.values, [name]: v } as Values;
         if (validateOnChange) {
           return validateField(name, newValues);
         } else {
@@ -474,14 +464,14 @@ export function useFormo<
       onBlur: () => {
         setTouched({ [name]: true } as unknown as Partial<Touched>);
         if (validateOnBlur) {
-          return validateField(name, values);
+          return validateField(name, state.current.values);
         } else {
           return Promise.resolve();
         }
       },
-      issues: touched[name] ? errors[name] : undefined,
-      isTouched: touched[name],
-      disabled: isSubmitting,
+      issues: state.current.touched[name] ? state.current.errors[name] : undefined,
+      isTouched: state.current.touched[name],
+      disabled: state.current.isSubmitting,
     };
   };
 
@@ -681,9 +671,9 @@ export function useFormo<
   }
 
   const setAllTouched = (): void => {
-    setTouched(mapRecord(values, () => true));
+    setTouched(mapRecord(state.current.values, () => true));
 
-    mapRecord(arrayValues(values), (v, field) => {
+    mapRecord(arrayValues(state.current.values), (v, field) => {
       v.map((r, index) => {
         mapRecord(r, (_, subfield) => {
           dispatch({
@@ -718,16 +708,16 @@ export function useFormo<
       NonEmptyArray<FieldError>
     >) => {
       return (subfieldName) => {
-        const fieldArrayTouchedIndex = fieldArrayTouched[name][index];
+        const fieldArrayTouchedIndex = state.current.fieldArrayTouched[name][index];
         const isTouched = Boolean(
           fieldArrayTouchedIndex != null && fieldArrayTouchedIndex[subfieldName]
         );
 
         return {
           name: `${namePrefix(index)}.${subfieldName}`,
-          value: (values as V)[name][index][subfieldName] as V[K][number][SK],
+          value: (state.current.values as V)[name][index][subfieldName] as V[K][number][SK],
           onChange: (value: V[K][number][SK]) => {
-            const valuesArrary = (values as V)[name];
+            const valuesArrary = (state.current.values as V)[name];
             const fieldValue = { ...(valuesArrary[index] as V[K][number]) };
             fieldValue[subfieldName] = value;
             const updatedArray = [
@@ -739,7 +729,7 @@ export function useFormo<
             setValues(newValues);
             if (validateOnChange) {
               validateSubfield(name, index, subfieldName, {
-                ...values,
+                ...state.current.values,
                 ...newValues,
               });
             }
@@ -754,10 +744,10 @@ export function useFormo<
             });
           },
           issues: isTouched
-            ? (fieldArrayErrors[name][index] || {})[subfieldName]
+            ? (state.current.fieldArrayErrors[name][index] || {})[subfieldName]
             : undefined,
           isTouched,
-          disabled: isSubmitting,
+          disabled: state.current.isSubmitting,
         };
       };
     };
@@ -774,7 +764,7 @@ export function useFormo<
       FieldError
     >["items"][number]["onChangeValues"] {
       return (elementValues) => {
-        const currentValues = values[name] as Array<
+        const currentValues = state.current.values[name] as Array<
           Record<SK, V[K][number][SK]>
         >;
         const updatedArray = [
@@ -786,7 +776,7 @@ export function useFormo<
         setValues(newValues);
         if (validateOnChange) {
           validateSubform<SK, K, V>(
-            { ...values, ...newValues } as V,
+            { ...state.current.values, ...newValues } as V,
             index,
             name
           );
@@ -799,14 +789,14 @@ export function useFormo<
       V extends ArrayRecord<Values, SK>
     >(index: number): () => void {
       return () => {
-        const currentArray = (values as V)[name];
+        const currentArray = (state.current.values as V)[name];
         const updatedArray = [
           ...currentArray.slice(0, index),
           ...currentArray.slice(index + 1, currentArray.length),
         ];
         setValues({ [name]: updatedArray } as Partial<Values>);
         const newValues = {
-          ...values,
+          ...state.current.values,
           [name]: updatedArray,
         } as Values;
         validateAllSubforms(newValues);
@@ -814,7 +804,7 @@ export function useFormo<
     }
 
     const items: FieldArray<Values, K, Label, FieldError>["items"] = (
-      values as ArrayRecord<Values, string>
+      state.current.values as ArrayRecord<Values, string>
     )[name].map((_value, index) => ({
       fieldProps: fieldProps(index),
       onChangeValues: onChangeValues(index),
@@ -826,7 +816,7 @@ export function useFormo<
       index,
       value
     ): void => {
-      const array = values[name] as unknown[];
+      const array = state.current.values[name] as unknown[];
       setValues({
         [name]: [
           ...array.slice(0, index),
@@ -837,7 +827,7 @@ export function useFormo<
     };
 
     const push: FieldArray<Values, K, Label, FieldError>["push"] = (value) =>
-      insertAt((values[name] as unknown[]).length, value as any);
+      insertAt((state.current.values[name] as unknown[]).length, value as any);
 
     return {
       items,
@@ -863,7 +853,7 @@ export function useFormo<
     dispatch({ type: "setSubmitting", isSubmitting: true });
     setSubmissionCount((count) => count + 1);
     try {
-      const validatedFieldValues = await validateAllFields(values);
+      const validatedFieldValues = await validateAllFields(state.current.values);
       if (validatedFieldValues.type === "failure") {
         return validatedFieldValues;
       }
@@ -878,15 +868,15 @@ export function useFormo<
   };
 
   return {
-    values,
+    values: state.current.values,
     setValues,
     setTouched,
     fieldProps,
     handleSubmit,
-    isSubmitting,
+    isSubmitting: state.current.isSubmitting,
     fieldArray,
-    formErrors,
-    fieldErrors: errors,
+    formErrors: state.current.formErrors,
+    fieldErrors: state.current.errors,
     resetForm,
     submissionCount,
   };
