@@ -1,7 +1,7 @@
 import { renderHook, act } from "@testing-library/react-hooks";
 import { useFormo, validators } from "../src";
 import { constant, pipe } from "fp-ts/function";
-import { nonEmptyArray, option, taskEither } from "fp-ts";
+import { nonEmptyArray, option, task, taskEither } from "fp-ts";
 import { Option } from "fp-ts/Option";
 
 describe("formo", () => {
@@ -123,6 +123,33 @@ describe("formo", () => {
     expect(
       result.current.fieldArray("apples").items[0].fieldProps("quantity").value
     ).toBe(10);
+  });
+
+  test("handleSubmit does not refer to stale values", async () => {
+    const onSubmit = jest.fn(() => taskEither.of(null));
+    const { result } = renderHook(() =>
+      useFormo(
+        {
+          initialValues: {
+            city: "Milan",
+          },
+          fieldValidators: constant({}),
+        },
+        {
+          onSubmit,
+        }
+      )
+    );
+
+    expect(result.current.fieldProps("city").value).toBe("Milan");
+
+    await act(async () => {
+      result.current.setValues({ city: "Rome" });
+      result.current.handleSubmit();
+    });
+
+    expect(onSubmit).toHaveBeenCalledTimes(1);
+    expect(onSubmit).toHaveBeenCalledWith({ city: "Rome" });
   });
 
   describe("field validations", () => {

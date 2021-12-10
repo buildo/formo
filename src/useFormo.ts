@@ -1,4 +1,4 @@
-import { useReducer, Reducer, useState } from "react";
+import { Reducer, useState } from "react";
 import { taskEither, record, option, array, nonEmptyArray, task } from "fp-ts";
 import { FieldProps } from "./FieldProps";
 import { pipe, constFalse, constant, constTrue } from "fp-ts/function";
@@ -8,6 +8,7 @@ import { Validator } from "./Validator";
 import { sequenceS } from "fp-ts/Apply";
 import { TaskEither } from "fp-ts/TaskEither";
 import { IO } from "fp-ts/lib/IO";
+import { useRefReducer } from "./useRefReducer";
 
 type ComputedFieldProps<V, Label, Issues> = Pick<
   FieldProps<V, Label, Issues>,
@@ -297,11 +298,9 @@ type UseFormReturn<
 type ValidatorErrorType<
   Values extends Record<string, unknown>,
   V extends Partial<FieldValidators<Values>>
-> = V extends Partial<
-  {
-    [k in keyof Values]: Validator<Values[k], unknown, infer E>;
-  }
->
+> = V extends Partial<{
+  [k in keyof Values]: Validator<Values[k], unknown, infer E>;
+}>
   ? E
   : null;
 
@@ -381,18 +380,7 @@ export function useFormo<
     ) as FieldArrayTouched,
   };
 
-  const [
-    {
-      values,
-      isSubmitting,
-      touched,
-      errors,
-      formErrors,
-      fieldArrayErrors,
-      fieldArrayTouched,
-    },
-    dispatch,
-  ] = useReducer<
+  const [state, dispatch] = useRefReducer<
     Reducer<
       FormState<Values, FormErrors, FieldError>,
       FormAction<Values, FormErrors, FieldError>
@@ -402,12 +390,11 @@ export function useFormo<
   const setValues = (partialValues: Partial<Values>) => {
     dispatch({ type: "setValues", values: partialValues });
 
-    const newValues = { ...values, ...partialValues };
     if (validateOnChange) {
       pipe(
         partialValues as Values,
         record.traverseWithIndex(task.taskSeq)((key) =>
-          validateField(key, newValues)
+          validateField(key, state.current.values)
         )
       )();
     }
@@ -416,7 +403,9 @@ export function useFormo<
   const setTouched = (partialTouched: Partial<Touched>) => {
     const partialTouchedChanged = pipe(
       partialTouched,
-      record.filterWithIndex((k, isTouch) => touched[k] !== isTouch)
+      record.filterWithIndex(
+        (k, isTouch) => state.current.touched[k] !== isTouch
+      )
     ) as Partial<Touched>;
 
     if (!record.size(partialTouchedChanged)) {
@@ -430,7 +419,7 @@ export function useFormo<
     k: K,
     newErrors: Option<NonEmptyArray<FieldError>>
   ) => {
-    if (option.isNone(errors[k]) && option.isNone(newErrors)) {
+    if (option.isNone(state.current.errors[k]) && option.isNone(newErrors)) {
       return;
     }
 
@@ -438,10 +427,9 @@ export function useFormo<
   };
 
   const setFormErrors = (errors: Option<FormErrors>) => {
-    if (option.isNone(formErrors) && option.isNone(errors)) {
+    if (option.isNone(state.current.formErrors) && option.isNone(errors)) {
       return;
     }
-
     dispatch({ type: "setFormError", errors });
   };
 
@@ -450,30 +438,29 @@ export function useFormo<
   ): ComputedFieldProps<Values[K], Label, NonEmptyArray<FieldError>> => {
     return {
       name,
-      value: values[name],
+      value: state.current.values[name],
       onChange: (v: Values[K]) => {
-        setValues(({ [name]: v } as unknown) as Partial<Values>);
-        const newValues = { ...values, [name]: v } as Values;
+        setValues({ [name]: v } as unknown as Partial<Values>);
         if (validateOnChange) {
-          return validateField(name, newValues)();
+          return validateField(name, state.current.values)();
         } else {
           return Promise.resolve();
         }
       },
       onBlur: () => {
-        setTouched(({ [name]: true } as unknown) as Partial<Touched>);
+        setTouched({ [name]: true } as unknown as Partial<Touched>);
         if (validateOnBlur) {
-          return validateField(name, values)();
+          return validateField(name, state.current.values)();
         } else {
           return Promise.resolve();
         }
       },
       issues: pipe(
-        errors[name],
-        option.filter(() => touched[name])
+        state.current.errors[name],
+        option.filter(() => state.current.touched[name])
       ),
-      isTouched: touched[name],
-      disabled: isSubmitting,
+      isTouched: state.current.touched[name],
+      disabled: state.current.isSubmitting,
     };
   };
 
@@ -638,10 +625,13 @@ export function useFormo<
 
   const setAllTouched = () => {
     setTouched(
-      (pipe(values, record.map(constTrue)) as unknown) as Partial<Touched>
+      pipe(
+        state.current.values,
+        record.map(constTrue)
+      ) as unknown as Partial<Touched>
     );
     pipe(
-      arrayValues(values),
+      arrayValues(state.current.values),
       record.mapWithIndex((field, v) =>
         pipe(
           v,
@@ -685,7 +675,7 @@ export function useFormo<
     >) => {
       return (subfieldName) => {
         const isTouched = pipe(
-          fieldArrayTouched[name][index],
+          state.current.fieldArrayTouched[name][index],
           option.fromNullable,
           option.chainNullableK((e) => e[subfieldName]),
           option.exists((e) => !!e)
@@ -693,25 +683,33 @@ export function useFormo<
 
         return {
           name: `${namePrefix(index)}.${subfieldName}`,
-          value: (values as V)[name][index][subfieldName] as V[K][number][SK],
+          value: (state.current.values as V)[name][index][
+            subfieldName
+          ] as V[K][number][SK],
           onChange: (value: V[K][number][SK]) => {
             pipe(
-              (values as V)[name][index] as V[K][number],
+              (state.current.values as V)[name][index] as V[K][number],
               record.updateAt(subfieldName, value),
               option.chain((value) =>
                 array.updateAt(
                   index,
                   value
-                )(values[name] as Array<Record<SK, V[K][number][SK]>>)
+                )(
+                  state.current.values[name] as Array<
+                    Record<SK, V[K][number][SK]>
+                  >
+                )
               ),
               option.map((updatedArray) => {
                 const newValues = { [name]: updatedArray } as Partial<Values>;
                 setValues(newValues);
                 if (validateOnChange) {
-                  validateSubfield(name, index, subfieldName, {
-                    ...values,
-                    ...newValues,
-                  })();
+                  validateSubfield(
+                    name,
+                    index,
+                    subfieldName,
+                    state.current.values
+                  )();
                 }
               })
             );
@@ -726,14 +724,14 @@ export function useFormo<
             });
           },
           issues: pipe(
-            fieldArrayErrors[name][index],
+            state.current.fieldArrayErrors[name][index],
             option.fromNullable,
             option.chain((e) => option.fromNullable(e[subfieldName])),
             option.flatten,
             option.filter(() => isTouched)
           ),
           isTouched,
-          disabled: isSubmitting,
+          disabled: state.current.isSubmitting,
         };
       };
     };
@@ -747,13 +745,13 @@ export function useFormo<
           array.updateAt(
             index,
             elementValues
-          )(values[name] as Array<Record<SK, V[K][number][SK]>>),
+          )(state.current.values[name] as Array<Record<SK, V[K][number][SK]>>),
           option.map((updatedArray) => {
             const newValues = { [name]: updatedArray } as Partial<Values>;
             setValues(newValues);
             if (validateOnChange) {
               validateSubform<SK, K, V>(
-                { ...values, ...newValues } as V,
+                state.current.values as V,
                 index,
                 name
               )();
@@ -768,36 +766,27 @@ export function useFormo<
     >(index: number): () => void {
       return () =>
         pipe(
-          (values as V)[name],
+          (state.current.values as V)[name],
           array.deleteAt(index),
           option.map((updatedArray) => {
             setValues({ [name]: updatedArray } as Partial<Values>);
-            const newValues = {
-              ...values,
-              [name]: updatedArray,
-            } as Values;
             record.sequence(
               taskEither.getTaskValidation(
                 nonEmptyArray.getSemigroup<FieldError>()
               )
-            )(validateAllSubforms(newValues))();
+            )(validateAllSubforms(state.current.values))();
           })
         );
     }
 
-    const items: FieldArray<
-      Values,
-      K,
-      Label,
-      FieldError
-    >["items"] = (values as ArrayRecord<Values, string>)[name].map(
-      (_value, index) => ({
-        fieldProps: fieldProps(index),
-        onChangeValues: onChangeValues(index),
-        remove: remove(index),
-        namePrefix: namePrefix(index),
-      })
-    );
+    const items: FieldArray<Values, K, Label, FieldError>["items"] = (
+      state.current.values as ArrayRecord<Values, string>
+    )[name].map((_value, index) => ({
+      fieldProps: fieldProps(index),
+      onChangeValues: onChangeValues(index),
+      remove: remove(index),
+      namePrefix: namePrefix(index),
+    }));
 
     const insertAt: FieldArray<Values, K, Label, FieldError>["insertAt"] = <
       SK extends keyof ArrayRecordValues<Values> & string,
@@ -807,7 +796,7 @@ export function useFormo<
       value: V[K][number]
     ) => {
       pipe(
-        (values as V)[name],
+        (state.current.values as V)[name],
         array.insertAt(index, value),
         option.map((updatedArray) => {
           setValues({ [name]: updatedArray } as Partial<Values>);
@@ -820,7 +809,7 @@ export function useFormo<
       V extends ArrayRecord<Values, SK>
     >(
       value: V[K][number]
-    ) => insertAt<SK, V>((values as V)[name].length, value);
+    ) => insertAt<SK, V>((state.current.values as V)[name].length, value);
 
     return {
       items,
@@ -852,7 +841,10 @@ export function useFormo<
       setSubmissionCount((count) => count + 1);
     }),
     () =>
-      pipe(validateAllFields(values), taskEither.chainW(validateFormAndSubmit)),
+      pipe(
+        validateAllFields(state.current.values),
+        taskEither.chainW(validateFormAndSubmit)
+      ),
     () =>
       taskEither.rightIO(() => {
         dispatch({ type: "setSubmitting", isSubmitting: false });
@@ -863,17 +855,16 @@ export function useFormo<
   const resetForm: IO<void> = () => {
     dispatch({ type: "reset", state: initialState });
   };
-
   return {
-    values,
+    values: state.current.values,
     setValues,
     setTouched,
     fieldProps,
     handleSubmit,
-    isSubmitting,
+    isSubmitting: state.current.isSubmitting,
     fieldArray,
-    formErrors,
-    fieldErrors: errors,
+    formErrors: state.current.formErrors,
+    fieldErrors: state.current.errors,
     resetForm,
     submissionCount,
   };
