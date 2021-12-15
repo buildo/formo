@@ -15,11 +15,11 @@ type ComputedFieldProps<V, Label, Issues> = Pick<
   "name" | "value" | "onChange" | "onBlur" | "issues"
 > & { isTouched: boolean; disabled: boolean };
 
-type FieldValidators<Values> = {
+export type FieldValidators<Values> = {
   [k in keyof Values]: Validator<Values[k], unknown, unknown>;
 };
 
-type FieldArrayValidators<Values> = {
+export type FieldArrayValidators<Values> = {
   [k in ArrayRecordKeys<Values>]: Partial<
     FieldValidators<
       ArrayRecord<Values, keyof ArrayRecordValues<Values> & string>[k][number]
@@ -54,7 +54,7 @@ type ValidatedValues<
     : Values[k];
 };
 
-type FormOptions<
+export type FormOptions<
   Values,
   Validators extends Partial<FieldValidators<Values>>,
   ArrayValidators extends Partial<FieldArrayValidators<Values>>,
