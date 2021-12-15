@@ -15,11 +15,11 @@ type ComputedFieldProps<V, Label, Issues> = Pick<
   "name" | "value" | "onChange" | "onBlur" | "issues"
 > & { isTouched: boolean; disabled: boolean };
 
-type FieldValidators<Values> = {
+export type FieldValidators<Values> = {
   [k in keyof Values]: Validator<Values[k], unknown, unknown>;
 };
 
-type FieldArrayValidators<Values> = {
+export type FieldArrayValidators<Values> = {
   [k in ArrayRecordKeys<Values>]: Partial<
     FieldValidators<
       ArrayRecord<Values, keyof ArrayRecordValues<Values> & string>[k][number]
@@ -54,7 +54,7 @@ type ValidatedValues<
     : Values[k];
 };
 
-type FormOptions<
+export type FormOptions<
   Values,
   Validators extends Partial<FieldValidators<Values>>,
   ArrayValidators extends Partial<FieldArrayValidators<Values>>,
@@ -71,8 +71,6 @@ type FormOptions<
     onSubmit: (
       values: ValidatedValues<Values, Validators, ArrayValidators>
     ) => TaskEither<FormErrors, unknown>;
-    onSubmissionStart?: IO<void>;
-    onSubmissionEnd?: IO<void>;
   }
 ];
 
@@ -339,7 +337,7 @@ export function useFormo<
       validateOnBlur: validateOnBlur_,
       validateOnChange: validateOnChange_,
     },
-    { onSubmit, onSubmissionStart, onSubmissionEnd },
+    { onSubmit },
   ] = args;
   const validateOnChange = validateOnChange_ != null ? validateOnChange_ : true;
   const validateOnBlur = validateOnBlur_ != null ? validateOnBlur_ : true;
@@ -836,7 +834,6 @@ export function useFormo<
   const handleSubmit: TaskEither<unknown, void> = taskEither.bracket(
     taskEither.rightIO(() => {
       setAllTouched();
-      if (onSubmissionStart != undefined) onSubmissionStart();
       dispatch({ type: "setSubmitting", isSubmitting: true });
       setSubmissionCount((count) => count + 1);
     }),
@@ -848,7 +845,6 @@ export function useFormo<
     () =>
       taskEither.rightIO(() => {
         dispatch({ type: "setSubmitting", isSubmitting: false });
-        if (onSubmissionEnd != undefined) onSubmissionEnd();
       })
   );
 
