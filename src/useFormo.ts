@@ -17,11 +17,11 @@ type ComputedFieldProps<V, Label, Issues> = Pick<
   "name" | "value" | "onChange" | "onBlur" | "issues"
 > & { isTouched: boolean; disabled: boolean };
 
-type FieldValidators<Values> = {
+export type FieldValidators<Values> = {
   [k in keyof Values]: Validator<Values[k], unknown, unknown>;
 };
 
-type FieldArrayValidators<Values> = {
+export type FieldArrayValidators<Values> = {
   [k in ArrayRecordKeys<Values>]: Partial<
     FieldValidators<
       ArrayRecord<Values, keyof ArrayRecordValues<Values> & string>[k][number]
@@ -60,7 +60,7 @@ type ValidatedValues<
     : Values[k];
 };
 
-type FormOptions<
+export type FormOptions<
   Values,
   Validators extends Partial<FieldValidators<Values>>,
   ArrayValidators extends Partial<FieldArrayValidators<Values>>,
@@ -76,7 +76,7 @@ type FormOptions<
   {
     onSubmit: (
       values: ValidatedValues<Values, Validators, ArrayValidators>
-    ) => Promise<Result<FormErrors, unknown>>;
+    ) => TaskEither<FormErrors, unknown>;
   }
 ];
 
@@ -840,32 +840,37 @@ export function useFormo<
 
   async function validateFormAndSubmit(
     values: ValidatedValues<Values, Validators, ArrayValidators>
-  ): Promise<Result<unknown, unknown>> {
-    const result = await onSubmit(values);
-    if (result.type === "failure") {
-      setFormErrors(result.failure);
-    } else {
-      setFormErrors(undefined);
-    }
-    return result;
-  }
+  ): TaskEither<void, void> =>
+    pipe(
+      onSubmit(values),
+      taskEither.bimap(
+        (errors) => {
+          setFormErrors(option.some(errors));
+        },
+        () => {
+          setFormErrors(option.none);
+        }
+      )
+    );
 
-  async function handleSubmit(): Promise<Result<unknown, unknown>> {
-    setAllTouched();
-    dispatch({ type: "setSubmitting", isSubmitting: true });
-    setSubmissionCount((count) => count + 1);
-    try {
-      const validatedFieldValues = await validateAllFields(state.current.values);
-      if (validatedFieldValues.type === "failure") {
-        return validatedFieldValues;
-      }
-      return validateFormAndSubmit(validatedFieldValues.success);
-    } finally {
-      dispatch({ type: "setSubmitting", isSubmitting: false });
-    }
-  }
+  const handleSubmit: TaskEither<unknown, void> = taskEither.bracket(
+    taskEither.rightIO(() => {
+      setAllTouched();
+      dispatch({ type: "setSubmitting", isSubmitting: true });
+      setSubmissionCount((count) => count + 1);
+    }),
+    () =>
+      pipe(
+        validateAllFields(state.current.values),
+        taskEither.chainW(validateFormAndSubmit)
+      ),
+    () =>
+      taskEither.rightIO(() => {
+        dispatch({ type: "setSubmitting", isSubmitting: false });
+      })
+  );
 
-  const resetForm: () => void = () => {
+  const resetForm: IO<void> = () => {
     dispatch({ type: "reset", state: initialState });
   };
 
