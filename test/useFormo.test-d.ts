@@ -143,3 +143,34 @@ export function validatorsInSequence() {
     }
   );
 }
+
+export function noValidators() {
+  const { fieldProps, fieldErrors } = useFormo(
+    {
+      initialValues: {
+        name: "",
+        age: 23,
+      },
+      fieldValidators: () => ({}),
+    },
+    {
+      onSubmit: (values) => {
+        expectType<string>(values.name);
+        expectType<number>(values.age);
+        return Promise.resolve(failure(values));
+      },
+    }
+  );
+
+  expectType<string>(fieldProps("name").value);
+  expectType<(v: string) => unknown>(fieldProps("name").onChange);
+  expectType<NonEmptyArray<never> | undefined>(fieldProps("name").issues);
+
+  expectType<number>(fieldProps("age").value);
+  expectType<(v: number) => unknown>(fieldProps("age").onChange);
+  expectType<NonEmptyArray<never> | undefined>(fieldProps("age").issues);
+
+  expectType<Partial<Record<"name" | "age", NonEmptyArray<never>>>>(
+    fieldErrors
+  );
+}

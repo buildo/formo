@@ -300,7 +300,9 @@ type ValidatorErrorType<
 > = V extends Partial<{
   [k in keyof Values]: Validator<Values[k], unknown, infer E>;
 }>
-  ? E
+  ? E extends unknown
+    ? never
+    : E
   : null;
 
 function mapRecord<R extends Record<string, unknown>, B>(
