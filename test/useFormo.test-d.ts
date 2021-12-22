@@ -60,13 +60,11 @@ import { Option } from "fp-ts/Option";
 
   expectType<string>(fieldProps("name").value);
   expectType<(v: string) => unknown>(fieldProps("name").onChange);
-  expectType<Option<NonEmptyArray<boolean>>>(fieldProps("name").issues);
+  expectType<Option<NonEmptyArray<never>>>(fieldProps("name").issues);
 
   expectType<number>(fieldProps("age").value);
   expectType<(v: number) => unknown>(fieldProps("age").onChange);
-  expectType<Option<NonEmptyArray<boolean>>>(fieldProps("age").issues);
+  expectType<Option<NonEmptyArray<never>>>(fieldProps("age").issues);
 
-  expectType<Record<"name" | "age", Option<NonEmptyArray<boolean>>>>(
-    fieldErrors
-  );
+  expectType<Record<"name" | "age", Option<NonEmptyArray<never>>>>(fieldErrors);
 }
