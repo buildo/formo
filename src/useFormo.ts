@@ -10,7 +10,7 @@ import { TaskEither } from "fp-ts/TaskEither";
 import { IO } from "fp-ts/lib/IO";
 import { useRefReducer } from "./useRefReducer";
 
-type ComputedFieldProps<V, Label, Issues> = Pick<
+export type ComputedFieldProps<V, Label, Issues> = Pick<
   FieldProps<V, Label, Issues>,
   "name" | "value" | "onChange" | "onBlur" | "issues"
 > & { isTouched: boolean; disabled: boolean };
@@ -296,12 +296,12 @@ type UseFormReturn<
 type ValidatorErrorType<
   Values extends Record<string, unknown>,
   V extends Partial<FieldValidators<Values>>
-> = V extends Partial<{
-  [k in keyof Values]: Validator<Values[k], unknown, infer E>;
-}>
-  ? E extends unknown
-    ? never
-    : E
+> = {} extends V
+  ? never
+  : V extends Partial<{
+      [k in keyof Values]: Validator<Values[k], unknown, infer E>;
+    }>
+  ? E
   : null;
 
 export function useFormo<
