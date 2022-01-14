@@ -3,6 +3,8 @@ id: recommended-patterns
 title: Recommended patterns
 ---
 
+import CodeBlock from "@theme/CodeBlock";
+
 In order to make the best out of `formo` we recommend a few patterns.
 
 ## Avoid using native form elements directly
@@ -22,39 +24,9 @@ your form elements.
 
 For example, you may define your own `TextField` field as:
 
-```ts
-import { FieldProps } from "@buildo/formo";
-import { option, array } from "fp-ts";
+import TextField from "!!raw-loader!../examples/src/recommended-patterns/avoid-using-native-form-elements-directly/TextField";
 
-type Props = FieldProps<string, string, string> & {
-  placeholder: string;
-};
-
-export function TextField(props: Props) {
-  return (
-    <div>
-      <label>{props.label}</label>
-      <input
-        name={props.name}
-        type="text"
-        value={props.value}
-        onChange={(e) => props.onChange(e.currentTarget.value)}
-        onBlur={props.onBlur}
-        disabled={props.disabled}
-      />
-      {pipe(
-        props.issues,
-        option.fold(constNull, (issues) =>
-          pipe(
-            issues,
-            array.map((issue) => <span key={issue}>{issue}</span>)
-          )
-        )
-      )}
-    </div>
-  );
-}
-```
+<CodeBlock className="language-tsx">{TextField}</CodeBlock>
 
 :::tip
 
@@ -62,7 +34,7 @@ You'll notice that `FieldProps` has three type parameters.
 
 - The first one is the value type.
 - The second one is the label type (which may or may not be a string)
-- The third one is the field error type
+- The third one is the field error type (encaplused in an `NonEmptyArray`)
 
 In this example we've used `string` for all of them, but in a real project you
 may have more specific types for the label (think of something like
@@ -74,36 +46,9 @@ may have more specific types for the label (think of something like
 Once you've done that, you can now see how `formo` utility methods (such as
 `fieldProps`) become very convenient to use:
 
-```tsx
-import { useFormo, validators } from "@buildo/formo";
-import { taskEither } from "fp-ts";
+import MyForm from "!!raw-loader!../examples/src/recommended-patterns/avoid-using-native-form-elements-directly/MyForm";
 
-function MyForm() {
-  const { fieldProps } = useFormo(
-    {
-      initialValues: {
-        name: "",
-      },
-      fieldValidators: () => ({
-        name: validators.maxLength(10, false),
-      }),
-    },
-    {
-      onSubmit: (values) => taskEither.right(values),
-    }
-  );
-
-  return (
-    <form>
-      <TextField
-        label="Name"
-        placeholder="Ada Lovelace"
-        {...fieldProps("name")}
-      />
-    </form>
-  );
-}
-```
+<CodeBlock className="language-tsx">{MyForm}</CodeBlock>
 
 ## Define a shared type for field issues
 
@@ -113,26 +58,18 @@ application.
 
 For instance:
 
-```ts
-type Severity = "error" | "warning";
-type FieldIssue = { message: string; severity: Severity };
+import FieldIssue from "!!raw-loader!../examples/src/recommended-patterns/define-a-shared-type-for-field-issues/FieldIssue";
 
-function error(message: string): FieldIssue {
-  return { message, severity: "error" };
-}
-function warning(message: string): FieldIssue {
-  return { message, severity: "warning" };
-}
-```
+<CodeBlock className="language-ts">{FieldIssue}</CodeBlock>
 
 and then use it accordingly:
 
 ```ts
 useFormo({
   initialValues: { name: "" },
-  fieldValidators: {
+  fieldValidators: () => ({
     name: validators.minLength(2, error("Name is too short")),
-  },
+  }),
 });
 ```
 
@@ -140,7 +77,7 @@ With the same spirit, this should also be the type used by your field
 components, so the `TextField` example above would have these props instead:
 
 ```tsx
-type Props = FieldProps<string, string, FieldIssue> & {
+type Props = FieldProps<string, string, NonEmptyArray<FieldIssue>> & {
   placeholder: string;
 };
 ```

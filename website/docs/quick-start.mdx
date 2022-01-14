@@ -1,0 +1,32 @@
+---
+id: quick-start
+title: Quick start
+sidebar_label: Quick start
+slug: /
+---
+
+import CodeBlock from "@theme/CodeBlock";
+
+## Installation
+
+```
+yarn install @buildo/formo
+```
+
+:::important
+
+`formo` assumes `react` as peer dependencies, so make you have it
+installed
+
+:::
+
+## Example
+
+Here's a very basic example of how you _may_ use `formo`.
+
+In the next sections we will see some reccomendations on how to make it even
+more convenient to use.
+
+import MyForm from "!!raw-loader!../examples/src/quick-start/MyForm";
+
+<CodeBlock className="language-tsx">{MyForm}</CodeBlock>
