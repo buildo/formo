@@ -1,5 +1,5 @@
 import { renderHook, act } from "@testing-library/react-hooks";
-import { useFormo, validators } from "../src";
+import { subForm, useFormo, validators } from "../src";
 import { failure, success } from "../src/Result";
 
 describe("formo", () => {
@@ -36,7 +36,7 @@ describe("formo", () => {
       useFormo(
         {
           initialValues: {
-            apples: [
+            apples: subForm([
               {
                 type: "Granny Smith",
                 quantity: 2,
@@ -45,7 +45,7 @@ describe("formo", () => {
                 type: "Golden Delicious",
                 quantity: 1,
               },
-            ],
+            ]),
           },
           fieldValidators: () => ({}),
         },
@@ -82,7 +82,7 @@ describe("formo", () => {
       useFormo(
         {
           initialValues: {
-            apples: [
+            apples: subForm([
               {
                 type: "Granny Smith",
                 quantity: 2,
@@ -91,7 +91,7 @@ describe("formo", () => {
                 type: "Golden Delicious",
                 quantity: 1,
               },
-            ],
+            ]),
           },
           fieldValidators: () => ({}),
         },
@@ -267,12 +267,12 @@ describe("formo", () => {
         useFormo(
           {
             initialValues: {
-              apples: [
+              apples: subForm([
                 {
                   type: "",
                   quantity: 1,
                 },
-              ],
+              ]),
             },
             fieldValidators: () => ({}),
             fieldArrayValidators: (values, index) => {
@@ -341,7 +341,7 @@ describe("formo", () => {
         useFormo(
           {
             initialValues: {
-              apples: [
+              apples: subForm([
                 {
                   type: "",
                   quantity: 0,
@@ -350,7 +350,7 @@ describe("formo", () => {
                   type: "Fuji",
                   quantity: 10,
                 },
-              ],
+              ]),
             },
             fieldValidators: () => ({}),
             fieldArrayValidators: () => {
@@ -504,7 +504,7 @@ describe("formo", () => {
         useFormo(
           {
             initialValues: {
-              users: [] as Array<{ value: string }>,
+              users: subForm([] as Array<{ value: string }>),
             },
             fieldValidators: () => ({
               users: validators.fromPredicate(
