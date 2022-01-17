@@ -1,5 +1,5 @@
 import { renderHook, act } from "@testing-library/react-hooks";
-import { useFormo, validators } from "../src";
+import { subFormValue, useFormo, validators } from "../src";
 import { failure, success } from "../src/Result";
 
 describe("formo", () => {
@@ -31,12 +31,50 @@ describe("formo", () => {
     expect(result.current.fieldProps("zipCode").value).toBe("");
   });
 
+  test("it works when calling onChange on a field of type array", async () => {
+    const onSubmit = jest.fn((values) => Promise.resolve(success(null)));
+    const { result } = renderHook(() =>
+      useFormo(
+        {
+          initialValues: {
+            apples: ["Granny Smith", "Golden Delicious"],
+          },
+          fieldValidators: () => ({}),
+        },
+        {
+          onSubmit,
+        }
+      )
+    );
+
+    expect(result.current.fieldProps("apples").value).toEqual([
+      "Granny Smith",
+      "Golden Delicious",
+    ]);
+
+    act(() => {
+      result.current.fieldProps("apples").onChange(["Granny Smith", "Fuji"]);
+    });
+
+    expect(result.current.fieldProps("apples").value).toEqual([
+      "Granny Smith",
+      "Fuji",
+    ]);
+
+    await act(async () => {
+      await result.current.handleSubmit();
+    });
+
+    expect(onSubmit).toHaveBeenCalledTimes(1);
+    expect(onSubmit).toHaveBeenCalledWith({ apples: ["Granny Smith", "Fuji"] });
+  });
+
   test("it works when calling onChange on an element of an array field", () => {
     const { result } = renderHook(() =>
       useFormo(
         {
           initialValues: {
-            apples: [
+            apples: subFormValue([
               {
                 type: "Granny Smith",
                 quantity: 2,
@@ -45,7 +83,7 @@ describe("formo", () => {
                 type: "Golden Delicious",
                 quantity: 1,
               },
-            ],
+            ]),
           },
           fieldValidators: () => ({}),
         },
@@ -56,24 +94,24 @@ describe("formo", () => {
     );
 
     expect(
-      result.current.fieldArray("apples").items[0].fieldProps("type").value
+      result.current.subForm("apples").items[0].fieldProps("type").value
     ).toBe("Granny Smith");
     expect(
-      result.current.fieldArray("apples").items[0].fieldProps("quantity").value
+      result.current.subForm("apples").items[0].fieldProps("quantity").value
     ).toBe(2);
 
     act(() => {
       result.current
-        .fieldArray("apples")
+        .subForm("apples")
         .items[0].fieldProps("type")
         .onChange("Fuji");
     });
 
     expect(
-      result.current.fieldArray("apples").items[0].fieldProps("type").value
+      result.current.subForm("apples").items[0].fieldProps("type").value
     ).toBe("Fuji");
     expect(
-      result.current.fieldArray("apples").items[0].fieldProps("quantity").value
+      result.current.subForm("apples").items[0].fieldProps("quantity").value
     ).toBe(2);
   });
 
@@ -82,7 +120,7 @@ describe("formo", () => {
       useFormo(
         {
           initialValues: {
-            apples: [
+            apples: subFormValue([
               {
                 type: "Granny Smith",
                 quantity: 2,
@@ -91,7 +129,7 @@ describe("formo", () => {
                 type: "Golden Delicious",
                 quantity: 1,
               },
-            ],
+            ]),
           },
           fieldValidators: () => ({}),
         },
@@ -102,24 +140,24 @@ describe("formo", () => {
     );
 
     expect(
-      result.current.fieldArray("apples").items[0].fieldProps("type").value
+      result.current.subForm("apples").items[0].fieldProps("type").value
     ).toBe("Granny Smith");
     expect(
-      result.current.fieldArray("apples").items[0].fieldProps("quantity").value
+      result.current.subForm("apples").items[0].fieldProps("quantity").value
     ).toBe(2);
 
     await act(async () => {
-      await result.current.fieldArray("apples").items[0].onChangeValues({
+      await result.current.subForm("apples").items[0].onChangeValues({
         type: "Fuji",
         quantity: 10,
       });
     });
 
     expect(
-      result.current.fieldArray("apples").items[0].fieldProps("type").value
+      result.current.subForm("apples").items[0].fieldProps("type").value
     ).toBe("Fuji");
     expect(
-      result.current.fieldArray("apples").items[0].fieldProps("quantity").value
+      result.current.subForm("apples").items[0].fieldProps("quantity").value
     ).toBe(10);
   });
 
@@ -267,15 +305,15 @@ describe("formo", () => {
         useFormo(
           {
             initialValues: {
-              apples: [
+              apples: subFormValue([
                 {
                   type: "",
                   quantity: 1,
                 },
-              ],
+              ]),
             },
             fieldValidators: () => ({}),
-            fieldArrayValidators: (values, index) => {
+            subFormValidators: (values, index) => {
               return {
                 apples: {
                   type: validators.minLength(1, "required"),
@@ -298,41 +336,38 @@ describe("formo", () => {
       });
 
       expect(
-        result.current.fieldArray("apples").items[0].fieldProps("type").issues
+        result.current.subForm("apples").items[0].fieldProps("type").issues
       ).toEqual(["required"]);
       expect(
-        result.current.fieldArray("apples").items[0].fieldProps("quantity")
-          .issues
+        result.current.subForm("apples").items[0].fieldProps("quantity").issues
       ).toEqual(undefined);
 
       await act(async () => {
-        await result.current.fieldArray("apples").items[0].onChangeValues({
+        await result.current.subForm("apples").items[0].onChangeValues({
           type: "Fuji",
           quantity: 1,
         });
       });
 
       expect(
-        result.current.fieldArray("apples").items[0].fieldProps("type").issues
+        result.current.subForm("apples").items[0].fieldProps("type").issues
       ).toEqual(undefined);
       expect(
-        result.current.fieldArray("apples").items[0].fieldProps("quantity")
-          .issues
+        result.current.subForm("apples").items[0].fieldProps("quantity").issues
       ).toEqual(["error"]);
 
       await act(async () => {
-        await result.current.fieldArray("apples").items[0].onChangeValues({
+        await result.current.subForm("apples").items[0].onChangeValues({
           type: "",
           quantity: 2,
         });
       });
 
       expect(
-        result.current.fieldArray("apples").items[0].fieldProps("type").issues
+        result.current.subForm("apples").items[0].fieldProps("type").issues
       ).toEqual(["required"]);
       expect(
-        result.current.fieldArray("apples").items[0].fieldProps("quantity")
-          .issues
+        result.current.subForm("apples").items[0].fieldProps("quantity").issues
       ).toEqual(undefined);
     });
 
@@ -341,7 +376,7 @@ describe("formo", () => {
         useFormo(
           {
             initialValues: {
-              apples: [
+              apples: subFormValue([
                 {
                   type: "",
                   quantity: 0,
@@ -350,10 +385,10 @@ describe("formo", () => {
                   type: "Fuji",
                   quantity: 10,
                 },
-              ],
+              ]),
             },
             fieldValidators: () => ({}),
-            fieldArrayValidators: () => {
+            subFormValidators: () => {
               return {
                 apples: {
                   type: validators.minLength(1, "required"),
@@ -376,39 +411,35 @@ describe("formo", () => {
       });
 
       expect(
-        result.current.fieldArray("apples").items[0].fieldProps("type").issues
+        result.current.subForm("apples").items[0].fieldProps("type").issues
       ).toEqual(["required"]);
       expect(
-        result.current.fieldArray("apples").items[0].fieldProps("quantity")
-          .issues
+        result.current.subForm("apples").items[0].fieldProps("quantity").issues
       ).toEqual(["error"]);
 
       expect(
-        result.current.fieldArray("apples").items[1].fieldProps("type").issues
+        result.current.subForm("apples").items[1].fieldProps("type").issues
       ).toEqual(undefined);
       expect(
-        result.current.fieldArray("apples").items[1].fieldProps("quantity")
-          .issues
+        result.current.subForm("apples").items[1].fieldProps("quantity").issues
       ).toEqual(undefined);
 
       await act(async () => {
-        await result.current.fieldArray("apples").items[0].remove();
+        await result.current.subForm("apples").items[0].remove();
       });
 
       expect(
-        result.current.fieldArray("apples").items[0].fieldProps("type").value
+        result.current.subForm("apples").items[0].fieldProps("type").value
       ).toEqual("Fuji");
       expect(
-        result.current.fieldArray("apples").items[0].fieldProps("quantity")
-          .value
+        result.current.subForm("apples").items[0].fieldProps("quantity").value
       ).toEqual(10);
 
       expect(
-        result.current.fieldArray("apples").items[0].fieldProps("type").issues
+        result.current.subForm("apples").items[0].fieldProps("type").issues
       ).toEqual(undefined);
       expect(
-        result.current.fieldArray("apples").items[0].fieldProps("quantity")
-          .issues
+        result.current.subForm("apples").items[0].fieldProps("quantity").issues
       ).toEqual(undefined);
     });
 
@@ -504,7 +535,7 @@ describe("formo", () => {
         useFormo(
           {
             initialValues: {
-              users: [] as Array<{ value: string }>,
+              users: subFormValue([] as Array<{ value: string }>),
             },
             fieldValidators: () => ({
               users: validators.fromPredicate(
@@ -519,42 +550,42 @@ describe("formo", () => {
         )
       );
 
-      expect(result.current.fieldArray("users").items.length).toBe(0);
+      expect(result.current.subForm("users").items.length).toBe(0);
 
       act(() => {
-        result.current.fieldArray("users").push({ value: "Alice" });
+        result.current.subForm("users").push({ value: "Alice" });
       });
 
-      expect(result.current.fieldArray("users").items.length).toBe(1);
+      expect(result.current.subForm("users").items.length).toBe(1);
       expect(
-        result.current.fieldArray("users").items[0].fieldProps("value").value
+        result.current.subForm("users").items[0].fieldProps("value").value
       ).toEqual("Alice");
 
       act(() => {
-        result.current.fieldArray("users").insertAt(0, { value: "John" });
+        result.current.subForm("users").insertAt(0, { value: "John" });
       });
 
-      expect(result.current.fieldArray("users").items.length).toBe(2);
+      expect(result.current.subForm("users").items.length).toBe(2);
       expect(
-        result.current.fieldArray("users").items[0].fieldProps("value").value
+        result.current.subForm("users").items[0].fieldProps("value").value
       ).toEqual("John");
       expect(
-        result.current.fieldArray("users").items[1].fieldProps("value").value
+        result.current.subForm("users").items[1].fieldProps("value").value
       ).toEqual("Alice");
 
       act(() => {
-        result.current.fieldArray("users").push({ value: "Stella" });
+        result.current.subForm("users").push({ value: "Stella" });
       });
 
-      expect(result.current.fieldArray("users").items.length).toBe(3);
+      expect(result.current.subForm("users").items.length).toBe(3);
       expect(
-        result.current.fieldArray("users").items[0].fieldProps("value").value
+        result.current.subForm("users").items[0].fieldProps("value").value
       ).toEqual("John");
       expect(
-        result.current.fieldArray("users").items[1].fieldProps("value").value
+        result.current.subForm("users").items[1].fieldProps("value").value
       ).toEqual("Alice");
       expect(
-        result.current.fieldArray("users").items[2].fieldProps("value").value
+        result.current.subForm("users").items[2].fieldProps("value").value
       ).toEqual("Stella");
     });
   });
