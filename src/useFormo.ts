@@ -373,7 +373,7 @@ export function useFormo<
 
   const [submissionCount, setSubmissionCount] = useState(0);
 
-  const fileArrayKeys = Object.keys(initialValues).filter(
+  const fieldArrayKeys = Object.keys(initialValues).filter(
     (k) => initialValues[k] && (initialValues[k] as any).__isFieldArray
   );
 
