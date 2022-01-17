@@ -1,4 +1,4 @@
-import { useFormo, validators } from "../src";
+import { subForm, useFormo, validators } from "../src";
 import { expectType } from "tsd";
 import { failure, success } from "../src/Result";
 import { NonEmptyArray } from "../src/NonEmptyArray";
@@ -173,4 +173,28 @@ export function noValidators() {
   expectType<Partial<Record<"name" | "age", NonEmptyArray<never>>>>(
     fieldErrors
   );
+}
+
+export function arrayAndFieldArray() {
+  const { fieldProps, fieldArray } = useFormo(
+    {
+      initialValues: {
+        array: [] as Array<string>,
+        fieldArray: subForm([] as Array<{ name: string }>),
+      },
+      fieldValidators: () => ({}),
+    },
+    {
+      onSubmit: (values) => Promise.resolve(failure(values)),
+    }
+  );
+
+  expectType<Array<string>>(fieldProps("array").value);
+  expectType<string>(
+    fieldArray("fieldArray").items[0].fieldProps("name").value
+  );
+  // @ts-expect-error
+  fieldArray("array");
+  // @ts-expect-error
+  fieldProps("fieldArray");
 }

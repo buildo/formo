@@ -1,5 +1,5 @@
 import { renderHook, act } from "@testing-library/react-hooks";
-import { useFormo, validators } from "../src";
+import { subForm, useFormo, validators } from "../src";
 import { failure, success } from "../src/Result";
 
 describe("formo", () => {
@@ -31,12 +31,50 @@ describe("formo", () => {
     expect(result.current.fieldProps("zipCode").value).toBe("");
   });
 
+  test("it works when calling onChange on a field of type array", async () => {
+    const onSubmit = jest.fn((values) => Promise.resolve(success(null)));
+    const { result } = renderHook(() =>
+      useFormo(
+        {
+          initialValues: {
+            apples: ["Granny Smith", "Golden Delicious"],
+          },
+          fieldValidators: () => ({}),
+        },
+        {
+          onSubmit,
+        }
+      )
+    );
+
+    expect(result.current.fieldProps("apples").value).toEqual([
+      "Granny Smith",
+      "Golden Delicious",
+    ]);
+
+    act(() => {
+      result.current.fieldProps("apples").onChange(["Granny Smith", "Fuji"]);
+    });
+
+    expect(result.current.fieldProps("apples").value).toEqual([
+      "Granny Smith",
+      "Fuji",
+    ]);
+
+    await act(async () => {
+      await result.current.handleSubmit();
+    });
+
+    expect(onSubmit).toHaveBeenCalledTimes(1);
+    expect(onSubmit).toHaveBeenCalledWith({ apples: ["Granny Smith", "Fuji"] });
+  });
+
   test("it works when calling onChange on an element of an array field", () => {
     const { result } = renderHook(() =>
       useFormo(
         {
           initialValues: {
-            apples: [
+            apples: subForm([
               {
                 type: "Granny Smith",
                 quantity: 2,
@@ -45,7 +83,7 @@ describe("formo", () => {
                 type: "Golden Delicious",
                 quantity: 1,
               },
-            ],
+            ]),
           },
           fieldValidators: () => ({}),
         },
@@ -82,7 +120,7 @@ describe("formo", () => {
       useFormo(
         {
           initialValues: {
-            apples: [
+            apples: subForm([
               {
                 type: "Granny Smith",
                 quantity: 2,
@@ -91,7 +129,7 @@ describe("formo", () => {
                 type: "Golden Delicious",
                 quantity: 1,
               },
-            ],
+            ]),
           },
           fieldValidators: () => ({}),
         },
@@ -267,12 +305,12 @@ describe("formo", () => {
         useFormo(
           {
             initialValues: {
-              apples: [
+              apples: subForm([
                 {
                   type: "",
                   quantity: 1,
                 },
-              ],
+              ]),
             },
             fieldValidators: () => ({}),
             fieldArrayValidators: (values, index) => {
@@ -341,7 +379,7 @@ describe("formo", () => {
         useFormo(
           {
             initialValues: {
-              apples: [
+              apples: subForm([
                 {
                   type: "",
                   quantity: 0,
@@ -350,7 +388,7 @@ describe("formo", () => {
                   type: "Fuji",
                   quantity: 10,
                 },
-              ],
+              ]),
             },
             fieldValidators: () => ({}),
             fieldArrayValidators: () => {
@@ -504,7 +542,7 @@ describe("formo", () => {
         useFormo(
           {
             initialValues: {
-              users: [] as Array<{ value: string }>,
+              users: subForm([] as Array<{ value: string }>),
             },
             fieldValidators: () => ({
               users: validators.fromPredicate(
