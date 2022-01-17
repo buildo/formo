@@ -31,7 +31,8 @@ describe("formo", () => {
     expect(result.current.fieldProps("zipCode").value).toBe("");
   });
 
-  test("it works when calling onChange on a field of type array", () => {
+  test("it works when calling onChange on a field of type array", async () => {
+    const onSubmit = jest.fn((values) => Promise.resolve(success(null)));
     const { result } = renderHook(() =>
       useFormo(
         {
@@ -41,7 +42,7 @@ describe("formo", () => {
           fieldValidators: () => ({}),
         },
         {
-          onSubmit: () => Promise.resolve(success(null)),
+          onSubmit,
         }
       )
     );
@@ -59,6 +60,13 @@ describe("formo", () => {
       "Granny Smith",
       "Fuji",
     ]);
+
+    await act(async () => {
+      await result.current.handleSubmit();
+    });
+
+    expect(onSubmit).toHaveBeenCalledTimes(1);
+    expect(onSubmit).toHaveBeenCalledWith({ apples: ["Granny Smith", "Fuji"] });
   });
 
   test("it works when calling onChange on an element of an array field", () => {
