@@ -385,7 +385,7 @@ export function useFormo<
   const arrayValues = (values: Values): ArrayValues => {
     const arrayValues: ArrayValues = {} as any;
     for (let k in values) {
-      if (fileArrayKeys.indexOf(k) !== -1) {
+      if (fileArrayKeys.includes(k)) {
         (arrayValues as any)[k] = values[k];
       }
     }
