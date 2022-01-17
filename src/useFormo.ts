@@ -21,10 +21,10 @@ type FieldValidators<Values> = {
   [k in keyof Values]: Validator<Values[k], unknown, unknown>;
 };
 
-type FieldArrayValidators<Values> = {
-  [k in FieldArrayKeys<Values>]: Partial<
+type SubFormValidators<Values> = {
+  [k in SubFormKeys<Values>]: Partial<
     FieldValidators<
-      ArrayRecord<Values, keyof FieldArrayValues<Values> & string>[k][number]
+      ArrayRecord<Values, keyof SubFormValues<Values> & string>[k][number]
     >
   >;
 };
@@ -34,7 +34,7 @@ type GetOrElse<A, B> = A extends undefined | null ? B : NonNullable<A>;
 type ValidatedValues<
   Values,
   Validators extends Partial<FieldValidators<Values>>,
-  ArrayValidators extends Partial<FieldArrayValidators<Values>>
+  ArrayValidators extends Partial<SubFormValidators<Values>>
 > = {
   // The `Required<>` is needed to remove the optionality on the values received
   // onSubmit while keeping the possibly undefined type for non-validated fields.
@@ -48,9 +48,9 @@ type ValidatedValues<
     ? O
     : Validators[k] extends Validator<Values[k], infer O, infer _E> | undefined
     ? O | Values[k]
-    : k extends FieldArrayKeys<Values>
+    : k extends SubFormKeys<Values>
     ? ValidatedValues<
-        ArrayRecord<Values, keyof FieldArrayValues<Values> & string>[k][number],
+        ArrayRecord<Values, keyof SubFormValues<Values> & string>[k][number],
         GetOrElse<ArrayValidators[k], {}>,
         {}
       >[]
@@ -60,13 +60,13 @@ type ValidatedValues<
 type FormOptions<
   Values,
   Validators extends Partial<FieldValidators<Values>>,
-  ArrayValidators extends Partial<FieldArrayValidators<Values>>,
+  ArrayValidators extends Partial<SubFormValidators<Values>>,
   FormErrors
 > = [
   {
     initialValues: Values;
     fieldValidators: (values: Values) => Validators;
-    fieldArrayValidators?: (values: Values, index: number) => ArrayValidators;
+    subFormValidators?: (values: Values, index: number) => ArrayValidators;
     validateOnChange?: boolean;
     validateOnBlur?: boolean;
   },
@@ -77,12 +77,12 @@ type FormOptions<
   }
 ];
 
-type ArrayFieldValue<A extends unknown[]> = A & { __isFieldArray: true };
+type SubFormValue<A extends unknown[]> = A & { __isSubForm: true };
 
-export function subForm<A extends unknown[]>(
+export function subFormValue<A extends unknown[]>(
   arrayFieldValue: A
-): ArrayFieldValue<A> {
-  (arrayFieldValue as any).__isFieldArray = true;
+): SubFormValue<A> {
+  (arrayFieldValue as any).__isSubForm = true;
   return arrayFieldValue as any;
 }
 
@@ -92,23 +92,19 @@ type ArrayRecord<Values, SK extends string> = {
     : never;
 };
 
-type FieldArrayKeys<Values> = {
-  [K in keyof Values]-?: Values[K] extends ArrayFieldValue<unknown[]>
-    ? K
-    : never;
+type SubFormKeys<Values> = {
+  [K in keyof Values]-?: Values[K] extends SubFormValue<unknown[]> ? K : never;
 }[keyof Values] &
   string;
 
-type FieldArrayValues<Values> = {
-  [K in keyof Values]-?: Values[K] extends ArrayFieldValue<unknown[]>
+type SubFormValues<Values> = {
+  [K in keyof Values]-?: Values[K] extends SubFormValue<unknown[]>
     ? Values[K][number]
     : never;
 }[keyof Values];
 
 type SimpleValueKeys<Values> = {
-  [K in keyof Values]-?: Values[K] extends ArrayFieldValue<unknown[]>
-    ? never
-    : K;
+  [K in keyof Values]-?: Values[K] extends SubFormValue<unknown[]> ? never : K;
 }[keyof Values] &
   string;
 
@@ -127,15 +123,15 @@ type FormAction<Values, FormErrors, FieldError> =
       errors?: NonEmptyArray<FieldError>;
     }
   | {
-      type: "setFieldArrayTouched";
-      field: FieldArrayKeys<Values>;
+      type: "setSubFormTouched";
+      field: SubFormKeys<Values>;
       index: number;
       subfield: string;
       touched: boolean;
     }
   | {
-      type: "setFieldArrayErrors";
-      field: FieldArrayKeys<Values>;
+      type: "setSubFormErrors";
+      field: SubFormKeys<Values>;
       index: number;
       subfield: string;
       errors?: NonEmptyArray<FieldError>;
@@ -153,21 +149,21 @@ type FormAction<Values, FormErrors, FieldError> =
       state: FormState<Values, FormErrors, FieldError>;
     };
 
-type FieldArray<
+type SubForm<
   Values extends Record<string, unknown>,
-  K extends FieldArrayKeys<Values>,
+  K extends SubFormKeys<Values>,
   Label,
   FieldError
 > = {
   items: {
     fieldProps: <
-      SK extends keyof FieldArrayValues<Values> & string,
+      SK extends keyof SubFormValues<Values> & string,
       V extends ArrayRecord<Values, SK>
     >(
       name: SK
     ) => ComputedFieldProps<V[K][number][SK], Label, NonEmptyArray<FieldError>>;
     onChangeValues: <
-      SK extends keyof FieldArrayValues<Values> & string,
+      SK extends keyof SubFormValues<Values> & string,
       V extends ArrayRecord<Values, SK>
     >(
       v: V[K][number]
@@ -176,14 +172,14 @@ type FieldArray<
     namePrefix: string;
   }[];
   insertAt: <
-    SK extends keyof FieldArrayValues<Values> & string,
+    SK extends keyof SubFormValues<Values> & string,
     V extends ArrayRecord<Values, SK>
   >(
     index: number,
     value: V[K][number]
   ) => void;
   push: <
-    SK extends keyof FieldArrayValues<Values> & string,
+    SK extends keyof SubFormValues<Values> & string,
     V extends ArrayRecord<Values, SK>
   >(
     value: V[K][number]
@@ -196,14 +192,14 @@ interface FormState<Values, FormErrors, FieldError> {
   errors: Partial<Record<keyof Values, NonEmptyArray<FieldError>>>;
   formErrors?: FormErrors;
   isSubmitting: boolean;
-  fieldArrayTouched: Record<
-    FieldArrayKeys<Values>,
-    Array<Partial<Record<keyof FieldArrayValues<Values>, boolean>>>
+  subFormTouched: Record<
+    SubFormKeys<Values>,
+    Array<Partial<Record<keyof SubFormValues<Values>, boolean>>>
   >;
-  fieldArrayErrors: Record<
-    FieldArrayKeys<Values>,
+  subFormErrors: Record<
+    SubFormKeys<Values>,
     Array<{
-      [K in keyof FieldArrayValues<Values>]?:
+      [K in keyof SubFormValues<Values>]?:
         | NonEmptyArray<FieldError>
         | undefined;
     }>
@@ -224,50 +220,50 @@ function formReducer<Values, FormErrors, FieldError>(
         ...state,
         errors: { ...state.errors, [action.field]: action.errors },
       };
-    case "setFieldArrayTouched":
+    case "setSubFormTouched":
       const touchedSubfields =
-        state.fieldArrayTouched[action.field][action.index] ?? {};
+        state.subFormTouched[action.field][action.index] ?? {};
 
       const updatedTouchedField = [
-        ...state.fieldArrayTouched[action.field].slice(0, action.index),
+        ...state.subFormTouched[action.field].slice(0, action.index),
         {
           ...touchedSubfields,
           [action.subfield]: action.touched,
         },
-        ...state.fieldArrayTouched[action.field].slice(
+        ...state.subFormTouched[action.field].slice(
           action.index + 1,
-          state.fieldArrayTouched[action.field].length
+          state.subFormTouched[action.field].length
         ),
       ];
 
       return {
         ...state,
-        fieldArrayTouched: {
-          ...state.fieldArrayTouched,
+        subFormTouched: {
+          ...state.subFormTouched,
           [action.field]: updatedTouchedField,
         },
       };
 
-    case "setFieldArrayErrors":
+    case "setSubFormErrors":
       const errorsSubfields =
-        state.fieldArrayErrors[action.field][action.index] ?? {};
+        state.subFormErrors[action.field][action.index] ?? {};
 
       const updatedErrorsField = [
-        ...state.fieldArrayErrors[action.field].slice(0, action.index),
+        ...state.subFormErrors[action.field].slice(0, action.index),
         {
           ...errorsSubfields,
           [action.subfield]: action.errors,
         },
-        ...state.fieldArrayErrors[action.field].slice(
+        ...state.subFormErrors[action.field].slice(
           action.index + 1,
-          state.fieldArrayErrors[action.field].length
+          state.subFormErrors[action.field].length
         ),
       ];
 
       return {
         ...state,
-        fieldArrayErrors: {
-          ...state.fieldArrayErrors,
+        subFormErrors: {
+          ...state.subFormErrors,
           [action.field]: updatedErrorsField,
         },
       };
@@ -298,9 +294,9 @@ type UseFormReturn<
   ) => ComputedFieldProps<Values[K], Label, NonEmptyArray<FieldError>>;
   handleSubmit: () => Promise<Result<unknown, unknown>>;
   isSubmitting: boolean;
-  fieldArray: <K extends FieldArrayKeys<Values>>(
+  subForm: <K extends SubFormKeys<Values>>(
     name: K
-  ) => FieldArray<Values, K, Label, FieldError>;
+  ) => SubForm<Values, K, Label, FieldError>;
   formErrors?: FormErrors;
   fieldErrors: Partial<Record<keyof Values, NonEmptyArray<FieldError>>>;
   resetForm: () => void;
@@ -332,7 +328,7 @@ function mapRecord<R extends Record<string, unknown>, B>(
 export function useFormo<
   Values extends Record<string, unknown>,
   Validators extends Partial<FieldValidators<Values>>,
-  ArrayValidators extends Partial<FieldArrayValidators<Values>>,
+  ArrayValidators extends Partial<SubFormValidators<Values>>,
   FormErrors,
   Label
 >(
@@ -347,22 +343,22 @@ export function useFormo<
   type FieldError = ValidatorErrorType<Values, Validators>;
 
   type Errors = Partial<Record<keyof Values, NonEmptyArray<FieldError>>>;
-  type FieldArrayErrors = Record<
-    FieldArrayKeys<Values>,
+  type SubFormErrors = Record<
+    SubFormKeys<Values>,
     Array<
-      Partial<Record<keyof FieldArrayValues<Values>, NonEmptyArray<FieldError>>>
+      Partial<Record<keyof SubFormValues<Values>, NonEmptyArray<FieldError>>>
     >
   >;
-  type FieldArrayTouched = Record<
-    FieldArrayKeys<Values>,
-    Record<keyof FieldArrayValues<Values>, boolean>[]
+  type SubFormTouched = Record<
+    SubFormKeys<Values>,
+    Record<keyof SubFormValues<Values>, boolean>[]
   >;
 
   const [
     {
       initialValues,
       fieldValidators,
-      fieldArrayValidators,
+      subFormValidators,
       validateOnBlur: validateOnBlur_,
       validateOnChange: validateOnChange_,
     },
@@ -374,18 +370,18 @@ export function useFormo<
   const [submissionCount, setSubmissionCount] = useState(0);
 
   const fieldArrayKeys = Object.keys(initialValues).filter(
-    (k) => initialValues[k] && (initialValues[k] as any).__isFieldArray
+    (k) => initialValues[k] && (initialValues[k] as any).__isSubForm
   );
 
   type ArrayValues = Record<
-    FieldArrayKeys<Values>,
-    Array<Record<keyof FieldArrayValues<Values>, unknown>>
+    SubFormKeys<Values>,
+    Array<Record<keyof SubFormValues<Values>, unknown>>
   >;
 
-  const arrayValues = (values: Values): ArrayValues => {
+  const subFormValues = (values: Values): ArrayValues => {
     const arrayValues: ArrayValues = {} as any;
     for (let k in values) {
-      if (fileArrayKeys.includes(k)) {
+      if (fieldArrayKeys.includes(k)) {
         (arrayValues as any)[k] = values[k];
       }
     }
@@ -397,12 +393,12 @@ export function useFormo<
     touched: mapRecord(initialValues, () => false) as Touched,
     errors: {} as Errors,
     isSubmitting: false,
-    fieldArrayErrors: mapRecord(arrayValues(initialValues), (arrayValues) =>
+    subFormErrors: mapRecord(subFormValues(initialValues), (arrayValues) =>
       arrayValues.map(() => ({}))
-    ) as FieldArrayErrors,
-    fieldArrayTouched: mapRecord(arrayValues(initialValues), (arrayValues) =>
+    ) as SubFormErrors,
+    subFormTouched: mapRecord(subFormValues(initialValues), (arrayValues) =>
       arrayValues.map((arrayValue) => mapRecord(arrayValue, () => false))
-    ) as FieldArrayTouched,
+    ) as SubFormTouched,
   };
 
   const [state, dispatch] = useRefReducer<
@@ -509,8 +505,8 @@ export function useFormo<
   }
 
   async function validateSubfield<
-    SK extends keyof FieldArrayValues<Values> & string,
-    K extends FieldArrayKeys<Values>,
+    SK extends keyof SubFormValues<Values> & string,
+    K extends SubFormKeys<Values>,
     V extends ArrayRecord<Values, SK>
   >(
     name: K,
@@ -519,12 +515,12 @@ export function useFormo<
     values: Values
   ): Promise<Result<NonEmptyArray<FieldError>, Values[K]>> {
     if (
-      fieldArrayValidators != null &&
-      fieldArrayValidators(values, index) != null &&
-      fieldArrayValidators(values, index)[name] != null &&
-      fieldArrayValidators(values, index)[name]![subfieldName] != null
+      subFormValidators != null &&
+      subFormValidators(values, index) != null &&
+      subFormValidators(values, index)[name] != null &&
+      subFormValidators(values, index)[name]![subfieldName] != null
     ) {
-      const subfieldValidation = fieldArrayValidators(values, index)[name]![
+      const subfieldValidation = subFormValidators(values, index)[name]![
         subfieldName
       ]!;
       const result = (await subfieldValidation(
@@ -533,7 +529,7 @@ export function useFormo<
       return matchResult(result, {
         failure: (e) => {
           dispatch({
-            type: "setFieldArrayErrors",
+            type: "setSubFormErrors",
             field: name,
             index,
             subfield: subfieldName,
@@ -543,7 +539,7 @@ export function useFormo<
         },
         success: (a) => {
           dispatch({
-            type: "setFieldArrayErrors",
+            type: "setSubFormErrors",
             field: name,
             index,
             subfield: subfieldName,
@@ -555,7 +551,7 @@ export function useFormo<
     } else {
       setErrors(name, undefined);
       dispatch({
-        type: "setFieldArrayErrors",
+        type: "setSubFormErrors",
         field: name,
         index,
         subfield: subfieldName,
@@ -566,8 +562,8 @@ export function useFormo<
   }
 
   async function validateSubform<
-    SK extends keyof FieldArrayValues<Values> & string,
-    K extends FieldArrayKeys<Values>,
+    SK extends keyof SubFormValues<Values> & string,
+    K extends SubFormKeys<Values>,
     V extends ArrayRecord<Values, SK>
   >(
     values: V,
@@ -577,7 +573,7 @@ export function useFormo<
     Result<
       NonEmptyArray<FieldError>,
       ValidatedValues<
-        ArrayRecord<Values, keyof FieldArrayValues<Values> & string>[K][number],
+        ArrayRecord<Values, keyof SubFormValues<Values> & string>[K][number],
         GetOrElse<ArrayValidators[K], {}>,
         {}
       >
@@ -600,13 +596,13 @@ export function useFormo<
   }
 
   async function validateAllSubforms<
-    SK extends keyof FieldArrayValues<Values> & string,
-    K extends FieldArrayKeys<Values>,
+    SK extends keyof SubFormValues<Values> & string,
+    K extends SubFormKeys<Values>,
     V extends ArrayRecord<Values, SK>
   >(
     values: Values
   ): Promise<Record<K, Result<NonEmptyArray<FieldError>, any>>> {
-    const arrValues = arrayValues(values);
+    const arrValues = subFormValues(values);
     const results: Record<
       K,
       Result<NonEmptyArray<FieldError>, any>
@@ -682,11 +678,11 @@ export function useFormo<
   const setAllTouched = (): void => {
     setTouched(mapRecord(state.current.values, () => true));
 
-    mapRecord(arrayValues(state.current.values), (v, field) => {
+    mapRecord(subFormValues(state.current.values), (v, field) => {
       v.map((r, index) => {
         mapRecord(r, (_, subfield) => {
           dispatch({
-            type: "setFieldArrayTouched",
+            type: "setSubFormTouched",
             field,
             index,
             subfield: subfield as string,
@@ -697,15 +693,15 @@ export function useFormo<
     });
   };
 
-  const fieldArray = <K extends FieldArrayKeys<Values>>(
+  const subForm = <K extends SubFormKeys<Values>>(
     name: K
-  ): FieldArray<Values, K, Label, FieldError> => {
+  ): SubForm<Values, K, Label, FieldError> => {
     function namePrefix(index: number): string {
       return `${name}[${index}]`;
     }
 
     const fieldProps = <
-      SK extends keyof FieldArrayValues<Values> & string,
+      SK extends keyof SubFormValues<Values> & string,
       V extends ArrayRecord<Values, SK>
     >(
       index: number
@@ -717,10 +713,9 @@ export function useFormo<
       NonEmptyArray<FieldError>
     >) => {
       return (subfieldName) => {
-        const fieldArrayTouchedIndex =
-          state.current.fieldArrayTouched[name][index];
+        const subFormTouchedIndex = state.current.subFormTouched[name][index];
         const isTouched = Boolean(
-          fieldArrayTouchedIndex != null && fieldArrayTouchedIndex[subfieldName]
+          subFormTouchedIndex != null && subFormTouchedIndex[subfieldName]
         );
 
         return {
@@ -748,7 +743,7 @@ export function useFormo<
           },
           onBlur: () => {
             dispatch({
-              type: "setFieldArrayTouched",
+              type: "setSubFormTouched",
               field: name,
               index,
               subfield: subfieldName,
@@ -756,7 +751,7 @@ export function useFormo<
             });
           },
           issues: isTouched
-            ? (state.current.fieldArrayErrors[name][index] || {})[subfieldName]
+            ? (state.current.subFormErrors[name][index] || {})[subfieldName]
             : undefined,
           isTouched,
           disabled: state.current.isSubmitting,
@@ -765,11 +760,11 @@ export function useFormo<
     };
 
     function onChangeValues<
-      SK extends keyof FieldArrayValues<Values> & string,
+      SK extends keyof SubFormValues<Values> & string,
       V extends ArrayRecord<Values, SK>
     >(
       index: number
-    ): FieldArray<
+    ): SubForm<
       Values,
       K,
       Label,
@@ -797,7 +792,7 @@ export function useFormo<
     }
 
     function remove<
-      SK extends keyof FieldArrayValues<Values> & string,
+      SK extends keyof SubFormValues<Values> & string,
       V extends ArrayRecord<Values, SK>
     >(index: number): () => void {
       return () => {
@@ -815,7 +810,7 @@ export function useFormo<
       };
     }
 
-    const items: FieldArray<Values, K, Label, FieldError>["items"] = (
+    const items: SubForm<Values, K, Label, FieldError>["items"] = (
       state.current.values as ArrayRecord<Values, string>
     )[name].map((_value, index) => ({
       fieldProps: fieldProps(index),
@@ -824,7 +819,7 @@ export function useFormo<
       namePrefix: namePrefix(index),
     }));
 
-    const insertAt: FieldArray<Values, K, Label, FieldError>["insertAt"] = (
+    const insertAt: SubForm<Values, K, Label, FieldError>["insertAt"] = (
       index,
       value
     ): void => {
@@ -838,7 +833,7 @@ export function useFormo<
       } as Partial<Values>);
     };
 
-    const push: FieldArray<Values, K, Label, FieldError>["push"] = (value) =>
+    const push: SubForm<Values, K, Label, FieldError>["push"] = (value) =>
       insertAt((state.current.values[name] as unknown[]).length, value as any);
 
     return {
@@ -888,7 +883,7 @@ export function useFormo<
     fieldProps,
     handleSubmit,
     isSubmitting: state.current.isSubmitting,
-    fieldArray,
+    subForm: subForm,
     formErrors: state.current.formErrors,
     fieldErrors: state.current.errors,
     resetForm,
