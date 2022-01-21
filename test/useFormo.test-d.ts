@@ -190,9 +190,7 @@ export function arrayAndFieldArray() {
   );
 
   expectType<Array<string>>(fieldProps("array").value);
-  expectType<string>(
-    subForm("fieldArray").items[0].fieldProps("name").value
-  );
+  expectType<string>(subForm("fieldArray").items[0].fieldProps("name").value);
   // @ts-expect-error
   fieldArray("array");
   // @ts-expect-error

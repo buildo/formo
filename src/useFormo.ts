@@ -13,12 +13,12 @@ import {
   success,
 } from "./Result";
 
-type ComputedFieldProps<V, Label, Issues> = Pick<
+export type ComputedFieldProps<V, Label, Issues> = Pick<
   FieldProps<V, Label, Issues>,
   "name" | "value" | "onChange" | "onBlur" | "issues"
 > & { isTouched: boolean; disabled: boolean };
 
-type FieldValidators<Values> = {
+export type FieldValidators<Values> = {
   [k in keyof Values]: Validator<Values[k], unknown, unknown>;
 };
 
@@ -58,7 +58,7 @@ type ValidatedValues<
     : Values[k];
 };
 
-type FormOptions<
+export type FormOptions<
   Values,
   Validators extends Partial<FieldValidators<Values>>,
   ArrayValidators extends Partial<SubFormValidators<Values>>,
