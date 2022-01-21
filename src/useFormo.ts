@@ -9,6 +9,7 @@ import {
   isSuccess,
   matchResult,
   Result,
+  Success,
   success,
 } from "./Result";
 
@@ -579,20 +580,31 @@ export function useFormo<
       >
     >
   > {
-    let failures: Array<FieldError> = [];
-    let validatedValues = mapRecord(values[name][index], (v) => v);
-    for (let subfieldName in values[name][index]) {
-      const result = await validateSubfield(name, index, subfieldName, values);
-      if (result.type === "failure") {
-        failures = failures.concat(result.failure);
-      } else {
-        (validatedValues as any)[name] = result.success;
-      }
-    }
+    const validationResults = await Promise.all(
+      Object.keys(values[name][index]).map((subFieldName) =>
+        validateSubfield(name, index, subFieldName as SK, values).then(
+          (result) => ({ subFieldName, result })
+        )
+      )
+    );
+    const failures: Array<FieldError> = validationResults
+      .map((r) => r.result)
+      .filter(isFailure)
+      .flatMap((r) => r.failure);
     if (failures.length > 0) {
       return failure(failures as NonEmptyArray<FieldError>);
     }
-    return success(validatedValues) as any;
+    return success(
+      validationResults
+        .filter((r) => isSuccess(r.result))
+        .reduce(
+          (acc, v) => ({
+            ...acc,
+            [v.subFieldName]: (v.result as Success<unknown>).success,
+          }),
+          values[name][index]
+        )
+    ) as any;
   }
 
   async function validateAllSubforms<
@@ -637,19 +649,24 @@ export function useFormo<
       ValidatedValues<Values, Validators, ArrayValidators>
     >
   > {
-    let failures: Array<FieldError> = [];
-
-    const plainValues = {} as Partial<
-      ValidatedValues<Values, Validators, ArrayValidators>
-    >;
-    for (const name in values) {
-      const result = await validateField(name, values);
-      if (result.type === "failure") {
-        failures = failures.concat(result.failure);
-      } else {
-        (plainValues as any)[name] = result.success;
-      }
-    }
+    const validationResults = await Promise.all(
+      Object.keys(values).map((name) =>
+        validateField(name, values).then((result) => ({ name, result }))
+      )
+    );
+    let failures: Array<FieldError> = validationResults
+      .map((r) => r.result)
+      .filter(isFailure)
+      .flatMap((r) => r.failure);
+    const plainValues = validationResults
+      .filter((r) => isSuccess(r.result))
+      .reduce(
+        (acc, v) => ({
+          ...acc,
+          [v.name]: (v.result as Success<unknown>).success,
+        }),
+        { ...values }
+      );
 
     const subFormValidations = await validateAllSubforms(values);
     let subFormValues = {};
