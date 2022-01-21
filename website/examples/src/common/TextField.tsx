@@ -4,7 +4,7 @@ type Props = FieldProps<string, string, NonEmptyArray<string>> & {
   placeholder: string;
 };
 
-export const TextField = (props: Props) => {
+export function TextField(props: Props) {
   return (
     <div>
       <label>{props.label}</label>
@@ -18,9 +18,9 @@ export const TextField = (props: Props) => {
       />
       <ul>
         {props.issues?.map((issue) => (
-          <li key={issue}>{issue}</li>
+          <li key={`${props.name}_${issue}`}>{issue}</li>
         ))}
       </ul>
     </div>
   );
-};
+}

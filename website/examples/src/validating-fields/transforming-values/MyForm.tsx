@@ -1,5 +1,5 @@
 import { useFormo, validators, success } from "@buildo/formo";
-import { RadioGroup } from "./RadioGroup";
+import { RadioGroup } from "../../common/RadioGroup";
 
 type FormValues = {
   profession?: string;

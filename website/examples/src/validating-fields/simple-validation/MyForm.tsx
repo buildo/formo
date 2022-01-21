@@ -1,5 +1,5 @@
 import { useFormo, validators, success } from "@buildo/formo";
-import { TextField } from "./TextField";
+import { TextField } from "../../common/TextField";
 
 export const MyForm = () => {
   const { fieldProps } = useFormo(

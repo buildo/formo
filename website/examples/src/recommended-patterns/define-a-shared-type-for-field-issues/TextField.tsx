@@ -17,11 +17,11 @@ export const TextField = (props: Props) => {
         onBlur={props.onBlur}
         disabled={props.disabled}
       />
-      <p>
+      <ul>
         {props.issues?.map((issue) => (
-          <span>{issue.message}</span>
+          <li key={issue.message}>{issue}</li>
         ))}
-      </p>
+      </ul>
     </div>
   );
 };
