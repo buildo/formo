@@ -7,7 +7,7 @@ slug: /
 
 ## Installation
 
-```
+```bash
 yarn install @buildo/formo
 ```
 
@@ -26,7 +26,7 @@ In the next sections we will see some reccomendations on how to make it even
 more convenient to use.
 
 ```tsx
-import { validations, useFormo } from "@buildo/formo";
+import { validators, useFormo } from "@buildo/formo";
 import { taskEither, option, array } from "fp-ts";
 import { pipe, constNull } from "fp-ts/function";
 
@@ -51,7 +51,7 @@ function MyForm() {
   return (
     <form>
       <div>
-        <label for={fieldProps("fullName").name} />
+        <label htmlFor={fieldProps("fullName").name} />
         <input
           type="text"
           id={fieldProps("fullName").name}
@@ -65,7 +65,7 @@ function MyForm() {
       </div>
 
       <div>
-        <label for={fieldProps("acceptsTerms").name} />
+        <label htmlFor={fieldProps("acceptsTerms").name} />
         <input
           type="text"
           id={fieldProps("acceptsTerms").name}

@@ -8,17 +8,18 @@ abstraction layer over `ReaderTaskEither` from `fp-ts`.
 
 Here's a quick example of a validator in action:
 
-```ts
+```twoslash include main
 import { useFormo, validators } from "@buildo/formo";
+import { taskEither } from "fp-ts";
 
 const { fieldProps } = useFormo(
   {
     initialValues: {
       name: "",
     },
-    fieldValidators: () => {
-      name: validators.minLength(2, "Name is too short");
-    },
+    fieldValidators: () => ({
+      name: validators.minLength(2, "Name is too short"),
+    }),
   },
   {
     onSubmit: (values) => taskEither.right(values),
@@ -26,11 +27,17 @@ const { fieldProps } = useFormo(
 );
 ```
 
+```ts twoslash
+// @include: main
+```
+
 Here we are validating the `name` field to make sure it's at least 2 character
 long. The result of this validation can be access with:
 
-```ts
-fieldProps("name").issues; // Option<NonEmptyArray<string>>
+```ts twoslash
+// @include: main
+// ---cut---
+fieldProps("name").issues;
 ```
 
 :::tip
