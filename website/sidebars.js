@@ -5,6 +5,7 @@ module.exports = {
       "recommended-patterns",
       "validating-fields",
       "submitting",
+      "subform",
     ],
   },
 };

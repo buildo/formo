@@ -1,5 +1,5 @@
 import { failure, success, useFormo } from "@buildo/formo";
-import { TextField } from "./TextField";
+import { SimpleTextField } from "../common/SimpleTextField";
 
 const login = (username: string, password: string) => {
   if (username === "admin" && password === "password") {
@@ -31,16 +31,8 @@ export const MyForm = () => {
 
   return (
     <div>
-      <TextField
-        label="username"
-        placeholder="Username"
-        {...fieldProps("username")}
-      />
-      <TextField
-        label="password"
-        placeholder="Password"
-        {...fieldProps("password")}
-      />
+      <SimpleTextField label="username" {...fieldProps("username")} />
+      <SimpleTextField label="password" {...fieldProps("password")} />
 
       <button onClick={handleSubmit} disabled={isSubmitting}>
         Login

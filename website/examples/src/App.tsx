@@ -6,6 +6,7 @@ import { MyForm as ValidatingFields2 } from "./validating-fields/multiple-valida
 import { MyForm as ValidatingFields3 } from "./validating-fields/transforming-values/MyForm";
 import { MyForm as ValidatingFields4 } from "./validating-fields/defining-custom-validations/MyForm";
 import { MyForm as SubmittingForm } from "./submitting-a-form/MyForm";
+import { MyForm as Subform } from "./subform/MyForm";
 
 function App() {
   return (
@@ -26,6 +27,8 @@ function App() {
       <ValidatingFields4 />
       <h1>SubmittingForm</h1>
       <SubmittingForm />
+      <h1>Subform</h1>
+      <Subform />
     </div>
   );
 }

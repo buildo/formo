@@ -1,10 +1,8 @@
 import { FieldProps, NonEmptyArray } from "@buildo/formo";
 
-type Props = FieldProps<string, string, NonEmptyArray<unknown>> & {
-  placeholder: string;
-};
+type Props = FieldProps<string, string, NonEmptyArray<unknown>>;
 
-export function TextField(props: Props) {
+export function SimpleTextField(props: Props) {
   return (
     <div>
       <label>{props.label}</label>
