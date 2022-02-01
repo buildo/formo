@@ -32,3 +32,11 @@
   margin-bottom: var(--ifm-leading);
   font-size: var(--ifm-code-font-size);
 }
+
+[data-theme="light"] .shiki.one-dark-pro {
+  display: none;
+}
+
+[data-theme="dark"] .shiki.min-light {
+  display: none;
+}
