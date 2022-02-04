@@ -218,72 +218,52 @@ types some useful information you checked during validation.
 `formo` comes with a set of common validators, but you can of course augment
 them by providing your own.
 
-For instance:
-
-```twoslash include customvalidation
-import {
-  useFormo,
-  validators,
-  success,
-  failure,
-  Validator,
-} from "@buildo/formo";
-
-export const MyForm = () => {
-  // Leveraging existing validators
-  const startsWithUppercaseLetter: <E>(
-    errorMessage: E
-  ) => Validator<string, string, E> = (errorMessage) =>
-    validators.regex(/^[A-Z]/, errorMessage);
-
-  // Completely custom using validator combinator
-  const perfectNumberValidator = (errorMessage: string) =>
-    validators.validator((n: number) =>
-      n === 42 ? success(n) : failure(errorMessage)
-    );
-
-  const { fieldProps, fieldErrors } = useFormo(
-    {
-      initialValues: {
-        name: "",
-        age: 0,
-      },
-      fieldValidators: () => ({
-        name: startsWithUppercaseLetter(
-          "Name must start with uppercase letter"
-        ),
-        age: perfectNumberValidator("Age must be 42"),
-      }),
+```twoslash include customvalidations
+import {validators, success, failure } from "@buildo/formo";
+// ---cut---
+const startsWithUppercaseLetter = (errorMessage: string) => validators.regex(
+  /^[A-Z]/, errorMessage
+);
+// - 1
+// ---cut---
+const perfectNumberValidator = (errorMessage: string) => validators.validator(
+  (n: number) => n === 42 ? success(n) : failure(errorMessage)
+);
+// - 2
+import { useFormo } from "@buildo/formo";
+// ---cut---
+const { fieldProps } = useFormo(
+  {
+    initialValues: {
+      name: "",
+      age: 0,
     },
-    {
-      onSubmit: async (values) => success(values),
-    }
-  );
-
-  return (
-    <div>
-      <label>{fieldProps("name").name}</label>
-      <input
-        type="text"
-        {...fieldProps("name")}
-        onChange={(e) => fieldProps("name").onChange(e.target.value)}
-      />
-      <label>{fieldProps("age").name}</label>
-      <input
-        type="number"
-        {...fieldProps("age")}
-        onChange={(e) => fieldProps("age").onChange(e.target.valueAsNumber)}
-      />
-      <ul>
-        {Object.values(fieldErrors)?.map((issues) =>
-          issues?.map((issue) => <li key={issue}>{issue}</li>)
-        )}
-      </ul>
-    </div>
-  );
-};
+    fieldValidators: () => ({
+      name: startsWithUppercaseLetter("Name must start with uppercase letter"),
+      age: perfectNumberValidator("Age must be 42"),
+    }),
+  },
+  {
+    onSubmit: async (values) => success(values),
+  }
+);
+// - 3
 ```
 
+For instance, you could leverage existing validators
+
 ```tsx twoslash
-// @include: customvalidation
+// @include: customvalidations-1
+```
+
+or create a completely custom one
+
+```tsx twoslash
+// @include: customvalidations-2
+```
+
+and use them accordingly
+
+```tsx twoslash
+// @include: customvalidations-3
 ```
