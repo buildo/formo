@@ -184,10 +184,7 @@ export const MyForm = () => {
       }),
     },
     {
-      onSubmit: async (values) => {
-        console.log(typeof values.profession); // string
-        return success(values);
-      },
+      onSubmit: async (values) => success(values),
     }
   );
 
