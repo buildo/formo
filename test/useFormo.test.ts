@@ -33,6 +33,38 @@ describe("formo", () => {
     expect(result.current.fieldProps("zipCode").value).toBe("");
   });
 
+  test("it works when resetting the form", () => {
+    const { result } = renderHook(() =>
+      useFormo(
+        {
+          initialValues: {
+            city: "Milan",
+            zipCode: "20100",
+          },
+          fieldValidators: constant({}),
+        },
+        {
+          onSubmit: () => taskEither.of(null),
+        }
+      )
+    );
+
+    act(() => {
+      result.current.fieldProps("city").onChange("Rome");
+      result.current.fieldProps("zipCode").onChange("");
+    });
+
+    expect(result.current.fieldProps("city").value).toBe("Rome");
+    expect(result.current.fieldProps("zipCode").value).toBe("");
+
+    act(() => {
+      result.current.resetForm();
+    });
+
+    expect(result.current.fieldProps("city").value).toBe("Milan");
+    expect(result.current.fieldProps("zipCode").value).toBe("20100");
+  });
+
   test("it works when calling onChange on an element of an array field", () => {
     const { result } = renderHook(() =>
       useFormo(
