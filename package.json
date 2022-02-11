@@ -1,6 +1,6 @@
 {
   "name": "@buildo/formo",
-  "version": "2.0.0-beta.9",
+  "version": "2.0.0",
   "main": "lib/index.js",
   "license": "MIT",
   "files": [
