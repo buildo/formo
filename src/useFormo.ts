@@ -1,4 +1,4 @@
-import { Reducer, useState } from "react";
+import { Reducer, useMemo, useState } from "react";
 import { useRefReducer } from "./useRefReducer";
 import { FieldProps } from "./FieldProps";
 import { NonEmptyArray } from "./NonEmptyArray";
@@ -357,7 +357,7 @@ export function useFormo<
 
   const [
     {
-      initialValues,
+      initialValues: initialValues_,
       fieldValidators,
       subFormValidators,
       validateOnBlur: validateOnBlur_,
@@ -367,6 +367,8 @@ export function useFormo<
   ] = args;
   const validateOnChange = validateOnChange_ != null ? validateOnChange_ : true;
   const validateOnBlur = validateOnBlur_ != null ? validateOnBlur_ : true;
+
+  const initialValues = useMemo(() => initialValues_, []);
 
   const [submissionCount, setSubmissionCount] = useState(0);
 
