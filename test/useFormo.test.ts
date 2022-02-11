@@ -31,6 +31,47 @@ describe("formo", () => {
     expect(result.current.fieldProps("zipCode").value).toBe("");
   });
 
+  test("it works when resetting the form", () => {
+    const { result, rerender } = renderHook(
+      (initialValues) =>
+        useFormo(
+          {
+            initialValues,
+            fieldValidators: () => ({}),
+          },
+          {
+            onSubmit: () => Promise.resolve(success(null)),
+          }
+        ),
+      {
+        initialProps: {
+          city: "Milan",
+          zipCode: "20100",
+        },
+      }
+    );
+
+    act(() => {
+      result.current.fieldProps("city").onChange("Rome");
+      result.current.fieldProps("zipCode").onChange("");
+    });
+
+    rerender({
+      city: "Rome",
+      zipCode: "",
+    });
+
+    expect(result.current.fieldProps("city").value).toBe("Rome");
+    expect(result.current.fieldProps("zipCode").value).toBe("");
+
+    act(() => {
+      result.current.resetForm();
+    });
+
+    expect(result.current.fieldProps("city").value).toBe("Milan");
+    expect(result.current.fieldProps("zipCode").value).toBe("20100");
+  });
+
   test("it works when calling onChange on a field of type array", async () => {
     const onSubmit = jest.fn((values) => Promise.resolve(success(null)));
     const { result } = renderHook(() =>
