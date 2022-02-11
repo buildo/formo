@@ -32,24 +32,33 @@ describe("formo", () => {
   });
 
   test("it works when resetting the form", () => {
-    const { result } = renderHook(() =>
-      useFormo(
-        {
-          initialValues: {
-            city: "Milan",
-            zipCode: "20100",
+    const { result, rerender } = renderHook(
+      (initialValues) =>
+        useFormo(
+          {
+            initialValues,
+            fieldValidators: () => ({}),
           },
-          fieldValidators: () => ({}),
+          {
+            onSubmit: () => Promise.resolve(success(null)),
+          }
+        ),
+      {
+        initialProps: {
+          city: "Milan",
+          zipCode: "20100",
         },
-        {
-          onSubmit: () => Promise.resolve(success(null)),
-        }
-      )
+      }
     );
 
     act(() => {
       result.current.fieldProps("city").onChange("Rome");
       result.current.fieldProps("zipCode").onChange("");
+    });
+
+    rerender({
+      city: "Rome",
+      zipCode: "",
     });
 
     expect(result.current.fieldProps("city").value).toBe("Rome");
