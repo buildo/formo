@@ -1,8 +1,6 @@
 import { renderHook, act } from "@testing-library/react-hooks";
-import { useFormo, validators } from "../src";
-import { constant, pipe } from "fp-ts/function";
-import { nonEmptyArray, option, task, taskEither } from "fp-ts";
-import { Option } from "fp-ts/Option";
+import { subFormValue, useFormo, validators } from "../src";
+import { failure, success } from "../src/Result";
 
 describe("formo", () => {
   test("it works when calling multiple fields' onChange ", () => {
@@ -13,10 +11,10 @@ describe("formo", () => {
             city: "Milan",
             zipCode: "20100",
           },
-          fieldValidators: constant({}),
+          fieldValidators: () => ({}),
         },
         {
-          onSubmit: () => taskEither.of(null),
+          onSubmit: () => Promise.resolve(success(null)),
         }
       )
     );
@@ -33,12 +31,91 @@ describe("formo", () => {
     expect(result.current.fieldProps("zipCode").value).toBe("");
   });
 
+  test("it works when resetting the form", () => {
+    const { result, rerender } = renderHook(
+      (initialValues) =>
+        useFormo(
+          {
+            initialValues,
+            fieldValidators: () => ({}),
+          },
+          {
+            onSubmit: () => Promise.resolve(success(null)),
+          }
+        ),
+      {
+        initialProps: {
+          city: "Milan",
+          zipCode: "20100",
+        },
+      }
+    );
+
+    act(() => {
+      result.current.fieldProps("city").onChange("Rome");
+      result.current.fieldProps("zipCode").onChange("");
+    });
+
+    rerender({
+      city: "Rome",
+      zipCode: "",
+    });
+
+    expect(result.current.fieldProps("city").value).toBe("Rome");
+    expect(result.current.fieldProps("zipCode").value).toBe("");
+
+    act(() => {
+      result.current.resetForm();
+    });
+
+    expect(result.current.fieldProps("city").value).toBe("Milan");
+    expect(result.current.fieldProps("zipCode").value).toBe("20100");
+  });
+
+  test("it works when calling onChange on a field of type array", async () => {
+    const onSubmit = jest.fn((values) => Promise.resolve(success(null)));
+    const { result } = renderHook(() =>
+      useFormo(
+        {
+          initialValues: {
+            apples: ["Granny Smith", "Golden Delicious"],
+          },
+          fieldValidators: () => ({}),
+        },
+        {
+          onSubmit,
+        }
+      )
+    );
+
+    expect(result.current.fieldProps("apples").value).toEqual([
+      "Granny Smith",
+      "Golden Delicious",
+    ]);
+
+    act(() => {
+      result.current.fieldProps("apples").onChange(["Granny Smith", "Fuji"]);
+    });
+
+    expect(result.current.fieldProps("apples").value).toEqual([
+      "Granny Smith",
+      "Fuji",
+    ]);
+
+    await act(async () => {
+      await result.current.handleSubmit();
+    });
+
+    expect(onSubmit).toHaveBeenCalledTimes(1);
+    expect(onSubmit).toHaveBeenCalledWith({ apples: ["Granny Smith", "Fuji"] });
+  });
+
   test("it works when calling onChange on an element of an array field", () => {
     const { result } = renderHook(() =>
       useFormo(
         {
           initialValues: {
-            apples: [
+            apples: subFormValue([
               {
                 type: "Granny Smith",
                 quantity: 2,
@@ -47,44 +124,44 @@ describe("formo", () => {
                 type: "Golden Delicious",
                 quantity: 1,
               },
-            ],
+            ]),
           },
-          fieldValidators: constant({}),
+          fieldValidators: () => ({}),
         },
         {
-          onSubmit: () => taskEither.of(null),
+          onSubmit: () => Promise.resolve(success(null)),
         }
       )
     );
 
     expect(
-      result.current.fieldArray("apples").items[0].fieldProps("type").value
+      result.current.subForm("apples").items[0].fieldProps("type").value
     ).toBe("Granny Smith");
     expect(
-      result.current.fieldArray("apples").items[0].fieldProps("quantity").value
+      result.current.subForm("apples").items[0].fieldProps("quantity").value
     ).toBe(2);
 
     act(() => {
       result.current
-        .fieldArray("apples")
+        .subForm("apples")
         .items[0].fieldProps("type")
         .onChange("Fuji");
     });
 
     expect(
-      result.current.fieldArray("apples").items[0].fieldProps("type").value
+      result.current.subForm("apples").items[0].fieldProps("type").value
     ).toBe("Fuji");
     expect(
-      result.current.fieldArray("apples").items[0].fieldProps("quantity").value
+      result.current.subForm("apples").items[0].fieldProps("quantity").value
     ).toBe(2);
   });
 
-  test("it works when calling onChangeValues on an element of an array field", () => {
+  test("it works when calling onChangeValues on an element of an array field", async () => {
     const { result } = renderHook(() =>
       useFormo(
         {
           initialValues: {
-            apples: [
+            apples: subFormValue([
               {
                 type: "Granny Smith",
                 quantity: 2,
@@ -93,47 +170,47 @@ describe("formo", () => {
                 type: "Golden Delicious",
                 quantity: 1,
               },
-            ],
+            ]),
           },
-          fieldValidators: constant({}),
+          fieldValidators: () => ({}),
         },
         {
-          onSubmit: () => taskEither.of(null),
+          onSubmit: () => Promise.resolve(success(null)),
         }
       )
     );
 
     expect(
-      result.current.fieldArray("apples").items[0].fieldProps("type").value
+      result.current.subForm("apples").items[0].fieldProps("type").value
     ).toBe("Granny Smith");
     expect(
-      result.current.fieldArray("apples").items[0].fieldProps("quantity").value
+      result.current.subForm("apples").items[0].fieldProps("quantity").value
     ).toBe(2);
 
-    act(() => {
-      result.current.fieldArray("apples").items[0].onChangeValues({
+    await act(async () => {
+      await result.current.subForm("apples").items[0].onChangeValues({
         type: "Fuji",
         quantity: 10,
       });
     });
 
     expect(
-      result.current.fieldArray("apples").items[0].fieldProps("type").value
+      result.current.subForm("apples").items[0].fieldProps("type").value
     ).toBe("Fuji");
     expect(
-      result.current.fieldArray("apples").items[0].fieldProps("quantity").value
+      result.current.subForm("apples").items[0].fieldProps("quantity").value
     ).toBe(10);
   });
 
   test("handleSubmit does not refer to stale values", async () => {
-    const onSubmit = jest.fn(() => taskEither.of(null));
+    const onSubmit = jest.fn(async () => success(null));
     const { result } = renderHook(() =>
       useFormo(
         {
           initialValues: {
             city: "Milan",
           },
-          fieldValidators: constant({}),
+          fieldValidators: (_) => ({}),
         },
         {
           onSubmit,
@@ -154,7 +231,7 @@ describe("formo", () => {
 
   describe("field validations", () => {
     test("validation shows field error and prevents submit", async () => {
-      const onSubmit = jest.fn(() => taskEither.of(null));
+      const onSubmit = jest.fn(() => Promise.resolve(success(null)));
       const { result } = renderHook(() =>
         useFormo(
           {
@@ -175,43 +252,41 @@ describe("formo", () => {
 
       expect(onSubmit).not.toHaveBeenCalled();
 
-      expect(result.current.fieldProps("firstName").issues).toEqual(
-        option.some(["required"])
-      );
+      expect(result.current.fieldProps("firstName").issues).toEqual([
+        "required",
+      ]);
 
       await act(async () => {
         await result.current.fieldProps("firstName").onChange("Sarah");
         await result.current.handleSubmit();
       });
 
-      expect(result.current.fieldProps("firstName").issues).toEqual(
-        option.none
-      );
+      expect(result.current.fieldProps("firstName").issues).toEqual(undefined);
 
       expect(onSubmit).toHaveBeenCalledTimes(1);
       expect(onSubmit).toHaveBeenCalledWith({ firstName: "Sarah" });
     });
 
     test("conditional validation works", async () => {
-      const onSubmit = jest.fn(() => taskEither.of(null));
+      const onSubmit = jest.fn(() => Promise.resolve(success(null)));
       const { result } = renderHook(() =>
         useFormo(
           {
             initialValues: {
-              profession: option.none as Option<"employee" | "student">,
-              industry: option.none as Option<"technology" | "health">,
+              profession: undefined as undefined | "employee" | "student",
+              industry: undefined as undefined | "technology" | "health",
             },
             fieldValidators: (values) => ({
               profession: validators.defined("required"),
-              industry: pipe(
-                values.profession,
-                option.exists((p) => p === "employee")
-              )
-                ? validators.defined("required")
-                : undefined,
+              industry:
+                values.profession === "employee"
+                  ? validators.defined("required")
+                  : undefined,
             }),
           },
-          { onSubmit }
+          {
+            onSubmit,
+          }
         )
       );
 
@@ -221,34 +296,30 @@ describe("formo", () => {
 
       // no profession selected, so we only see an error about profession being missing
       expect(onSubmit).not.toHaveBeenCalled();
-      expect(result.current.fieldProps("profession").issues).toEqual(
-        option.some(["required"])
-      );
-      expect(result.current.fieldProps("industry").issues).toEqual(option.none);
+      expect(result.current.fieldProps("profession").issues).toEqual([
+        "required",
+      ]);
+      expect(result.current.fieldProps("industry").issues).toEqual(undefined);
 
       // select 'employee' as profession and try to submit
       await act(async () => {
-        await result.current
-          .fieldProps("profession")
-          .onChange(option.some("employee"));
+        await result.current.fieldProps("profession").onChange("employee");
         await result.current.handleSubmit();
       });
 
       // now industry should show an error, since it's required when profession is 'employee'
       expect(onSubmit).not.toHaveBeenCalled();
-      expect(result.current.fieldProps("industry").issues).toEqual(
-        option.some(["required"])
-      );
+      expect(result.current.fieldProps("industry").issues).toEqual([
+        "required",
+      ]);
 
       // select an industry and submit
       await act(async () => {
-        await result.current
-          .fieldProps("industry")
-          .onChange(option.some("health"));
+        await result.current.fieldProps("industry").onChange("health");
         await result.current.handleSubmit();
       });
 
-      expect(result.current.fieldProps("industry").issues).toEqual(option.none);
+      expect(result.current.fieldProps("industry").issues).toEqual(undefined);
       expect(onSubmit).toHaveBeenLastCalledWith({
         profession: "employee",
         industry: "health",
@@ -256,21 +327,17 @@ describe("formo", () => {
 
       // change profession to 'student', deselect industry and submit
       await act(async () => {
-        await result.current
-          .fieldProps("profession")
-          .onChange(option.some("student"));
-        await result.current.fieldProps("industry").onChange(option.none);
+        await result.current.fieldProps("profession").onChange("student");
+        await result.current.fieldProps("industry").onChange(undefined);
         await result.current.handleSubmit();
       });
 
       // now profession and industry are both ok, and industry is back to an Option (none) in submit
-      expect(result.current.fieldProps("profession").issues).toEqual(
-        option.none
-      );
-      expect(result.current.fieldProps("industry").issues).toEqual(option.none);
+      expect(result.current.fieldProps("profession").issues).toEqual(undefined);
+      expect(result.current.fieldProps("industry").issues).toEqual(undefined);
       expect(onSubmit).toHaveBeenLastCalledWith({
         profession: "student",
-        industry: option.none,
+        industry: undefined,
       });
     });
 
@@ -279,15 +346,15 @@ describe("formo", () => {
         useFormo(
           {
             initialValues: {
-              apples: [
+              apples: subFormValue([
                 {
                   type: "",
                   quantity: 1,
                 },
-              ],
+              ]),
             },
-            fieldValidators: constant({}),
-            fieldArrayValidators: (values, index) => {
+            fieldValidators: () => ({}),
+            subFormValidators: (values, index) => {
               return {
                 apples: {
                   type: validators.minLength(1, "required"),
@@ -300,7 +367,7 @@ describe("formo", () => {
             },
           },
           {
-            onSubmit: () => taskEither.of(null),
+            onSubmit: () => Promise.resolve(success(null)),
           }
         )
       );
@@ -310,42 +377,39 @@ describe("formo", () => {
       });
 
       expect(
-        result.current.fieldArray("apples").items[0].fieldProps("type").issues
-      ).toEqual(option.some(["required"]));
+        result.current.subForm("apples").items[0].fieldProps("type").issues
+      ).toEqual(["required"]);
       expect(
-        result.current.fieldArray("apples").items[0].fieldProps("quantity")
-          .issues
-      ).toEqual(option.none);
+        result.current.subForm("apples").items[0].fieldProps("quantity").issues
+      ).toEqual(undefined);
 
       await act(async () => {
-        await result.current.fieldArray("apples").items[0].onChangeValues({
+        await result.current.subForm("apples").items[0].onChangeValues({
           type: "Fuji",
           quantity: 1,
         });
       });
 
       expect(
-        result.current.fieldArray("apples").items[0].fieldProps("type").issues
-      ).toEqual(option.none);
+        result.current.subForm("apples").items[0].fieldProps("type").issues
+      ).toEqual(undefined);
       expect(
-        result.current.fieldArray("apples").items[0].fieldProps("quantity")
-          .issues
-      ).toEqual(option.some(["error"]));
+        result.current.subForm("apples").items[0].fieldProps("quantity").issues
+      ).toEqual(["error"]);
 
       await act(async () => {
-        await result.current.fieldArray("apples").items[0].onChangeValues({
+        await result.current.subForm("apples").items[0].onChangeValues({
           type: "",
           quantity: 2,
         });
       });
 
       expect(
-        result.current.fieldArray("apples").items[0].fieldProps("type").issues
-      ).toEqual(option.some(["required"]));
+        result.current.subForm("apples").items[0].fieldProps("type").issues
+      ).toEqual(["required"]);
       expect(
-        result.current.fieldArray("apples").items[0].fieldProps("quantity")
-          .issues
-      ).toEqual(option.none);
+        result.current.subForm("apples").items[0].fieldProps("quantity").issues
+      ).toEqual(undefined);
     });
 
     test("field array validation on removal", async () => {
@@ -353,7 +417,7 @@ describe("formo", () => {
         useFormo(
           {
             initialValues: {
-              apples: [
+              apples: subFormValue([
                 {
                   type: "",
                   quantity: 0,
@@ -362,10 +426,10 @@ describe("formo", () => {
                   type: "Fuji",
                   quantity: 10,
                 },
-              ],
+              ]),
             },
-            fieldValidators: constant({}),
-            fieldArrayValidators: () => {
+            fieldValidators: () => ({}),
+            subFormValidators: () => {
               return {
                 apples: {
                   type: validators.minLength(1, "required"),
@@ -378,7 +442,7 @@ describe("formo", () => {
             },
           },
           {
-            onSubmit: () => taskEither.of(null),
+            onSubmit: () => Promise.resolve(success(null)),
           }
         )
       );
@@ -388,40 +452,36 @@ describe("formo", () => {
       });
 
       expect(
-        result.current.fieldArray("apples").items[0].fieldProps("type").issues
-      ).toEqual(option.some(["required"]));
+        result.current.subForm("apples").items[0].fieldProps("type").issues
+      ).toEqual(["required"]);
       expect(
-        result.current.fieldArray("apples").items[0].fieldProps("quantity")
-          .issues
-      ).toEqual(option.some(["error"]));
+        result.current.subForm("apples").items[0].fieldProps("quantity").issues
+      ).toEqual(["error"]);
 
       expect(
-        result.current.fieldArray("apples").items[1].fieldProps("type").issues
-      ).toEqual(option.none);
+        result.current.subForm("apples").items[1].fieldProps("type").issues
+      ).toEqual(undefined);
       expect(
-        result.current.fieldArray("apples").items[1].fieldProps("quantity")
-          .issues
-      ).toEqual(option.none);
+        result.current.subForm("apples").items[1].fieldProps("quantity").issues
+      ).toEqual(undefined);
 
       await act(async () => {
-        await result.current.fieldArray("apples").items[0].remove();
+        await result.current.subForm("apples").items[0].remove();
       });
 
       expect(
-        result.current.fieldArray("apples").items[0].fieldProps("type").value
+        result.current.subForm("apples").items[0].fieldProps("type").value
       ).toEqual("Fuji");
       expect(
-        result.current.fieldArray("apples").items[0].fieldProps("quantity")
-          .value
+        result.current.subForm("apples").items[0].fieldProps("quantity").value
       ).toEqual(10);
 
       expect(
-        result.current.fieldArray("apples").items[0].fieldProps("type").issues
-      ).toEqual(option.none);
+        result.current.subForm("apples").items[0].fieldProps("type").issues
+      ).toEqual(undefined);
       expect(
-        result.current.fieldArray("apples").items[0].fieldProps("quantity")
-          .issues
-      ).toEqual(option.none);
+        result.current.subForm("apples").items[0].fieldProps("quantity").issues
+      ).toEqual(undefined);
     });
 
     test("validateOnChange and validateOnBlur work", async () => {
@@ -431,14 +491,14 @@ describe("formo", () => {
             initialValues: {
               promoCode: "",
             },
-            fieldValidators: constant({
+            fieldValidators: () => ({
               promoCode: validators.minLength(1, "required"),
             }),
             validateOnBlur: false,
             validateOnChange: false,
           },
           {
-            onSubmit: ({ promoCode }) => taskEither.right(promoCode),
+            onSubmit: ({ promoCode }) => Promise.resolve(success(promoCode)),
           }
         )
       );
@@ -448,36 +508,30 @@ describe("formo", () => {
       });
 
       expect(result.current.fieldProps("promoCode").value).toBe("");
-      expect(result.current.fieldProps("promoCode").issues).toEqual(
-        option.none
-      );
+      expect(result.current.fieldProps("promoCode").issues).toEqual(undefined);
 
       await act(async () => {
         await result.current.fieldProps("promoCode").onChange("some value");
       });
 
       expect(result.current.fieldProps("promoCode").value).toBe("some value");
-      expect(result.current.fieldProps("promoCode").issues).toEqual(
-        option.none
-      );
+      expect(result.current.fieldProps("promoCode").issues).toEqual(undefined);
 
       await act(async () => {
         await result.current.fieldProps("promoCode").onChange("");
       });
 
       expect(result.current.fieldProps("promoCode").value).toBe("");
-      expect(result.current.fieldProps("promoCode").issues).toEqual(
-        option.none
-      );
+      expect(result.current.fieldProps("promoCode").issues).toEqual(undefined);
 
       await act(async () => {
         await result.current.handleSubmit();
       });
 
       expect(result.current.fieldProps("promoCode").value).toBe("");
-      expect(result.current.fieldProps("promoCode").issues).toEqual(
-        option.some(["required"])
-      );
+      expect(result.current.fieldProps("promoCode").issues).toEqual([
+        "required",
+      ]);
     });
 
     test("validations of array fields that are not subforms", async () => {
@@ -495,7 +549,7 @@ describe("formo", () => {
             }),
           },
           {
-            onSubmit: ({ users }) => taskEither.right(users),
+            onSubmit: ({ users }) => Promise.resolve(success(users)),
           }
         )
       );
@@ -505,9 +559,7 @@ describe("formo", () => {
       });
 
       expect(result.current.fieldProps("users").value).toEqual([]);
-      expect(result.current.fieldProps("users").issues).toEqual(
-        option.some(["error"])
-      );
+      expect(result.current.fieldProps("users").issues).toEqual(["error"]);
 
       await act(async () => {
         await result.current.fieldProps("users").onChange([{ value: "UserA" }]);
@@ -516,13 +568,72 @@ describe("formo", () => {
       expect(result.current.fieldProps("users").value).toEqual([
         { value: "UserA" },
       ]);
-      expect(result.current.fieldProps("users").issues).toEqual(option.none);
+      expect(result.current.fieldProps("users").issues).toEqual(undefined);
+    });
+
+    test("push and insertAt work", () => {
+      const { result } = renderHook(() =>
+        useFormo(
+          {
+            initialValues: {
+              users: subFormValue([] as Array<{ value: string }>),
+            },
+            fieldValidators: () => ({
+              users: validators.fromPredicate(
+                (v: Array<{ value: string }>) => v.length > 0,
+                "error"
+              ),
+            }),
+          },
+          {
+            onSubmit: ({ users }) => Promise.resolve(success(users)),
+          }
+        )
+      );
+
+      expect(result.current.subForm("users").items.length).toBe(0);
+
+      act(() => {
+        result.current.subForm("users").push({ value: "Alice" });
+      });
+
+      expect(result.current.subForm("users").items.length).toBe(1);
+      expect(
+        result.current.subForm("users").items[0].fieldProps("value").value
+      ).toEqual("Alice");
+
+      act(() => {
+        result.current.subForm("users").insertAt(0, { value: "John" });
+      });
+
+      expect(result.current.subForm("users").items.length).toBe(2);
+      expect(
+        result.current.subForm("users").items[0].fieldProps("value").value
+      ).toEqual("John");
+      expect(
+        result.current.subForm("users").items[1].fieldProps("value").value
+      ).toEqual("Alice");
+
+      act(() => {
+        result.current.subForm("users").push({ value: "Stella" });
+      });
+
+      expect(result.current.subForm("users").items.length).toBe(3);
+      expect(
+        result.current.subForm("users").items[0].fieldProps("value").value
+      ).toEqual("John");
+      expect(
+        result.current.subForm("users").items[1].fieldProps("value").value
+      ).toEqual("Alice");
+      expect(
+        result.current.subForm("users").items[2].fieldProps("value").value
+      ).toEqual("Stella");
     });
   });
 
   describe("form validation", () => {
     test("formErrors are set via onSubmit", async () => {
-      const onSubmit = jest.fn((s: string) => taskEither.of(s));
+      const onSubmit = jest.fn((s: string) => Promise.resolve(success(s)));
 
       const { result } = renderHook(() =>
         useFormo(
@@ -531,7 +642,7 @@ describe("formo", () => {
               username: "wrong",
               password: "wrong",
             },
-            fieldValidators: constant({
+            fieldValidators: (_) => ({
               username: validators.minLength(1, "required"),
               password: validators.minLength(1, "required"),
             }),
@@ -539,8 +650,11 @@ describe("formo", () => {
           {
             onSubmit: ({ username, password }) =>
               username === "username" && password === "password"
-                ? taskEither.fromIO(() => onSubmit("token"))
-                : taskEither.left(nonEmptyArray.of("LoginError")),
+                ? (() => {
+                    onSubmit("token");
+                    return Promise.resolve(success(null));
+                  })()
+                : Promise.resolve(failure(["LoginError"])),
           }
         )
       );
@@ -551,7 +665,7 @@ describe("formo", () => {
 
       // onSubmit must not have been called because formValidator failed
       expect(onSubmit).not.toHaveBeenCalled();
-      expect(result.current.formErrors).toEqual(option.some(["LoginError"]));
+      expect(result.current.formErrors).toEqual(["LoginError"]);
 
       await act(async () => {
         await result.current.fieldProps("username").onChange("username");
@@ -559,7 +673,7 @@ describe("formo", () => {
         await result.current.handleSubmit();
       });
 
-      expect(result.current.formErrors).toEqual(option.none);
+      expect(result.current.formErrors).toEqual(undefined);
       expect(onSubmit).toHaveBeenLastCalledWith("token");
     });
   });

@@ -1,4 +1,6 @@
-import { NonEmptyArray } from "fp-ts/lib/NonEmptyArray";
-import { ReaderTaskEither } from "fp-ts/lib/ReaderTaskEither";
+import { Result } from "./Result";
+import { NonEmptyArray } from "./NonEmptyArray";
 
-export type Validator<I, O, E> = ReaderTaskEither<I, NonEmptyArray<E>, O>;
+export type Validator<I, O, E> = (
+  input: I
+) => Promise<Result<NonEmptyArray<E>, O>>;

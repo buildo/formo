@@ -1,47 +1,28 @@
-import {
-  taskEither,
-  nonEmptyArray,
-  either,
-  readerTaskEither,
-  array,
-  option,
-  boolean,
-} from "fp-ts";
-import { pipe, flow, constant, Predicate } from "fp-ts/function";
-import { Either } from "fp-ts/Either";
-import { Option } from "fp-ts/Option";
+import { failure, mapFailure, matchResult, Result, success } from "./Result";
 import { Validator } from "./Validator";
 
 function validator<I, O, E>(
-  validation: (i: I) => Either<E, O>
+  validation: (i: I) => Result<E, O>
 ): Validator<I, O, E> {
-  return flow(
-    validation,
-    taskEither.fromEither,
-    taskEither.mapLeft(nonEmptyArray.of)
-  );
+  return (input) =>
+    Promise.resolve(mapFailure(validation(input), (failure) => [failure]));
 }
 
+function fromPredicate<I, B extends I, E>(
+  refinement: (input: I) => input is B,
+  errorMessage: E
+): Validator<I, B, E>;
 function fromPredicate<I, E>(
-  predicate: Predicate<I>,
+  predicate: (input: I) => boolean,
+  errorMessage: E
+): Validator<I, I, E>;
+function fromPredicate<I, E>(
+  predicate: (input: I) => boolean,
   errorMessage: E
 ): Validator<I, I, E> {
-  return validator(either.fromPredicate(predicate, constant(errorMessage)));
-}
-
-function foldPredicate<I, O, E>(
-  predicate: Predicate<I>,
-  onFalse: (i: I) => O,
-  onTrue: Validator<I, O, E>
-): Validator<I, O, E> {
-  return (i) =>
-    pipe(
-      predicate(i),
-      boolean.fold(
-        () => pipe(onFalse(i), taskEither.right),
-        () => onTrue(i)
-      )
-    );
+  return validator((input) =>
+    predicate(input) ? success(input) : failure(errorMessage)
+  );
 }
 
 function inParallel<I, O, E>(
@@ -62,12 +43,10 @@ function inParallel<I, O, E>(
 function inParallel<I, O, E>(
   ...validators: Validator<I, O, E>[]
 ): Validator<I, O, E> {
-  return pipe(
-    array.sequence(
-      readerTaskEither.getReaderTaskValidation(nonEmptyArray.getSemigroup<E>())
-    )(validators),
-    readerTaskEither.map((results) => results[0])
-  );
+  return (input) =>
+    Promise.all(validators.map((validator) => validator(input))).then(
+      (results) => results[0]
+    );
 }
 
 function inSequence<I, O1, O2, E>(
@@ -95,11 +74,17 @@ function inSequence<I, O1, O2, O3, O4, O5, E>(
 function inSequence(
   ...validators: Validator<unknown, unknown, unknown>[]
 ): Validator<unknown, unknown, unknown> {
-  let a = validators[0];
-  for (let i = 1; i < validators.length; i++) {
-    a = flow(a, taskEither.chain(validators[i]));
-  }
-  return a;
+  return async (input) => {
+    let value = input;
+    for (const validator of validators) {
+      const r = await validator(value);
+      if (r.type === "failure") {
+        return r;
+      }
+      input = r.success;
+    }
+    return success(value);
+  };
 }
 
 const lengthRange = <E, S extends string>(
@@ -107,11 +92,9 @@ const lengthRange = <E, S extends string>(
   maxLength: number,
   errorMessage: E
 ): Validator<string, S, E> =>
-  validator(
-    either.fromPredicate(
-      (s): s is S => s.length >= minLength && s.length <= maxLength,
-      constant(errorMessage)
-    )
+  fromPredicate(
+    (s): s is S => s.length >= minLength && s.length <= maxLength,
+    errorMessage
   );
 
 const minLength = <E, S extends string>(
@@ -127,48 +110,35 @@ const maxLength = <E, S extends string>(
 const regex = <S extends string, E>(
   regex: RegExp,
   errorMessage: E
-): Validator<S, S, E> =>
-  validator(either.fromPredicate((s) => regex.test(s), constant(errorMessage)));
+): Validator<S, S, E> => fromPredicate((s) => regex.test(s), errorMessage);
 
 const notRegex = <S extends string, E>(
   regex: RegExp,
   errorMessage: E
-): Validator<S, S, E> =>
-  validator(
-    either.fromPredicate((s) => !regex.test(s), constant(errorMessage))
-  );
+): Validator<S, S, E> => fromPredicate((s) => !regex.test(s), errorMessage);
 
 const checked = <E>(errorMessage: E): Validator<boolean, true, E> =>
-  validator(either.fromPredicate((s): s is true => s, constant(errorMessage)));
+  fromPredicate((s): s is true => s, errorMessage);
 
-const defined = <A, E>(errorMessage: E): Validator<Option<A>, A, E> =>
-  validator(either.fromOption(constant(errorMessage)));
+const defined = <A, E>(errorMessage: E): Validator<A, NonNullable<A>, E> =>
+  fromPredicate((i): i is NonNullable<A> => i != null, errorMessage);
 
-const definedNoExtract = <A, E>(
-  errorMessage: E
-): Validator<Option<A>, Option<A>, E> =>
-  validator((o) =>
-    pipe(
-      o,
-      option.isSome,
-      boolean.fold(
-        constant(either.left(errorMessage)),
-        constant(either.right(o))
-      )
-    )
-  );
+const validateIfDefined =
+  <I, O, E>(
+    contentValidator: Validator<I, O, E>
+  ): Validator<I | undefined, O | undefined, E> =>
+  (input) =>
+    input != null
+      ? contentValidator(input)
+      : Promise.resolve(success(undefined));
 
-const validateIfDefined = <I, O, E>(
-  contentValidator: Validator<I, O, E>
-): Validator<Option<I>, Option<O>, E> =>
-  option.traverse(taskEither.taskEither)(contentValidator);
-
-const emailRegex = /^[_A-Za-z0-9-+]+(\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\.[A-Za-z0-9]+)*(\.[A-Za-z]{2,})$/;
+const emailRegex =
+  /^[_A-Za-z0-9-+]+(\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\.[A-Za-z0-9]+)*(\.[A-Za-z]{2,})$/;
 const validEmail = <E, S extends string>(errorMessage: E): Validator<S, S, E> =>
   regex(emailRegex, errorMessage);
 
 const minDate = <E>(min: Date, errorMessage: E): Validator<Date, Date, E> =>
-  validator(either.fromPredicate((d) => d >= min, constant(errorMessage)));
+  fromPredicate((d) => d >= min, errorMessage);
 
 export const validators = {
   lengthRange,
@@ -178,13 +148,11 @@ export const validators = {
   notRegex,
   checked,
   defined,
-  definedNoExtract,
   validEmail,
   inParallel,
   inSequence,
   validator,
   fromPredicate,
-  foldPredicate,
   minDate,
   validateIfDefined,
 };
