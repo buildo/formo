@@ -3,7 +3,7 @@ id: validating-fields
 title: Validating fields
 ---
 
-`formo` supports validation of fields using `Validator`s.
+`formo` supports field validations via `Validator`s.
 
 ```ts twoslash
 import { NonEmptyArray, Result } from "@buildo/formo";
@@ -16,13 +16,12 @@ export type Validator<I, O, E> = (
 A `Validator` is a function that takes the field's value as input `I` and returns a `Result` of
 either errors `NonEmptyArray<E>` or a valid output `O`.
 
-- `I = O`: If the input type corresponds to the output type, the `Validator` simply validates.
-- `I ≠ O`: If they differ, the `Vaidator` may [trasform the field's value](#transforming-values).
+Note that `Validator`s may [trasform the field's value](#transforming-values) other than just validating it.
 
 ## Simple Validation
 
 `formo` provides a number of `Validator`s for common use cases via a `validators` utility.
-Below here an example to make sure the `name` field is at least 2 characters long:
+For example, to make sure a text field is at least 2 characters long:
 
 ```twoslash include simplevalidation
 import { useFormo, validators, success } from "@buildo/formo";
@@ -177,7 +176,8 @@ export const MyForm = () => {
     {
       initialValues,
       fieldValidators: () => ({
-        // Transform 'string | undefined' to 'string', if not possible the validator fails.
+        // Transform 'string | undefined' to 'string',
+        // if not possible the validator fails.
         profession: validators.defined<string | undefined, string>(
           "You must select a profession"
         ),
