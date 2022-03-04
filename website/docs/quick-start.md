@@ -8,12 +8,12 @@ slug: /
 ## Installation
 
 ```bash
-yarn install @buildo/formo
+yarn add @buildo/formo
 ```
 
 :::important
 
-`formo` assumes `react` as peer dependencies, so make you have it
+`formo` assumes `react` as peer dependency, so make you have it
 installed
 
 :::
@@ -47,7 +47,7 @@ export const MyForm = () => {
   );
 
   return (
-    <div>
+    <form>
       <div>
         <label htmlFor={fieldProps("fullName").name} />
         <input
@@ -84,7 +84,7 @@ export const MyForm = () => {
       </div>
 
       <button onClick={handleSubmit}>Submit</button>
-    </div>
+    </form>
   );
 };
 ```

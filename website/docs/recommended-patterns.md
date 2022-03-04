@@ -61,7 +61,7 @@ You'll notice that `FieldProps` has three type parameters.
 
 - The first one is the value type.
 - The second one is the label type (which may or may not be a string)
-- The third one is the field error type (encaplused in an `NonEmptyArray`)
+- The third one is the field error type (wrapped in an `NonEmptyArray`)
 
 In this example we've used `string` for all of them, but in a real project you
 may have more specific types for the label (think of something like

@@ -3,11 +3,9 @@ id: subform
 title: Subform
 ---
 
-import CodeBlock from "@theme/CodeBlock";
-
 `formo` provides a simple way to create subforms.
-A `subForm` is a nested form which requires different validations with respect to the container form.
-The typical use case is when you have a field of a complex objects array.
+A `subForm` is a nested form which requires its own validations.
+The typical use case is when you have a field which is a variable list of complex elements.
 
 For example, let's say you have a form asking the user their `name`, `surname` and `familyMembers`. The `familyMembers`, in turn, have their own fields (`name` and `surname`) that need to be validated _before_ being added to the user's field array.
 
@@ -70,7 +68,7 @@ export const MyForm = () => {
     }
   );
 
-  const initFamilyMember = {
+  const emptyFamilyMember = {
     name: "",
     surname: "",
   };
@@ -81,32 +79,32 @@ export const MyForm = () => {
       <TextField label="surname" {...fieldProps("surname")} />
 
       <div>
-        <button onClick={() => subForm("familyMembers").push(initFamilyMember)}>
+        <button
+          onClick={() => subForm("familyMembers").push(emptyFamilyMember)}
+        >
           Add family members
         </button>
 
         {subForm("familyMembers").items.map((familyMember, index) => (
           <div key={`${familyMember.namePrefix}-container`}>
             <TextField
-              key={`${familyMember.namePrefix}-name`}
               label={`${index}-name`}
               {...familyMember.fieldProps("name")}
             />
             <TextField
-              key={`${familyMember.namePrefix}-surname`}
               label={`${index}-surname`}
               {...familyMember.fieldProps("surname")}
             />
             <p>
               {familyMember.fieldProps("name").issues}
-              <br></br>
+              <br />
               {familyMember.fieldProps("surname").issues}
             </p>
           </div>
         ))}
       </div>
 
-      <button onClick={handleSubmit}>Login</button>
+      <button onClick={handleSubmit}>Sign up</button>
     </div>
   );
 };
@@ -154,8 +152,8 @@ const { handleSubmit, fieldProps, subForm, formErrors } = useFormo(
 
 Let's break down the code above.
 
-The `subFormValue` API is required to initialize a subform.
-If the initial state is an empty array, a casting is necessary to define the type of the array
+The `subFormValue` function is used to initialize a subform: this instructs `formo` to treat the field as a sub form, rather than a regular top-level field.
+If the initial state is an empty array you will need to provide a type hint, since TypeScript won't be able to infer the type for you, for example:
 
 ```ts twoslash
 // @include: defs
@@ -169,12 +167,12 @@ otherwise, you can explicitly define the type of the assigned constant
 ```ts twoslash
 // @include: defs
 // ---cut---
-const familiMembersInitialState: Array<FamilyMember> = [];
-subFormValue(familiMembersInitialState);
+const familyMembersInitialState: Array<FamilyMember> = [];
+subFormValue(familyMembersInitialState);
 //    ^?
 ```
 
-The `subFormValidators` API works as the `fieldValidators`, but only acts on the `subForm` fields
+`subFormValidators` work the same as `fieldValidators`, except they are applied to each of the members of the "sub form" fields.
 
 ```ts twoslash
 // @include: defs
@@ -186,8 +184,7 @@ The `subFormValidators` API works as the `fieldValidators`, but only acts on the
 
 It can be noticed that `subForm` APIs are typesafely distinguished by the `fieldProps` ones.
 
-In fact, with reference to the previous example, you can't pass `name` or `surname` as argument to `subForm`,
-but only `familyMembers`
+Note how `subForm` and `fieldProps` statically enforce the correct field names: for example, you can't accidentally call `subForm("surname")`
 
 ```ts twoslash
 // @include: defs
@@ -201,7 +198,7 @@ subForm("surname");
 subForm("familyMembers");
 ```
 
-To add new elements, `inserAt` and `push` methods are available
+You can add new sub forms to a field using `push` or `insertAt`:
 
 ```tsx twoslash
 // @include: defs
@@ -221,17 +218,17 @@ For example, to add a new family member with an initial state, you can use the `
 // @include: breakdown
 // ---cut---
 
-const initFamilyMember = {
+const emptyFamilyMember = {
   name: "",
   surname: "",
 };
 
-<button onClick={() => subForm("familyMembers").push(initFamilyMember)}>
+<button onClick={() => subForm("familyMembers").push(emptyFamilyMember)}>
   Add family member
 </button>;
 ```
 
-To access all the created elements, use the `items` property
+To access all the elements of a sub form field, use the `items` property
 
 ```ts twoslash
 // @include: defs
@@ -242,8 +239,7 @@ subForm("familyMembers").items;
 //                        ^?
 ```
 
-Each item, in turn, provides the `fieldProps` API that can be used
-to render a form element
+Each of the items provides a `fieldProps` function analogous to the top-level `fieldProps`, that can be used to render a form element:
 
 ```tsx twoslash
 // @include: textfield
