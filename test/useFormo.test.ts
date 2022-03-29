@@ -677,4 +677,44 @@ describe("formo", () => {
       expect(onSubmit).toHaveBeenLastCalledWith("token");
     });
   });
+
+  test("formErrors are reset before next onSubmit", async () => {
+    const { result } = renderHook(() =>
+      useFormo(
+        {
+          initialValues: {
+            username: "username",
+          },
+          fieldValidators: (_) => ({
+            username: validators.validator((u) =>
+              u === "invalid" ? failure("InvalidUsername") : success(u)
+            ),
+          }),
+        },
+        {
+          onSubmit: ({ username }) =>
+            username === "username"
+              ? Promise.resolve(failure(["FormError"]))
+              : Promise.resolve(success(null)),
+        }
+      )
+    );
+
+    await act(async () => {
+      await result.current.handleSubmit();
+    });
+
+    expect(result.current.formErrors).toEqual(["FormError"]);
+
+    await act(async () => {
+      await result.current.fieldProps("username").onChange("invalid");
+      await result.current.handleSubmit();
+    });
+
+    // form error should have been reset
+    expect(result.current.formErrors).toEqual(undefined);
+    expect(result.current.fieldProps("username").issues).toEqual([
+      "InvalidUsername",
+    ]);
+  });
 });
