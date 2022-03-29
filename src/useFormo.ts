@@ -876,6 +876,7 @@ export function useFormo<
 
   async function handleSubmit(): Promise<Result<unknown, unknown>> {
     setAllTouched();
+    setFormErrors(undefined);
     dispatch({ type: "setSubmitting", isSubmitting: true });
     setSubmissionCount((count) => count + 1);
     try {
