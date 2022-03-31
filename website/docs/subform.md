@@ -1,6 +1,6 @@
 ---
 id: subform
-title: Subform
+title: Sub form
 ---
 
 `formo` provides a simple way to create subforms.
@@ -47,19 +47,13 @@ export const MyForm = () => {
       initialValues: {
         name: "Jhon",
         surname: "Doe",
-        familyMembers: subFormValue([] as Array<FamilyMember>),
+        familyMembers: subFormValue<Array<FamilyMember>>([]),
       },
       fieldValidators: () => ({}),
       subFormValidators: () => ({
         familyMembers: {
-          name: validators.fromPredicate(
-            (i) => typeof i === "string" && i.length > 0,
-            "Family member name is required"
-          ),
-          surname: validators.fromPredicate(
-            (i) => typeof i === "string" && i.length > 0,
-            "Family member surname is required"
-          ),
+          name: validators.minLength(1, "Family member name is required"),
+          surname: validators.minLength(1, "Family member surname is required"),
         },
       }),
     },
@@ -110,7 +104,9 @@ export const MyForm = () => {
 };
 ```
 
-## Initialization
+Let's break down the code above.
+
+## Define a sub form
 
 ```twoslash include defs
 import { useFormo, subFormValue, success, validators } from "@buildo/formo";
@@ -127,7 +123,7 @@ const { handleSubmit, fieldProps, subForm, formErrors } = useFormo(
     initialValues: {
       name: "Jhon",
       surname: "Doe",
-      familyMembers: subFormValue([] as Array<FamilyMember>),
+      familyMembers: subFormValue<Array<FamilyMember>>([]),
     },
     fieldValidators: () => ({}),
     subFormValidators: () => ({
@@ -149,8 +145,6 @@ const { handleSubmit, fieldProps, subForm, formErrors } = useFormo(
 );
 
 ```
-
-Let's break down the code above.
 
 The `subFormValue` function is used to initialize a subform: this instructs `formo` to treat the field as a sub form, rather than a regular top-level field.
 If the initial state is an empty array you will need to provide a type hint, since TypeScript won't be able to infer the type for you, for example:
@@ -181,8 +175,6 @@ subFormValue(familyMembersInitialState);
 ```
 
 ## Accessing sub forms
-
-It can be noticed that `subForm` APIs are typesafely distinguished by the `fieldProps` ones.
 
 Note how `subForm` and `fieldProps` statically enforce the correct field names: for example, you can't accidentally call `subForm("surname")`
 

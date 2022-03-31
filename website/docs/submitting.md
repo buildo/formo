@@ -38,13 +38,7 @@ const login = (username: string, password: string) => {
 };
 
 export const MyForm = () => {
-  const {
-    fieldProps,
-    handleSubmit,
-    isSubmitting,
-    submissionCount,
-    formErrors,
-  } = useFormo(
+  const { fieldProps, handleSubmit, isSubmitting, formErrors } = useFormo(
     {
       initialValues: {
         username: "",
@@ -66,7 +60,7 @@ export const MyForm = () => {
         Login
       </button>
 
-      {submissionCount > 0 && formErrors}
+      {formErrors}
     </div>
   );
 };
