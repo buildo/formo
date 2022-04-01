@@ -175,12 +175,8 @@ export const MyForm = () => {
   const { fieldProps, handleSubmit } = useFormo(
     {
       initialValues,
-      fieldValidators: () => ({
-        // Transform 'string | undefined' to 'string',
-        // if not possible the validator fails.
-        profession: validators.defined<string | undefined, string>(
-          "You must select a profession"
-        ),
+      fieldValidators: (_) => ({
+        profession: validators.defined("You must select a profession"),
       }),
     },
     {
@@ -209,6 +205,28 @@ In this example `profession` has type `string`, while the non-validated field is
 
 This is a very powerful capability, because it allows you to preserve in the
 types some useful information you checked during validation.
+
+:::info
+Due to a known issue, a transforming validator value's type might result `unknown` in the `onSubmit` callback.
+
+To avoid it, specify the the `fieldValidators` function argument and let the type inference do the work:
+
+```
+fieldValidators: (_) => ({
+  profession: validators.defined("You must select a profession")
+})
+```
+
+Otherwise, you can specify the type of each validator:
+
+```
+fieldValidators: () => ({
+  profession: validators.defined<string | undefined, string>("You must select a profession"),
+})
+```
+
+but it is not recommended due to verbosity and error-proness.
+:::
 
 ## Defining custom validations
 
