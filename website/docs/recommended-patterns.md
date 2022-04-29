@@ -22,11 +22,10 @@ your form elements.
 
 For example, you may define your own `TextField` field as:
 
-```ts
-import { FieldProps } from "@buildo/formo";
-import { option, array } from "fp-ts";
+```twoslash include textfield
+import { FieldProps, NonEmptyArray } from "@buildo/formo";
 
-type Props = FieldProps<string, string, string> & {
+type Props = FieldProps<string, string, NonEmptyArray<string>> & {
   placeholder: string;
 };
 
@@ -42,18 +41,18 @@ export function TextField(props: Props) {
         onBlur={props.onBlur}
         disabled={props.disabled}
       />
-      {pipe(
-        props.issues,
-        option.fold(constNull, (issues) =>
-          pipe(
-            issues,
-            array.map((issue) => <span key={issue}>{issue}</span>)
-          )
-        )
-      )}
+      <ul>
+        {props.issues?.map((issue) => (
+          <li key={`${props.name}_${issue}`}>{issue}</li>
+        ))}
+      </ul>
     </div>
   );
 }
+```
+
+```tsx twoslash
+// @include: textfield
 ```
 
 :::tip
@@ -62,7 +61,7 @@ You'll notice that `FieldProps` has three type parameters.
 
 - The first one is the value type.
 - The second one is the label type (which may or may not be a string)
-- The third one is the field error type
+- The third one is the field error type (wrapped in an `NonEmptyArray`)
 
 In this example we've used `string` for all of them, but in a real project you
 may have more specific types for the label (think of something like
@@ -74,22 +73,23 @@ may have more specific types for the label (think of something like
 Once you've done that, you can now see how `formo` utility methods (such as
 `fieldProps`) become very convenient to use:
 
-```tsx
-import { useFormo, validators } from "@buildo/formo";
-import { taskEither } from "fp-ts";
+```tsx twoslash
+// @include: textfield
+// ---cut---
+import { useFormo, validators, success } from "@buildo/formo";
 
-function MyForm() {
+export const MyForm = () => {
   const { fieldProps } = useFormo(
     {
       initialValues: {
         name: "",
       },
       fieldValidators: () => ({
-        name: validators.maxLength(10, false),
+        name: validators.maxLength(10, "Name is too long"),
       }),
     },
     {
-      onSubmit: (values) => taskEither.right(values),
+      onSubmit: async (values) => success(values),
     }
   );
 
@@ -102,7 +102,7 @@ function MyForm() {
       />
     </form>
   );
-}
+};
 ```
 
 ## Define a shared type for field issues
@@ -113,34 +113,54 @@ application.
 
 For instance:
 
-```ts
-type Severity = "error" | "warning";
-type FieldIssue = { message: string; severity: Severity };
+```twoslash include fieldissues
+export type Severity = "error" | "warning";
+export type FieldIssue = { message: string; severity: Severity };
 
-function error(message: string): FieldIssue {
-  return { message, severity: "error" };
-}
-function warning(message: string): FieldIssue {
-  return { message, severity: "warning" };
-}
+export const error = (message: string): FieldIssue => ({
+  message,
+  severity: "error",
+});
+
+export const warning = (message: string): FieldIssue => ({
+  message,
+  severity: "warning",
+});
+```
+
+```ts twoslash
+// @include: fieldissues
 ```
 
 and then use it accordingly:
 
-```ts
-useFormo({
-  initialValues: { name: "" },
-  fieldValidators: {
-    name: validators.minLength(2, error("Name is too short")),
+```ts twoslash
+// @include: fieldissues
+// ---cut---
+import { useFormo, validators, success } from "@buildo/formo";
+
+useFormo(
+  {
+    initialValues: { name: "" },
+    fieldValidators: () => ({
+      name: validators.minLength(2, error("Name is too short")),
+    }),
   },
-});
+  {
+    onSubmit: async (values) => success(values),
+  }
+);
 ```
 
 With the same spirit, this should also be the type used by your field
 components, so the `TextField` example above would have these props instead:
 
-```tsx
-type Props = FieldProps<string, string, FieldIssue> & {
+```ts twoslash
+// @include: fieldissues
+// ---cut---
+import { FieldProps, NonEmptyArray } from "@buildo/formo";
+
+type Props = FieldProps<string, string, NonEmptyArray<FieldIssue>> & {
   placeholder: string;
 };
 ```

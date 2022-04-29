@@ -7,13 +7,13 @@ slug: /
 
 ## Installation
 
-```
-yarn install @buildo/formo
+```bash
+yarn add @buildo/formo
 ```
 
 :::important
 
-`formo` assumes `fp-ts` and `react` as peer dependencies, so make you have them
+`formo` assumes `react` as peer dependency, so make you have it
 installed
 
 :::
@@ -25,12 +25,10 @@ Here's a very basic example of how you _may_ use `formo`.
 In the next sections we will see some reccomendations on how to make it even
 more convenient to use.
 
-```tsx
-import { validations, useFormo } from "@buildo/formo";
-import { taskEither, option, array } from "fp-ts";
-import { pipe, constNull } from "fp-ts/function";
+```tsx twoslash
+import { validators, useFormo, success } from "@buildo/formo";
 
-function MyForm() {
+export const MyForm = () => {
   const { fieldProps, handleSubmit } = useFormo(
     {
       initialValues: {
@@ -44,14 +42,14 @@ function MyForm() {
       }),
     },
     {
-      onSubmit: (values) => taskEither.right(values),
+      onSubmit: async (values) => success(values),
     }
   );
 
   return (
     <form>
       <div>
-        <label for={fieldProps("fullName").name} />
+        <label htmlFor={fieldProps("fullName").name} />
         <input
           type="text"
           id={fieldProps("fullName").name}
@@ -65,32 +63,28 @@ function MyForm() {
       </div>
 
       <div>
-        <label for={fieldProps("acceptsTerms").name} />
         <input
-          type="text"
+          type="checkbox"
           id={fieldProps("acceptsTerms").name}
           name={fieldProps("acceptsTerms").name}
-          value={fieldProps("acceptsTerms").value}
+          checked={fieldProps("acceptsTerms").value}
           onChange={(e) =>
             fieldProps("acceptsTerms").onChange(e.currentTarget.checked)
           }
           onBlur={fieldProps("acceptsTerms").onBlur}
         />
-        {pipe(
-          fieldProps("acceptsTerms"),
-          option.fold(constNull, (issues) =>
-            pipe(
-              issues,
-              array.map((issue) => <span key={issue}>{issue}</span>)
-            )
-          )
-        )}
+        <label htmlFor={fieldProps("acceptsTerms").name}>
+          Accept terms and conditions
+        </label>
+        <p>
+          {fieldProps("acceptsTerms").issues?.map((issue) => (
+            <span key={issue}>{issue}</span>
+          ))}
+        </p>
       </div>
 
-      <button type="submit" onClick={handleSubmit}>
-        Submit
-      </button>
+      <button onClick={handleSubmit}>Submit</button>
     </form>
   );
-}
+};
 ```

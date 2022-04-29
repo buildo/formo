@@ -3,76 +3,103 @@ id: validating-fields
 title: Validating fields
 ---
 
-`formo` supports validation of fields using using `Validator`s, a thin
-abstraction layer over `ReaderTaskEither` from `fp-ts`.
+`formo` supports field validations via `Validator`s.
 
-Here's a quick example of a validator in action:
+```ts twoslash
+import { NonEmptyArray, Result } from "@buildo/formo";
+// ---cut---
+export type Validator<I, O, E> = (
+  input: I
+) => Promise<Result<NonEmptyArray<E>, O>>;
+```
 
-```ts
-import { useFormo, validators } from "@buildo/formo";
+A `Validator` is a function that takes the field's value as input `I` and returns a `Result` of
+either errors `NonEmptyArray<E>` or a valid output `O`.
+
+Note that `Validator`s may [trasform the field's value](#transforming-values) other than just validating it.
+
+## Simple Validation
+
+`formo` provides a number of `Validator`s for common use cases via a `validators` utility.
+For example, to make sure a text field is at least 2 characters long:
+
+```twoslash include simplevalidation
+import { useFormo, validators, success } from "@buildo/formo";
 
 const { fieldProps } = useFormo(
   {
     initialValues: {
       name: "",
     },
-    fieldValidators: () => {
-      name: validators.minLength(2, "Name is too short");
-    },
+    fieldValidators: () => ({
+      name: validators.minLength(2, "Name is too short"),
+    }),
   },
   {
-    onSubmit: (values) => taskEither.right(values),
+    onSubmit: async (values) => success(values),
   }
 );
 ```
 
-Here we are validating the `name` field to make sure it's at least 2 character
-long. The result of this validation can be access with:
+```ts twoslash
+// @include: simplevalidation
+```
 
-```ts
-fieldProps("name").issues; // Option<NonEmptyArray<string>>
+Possible validation errors can be accessed via the `issues` field:
+
+```ts twoslash
+// @include: simplevalidation
+// ---cut---
+fieldProps("name").issues;
 ```
 
 :::tip
 
-The type of `issues` depends on the type of error passed to the validators.
+The type of `issues` depends on the validator error type `E`.
 
-For instance, if we were to use a validator like this:
+For instance, if we were to use a validator as follows:
 
-```ts
+```ts twoslash
+// @include: simplevalidation
+// ---cut---
 validators.minLength(2, { message: "Name is too short", severity: 1 });
 ```
 
 then the type of `issues` would be
-`Option<NonEmptyArray<{ message: string, severity: number }>>`
+
+`NonEmptyArray<{ message: string, severity: number }> | undefined`
 
 :::
 
 ## Multiple validations on a field
 
-Some fields may require multiple validations. We can combine validations using
-the `inSequence` and `inParallel` combinators.
+Some fields may require multiple validations. We can combine validations using the `inSequence`
+and `inParallel` combinators.
 
-As the name suggests, `inSequence` runs validations one after the other and the
-field's `issues` will contain the first validation that failed:
+As the name suggests, `inSequence` runs validations one after the other and the field's `issues`
+will contain the **first** validation that failed:
 
-```ts
+```ts twoslash
+// @include: simplevalidation
+// ---cut---
 validators.inSequence(
   validators.minLength(2, "Too short"),
-  validators.regex(/$[A-Z]/, "Must start with an uppercase letter")
+  validators.regex(/^[A-Z]/, "Must start with an uppercase letter")
 );
 ```
 
 Alternatively, we can run the same validations in parallel:
 
-```ts
+```ts twoslash
+// @include: simplevalidation
+// ---cut---
 validators.inParallel(
   validators.minLength(2, "Too short"),
-  validators.regex(/$[A-Z]/, "Must start with an uppercase letter")
+  validators.regex(/^[A-Z]/, "Must start with an uppercase letter")
 );
 ```
 
-In this case, the field's `issues` will contain all the failed validations.
+In this case, the field's `issues` will contain **all** the failed validations.
 
 ## Transforming values
 
@@ -89,84 +116,169 @@ the field values.
 We sticked to "validation" to preserve familiarity with the term in the context
 of forms.
 
-Here's an excellent blog post that explains the difference between parsing and
-validating: https://lexi-lambda.github.io/blog/2019/11/05/parse-don-t-validate/
+[Here's an excellent blog post that explains the difference between parsing and
+validating](https://lexi-lambda.github.io/blog/2019/11/05/parse-don-t-validate/).
 
 :::
 
 One example of validation that transforms the value is the `validators.defined`
 validator:
 
-```ts
-useFormo(
-  {
-    initialValues: {
-      profession: option.none as Option<string>,
+```tsx twoslash
+import { FieldProps, NonEmptyArray } from "@buildo/formo";
+
+type Props = FieldProps<string | undefined, string, NonEmptyArray<string>> & {
+  options: Array<string>;
+};
+
+export const RadioGroup = (props: Props) => {
+  return (
+    <div>
+      <label>{props.label}</label>
+      {props.options.map((option) => (
+        <>
+          <input
+            key={`input_${option}`}
+            type="radio"
+            id={option}
+            name={props.name}
+            value={option}
+            onChange={(e) => props.onChange(e.currentTarget.value)}
+            checked={option === props.value}
+          />
+          <label key={`label_${option}`} htmlFor={option}>
+            {option}
+          </label>
+        </>
+      ))}
+      <ul>
+        {props.issues?.map((issue) => (
+          <li key={issue}>{issue}</li>
+        ))}
+      </ul>
+    </div>
+  );
+};
+
+// ---cut---
+import { useFormo, validators, success } from "@buildo/formo";
+
+type FormValues = {
+  profession?: string;
+};
+
+export const MyForm = () => {
+  const initialValues: FormValues = {
+    profession: undefined,
+  };
+
+  const { fieldProps, handleSubmit } = useFormo(
+    {
+      initialValues,
+      fieldValidators: (_) => ({
+        profession: validators.defined("You must select a profession"),
+      }),
     },
-    fieldValidations: () => {
-      profession: validators.defined("You must choose a profession");
-    },
-  },
-  {
-    onSubmit: ({ profession }) => {
-      return taskEither.right(
-        profession // profession is `string`, not `Option<string>`
-      );
-    },
-  }
-);
+    {
+      onSubmit: async (values) => success(values),
+    }
+  );
+
+  return (
+    <div>
+      <RadioGroup
+        label="Profession"
+        options={["Developer", "Designer", "Other"]}
+        {...fieldProps("profession")}
+      />
+      <button onClick={handleSubmit}>Submit</button>
+    </div>
+  );
+};
 ```
 
-As we discussed, `onSubmit` is only ever called after all field validations
+As we discussed, `onSubmit` is only ever called **after** all field validations
 succeed, and this is reflected in the types.
 
 In this example `profession` has type `string`, while the non-validated field is
-an `Option<string>`.
+`string | undefined`.
 
 This is a very powerful capability, because it allows you to preserve in the
 types some useful information you checked during validation.
+
+:::info
+Due to a known issue, a transforming validator value's type might result `unknown` in the `onSubmit` callback.
+
+To avoid it, specify the the `fieldValidators` function argument and let the type inference do the work:
+
+```
+fieldValidators: (_) => ({
+  profession: validators.defined("You must select a profession")
+})
+```
+
+Otherwise, you can specify the type of each validator:
+
+```
+fieldValidators: () => ({
+  profession: validators.defined<string | undefined, string>("You must select a profession"),
+})
+```
+
+but it is not recommended due to verbosity and error-proness.
+:::
 
 ## Defining custom validations
 
 `formo` comes with a set of common validators, but you can of course augment
 them by providing your own.
 
-For instance, you may leverage existing validators:
-
-```ts
-const startsWithUppercaseLetter = <E>(errorMessage: E) =>
-  validators.regex(/$[A-Z]/, errorMessage);
+```twoslash include customvalidations
+import {validators, success, failure } from "@buildo/formo";
+// ---cut---
+const startsWithUppercaseLetter = (errorMessage: string) => validators.regex(
+  /^[A-Z]/, errorMessage
+);
+// - 1
+// ---cut---
+const perfectNumberValidator = (errorMessage: string) => validators.validator(
+  (n: number) => n === 42 ? success(n) : failure(errorMessage)
+);
+// - 2
+import { useFormo } from "@buildo/formo";
+// ---cut---
+const { fieldProps } = useFormo(
+  {
+    initialValues: {
+      name: "",
+      age: 0,
+    },
+    fieldValidators: () => ({
+      name: startsWithUppercaseLetter("Name must start with uppercase letter"),
+      age: perfectNumberValidator("Age must be 42"),
+    }),
+  },
+  {
+    onSubmit: async (values) => success(values),
+  }
+);
+// - 3
 ```
 
-or you could go completely custom using the `validator` combinator:
+For instance, you could leverage existing validators
 
-```ts
-const perfectNumber = <E>(errorMessage) =>
-  validators.validator((n: number) =>
-    n === 42 ? either.right(i) : either.left(errorMessage)
-  );
+```tsx twoslash
+// @include: customvalidations-1
 ```
 
-## Integrating with `io-ts`
+or create a completely custom one
 
-[`io-ts`](https://github.com/gcanti/io-ts) is a library based on `fp-ts` which
-provides utilities to encode/decode values based on runtime type.
+```tsx twoslash
+// @include: customvalidations-2
+```
 
-If you have a `io-ts` type which you want to use for validation purposes, it's
-quite simple to do it. For example, let's define a validator for the
-`NonEmptyString` type provided by the
-[`io-ts-types`](https://github.com/gcanti/io-ts-types) library.
+and use them accordingly
 
-```ts
-import { validators } from "@buildo/formo";
-import { NonEmptyString } from "io-ts-types/NonEmptyString";
-import { either } from "fp-ts";
-import { flow } from "fp-ts/function";
-
-const nonEmptyString = <E>(
-  errorMessage: E
-): Validator<string, NonEmptyString, E> =>
-  validators.validator(
-    flow(NonEmptyString.decode, either.mapLeft(constant(errorMessage)))
-  );
+```tsx twoslash
+// @include: customvalidations-3
 ```

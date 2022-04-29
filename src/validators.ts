@@ -1,3 +1,4 @@
+import { NonEmptyArray } from "./NonEmptyArray";
 import { failure, mapFailure, matchResult, Result, success } from "./Result";
 import { Validator } from "./Validator";
 
@@ -45,7 +46,18 @@ function inParallel<I, O, E>(
 ): Validator<I, O, E> {
   return (input) =>
     Promise.all(validators.map((validator) => validator(input))).then(
-      (results) => results[0]
+      (results) => {
+        const errors = results.flatMap((r) =>
+          matchResult(r, {
+            success: () => [] as E[],
+            failure: (failure) => failure,
+          })
+        );
+
+        return errors.length > 0
+          ? failure(errors as NonEmptyArray<E>)
+          : results[0];
+      }
     );
 }
 
