@@ -1,0 +1,937 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="generator" content="Docusaurus v2.0.0-alpha.70">
+<link rel="alternate" type="application/rss+xml" href="/formo/blog/rss.xml" title="formo Blog RSS Feed">
+<link rel="alternate" type="application/atom+xml" href="/formo/blog/atom.xml" title="formo Blog Atom Feed"><title data-react-helmet="true">Sub form | formo</title><meta data-react-helmet="true" name="twitter:card" content="summary_large_image"><meta data-react-helmet="true" name="docusaurus_locale" content="en"><meta data-react-helmet="true" name="docusaurus_version" content="current"><meta data-react-helmet="true" name="docusaurus_tag" content="docs-default-current"><meta data-react-helmet="true" property="og:title" content="Sub form | formo"><meta data-react-helmet="true" name="description" content="formo provides a simple way to create subforms."><meta data-react-helmet="true" property="og:description" content="formo provides a simple way to create subforms."><meta data-react-helmet="true" property="og:url" content="https://buildo.github.io/formo/subform"><link data-react-helmet="true" rel="shortcut icon" href="/formo/img/favicon.ico"><link data-react-helmet="true" rel="canonical" href="https://buildo.github.io/formo/subform"><link rel="stylesheet" href="/formo/styles.803e8b26.css">
+<link rel="preload" href="/formo/styles.a00f43f9.js" as="script">
+<link rel="preload" href="/formo/runtime~main.3efeec41.js" as="script">
+<link rel="preload" href="/formo/main.cb462907.js" as="script">
+<link rel="preload" href="/formo/common.0c7ffcac.js" as="script">
+<link rel="preload" href="/formo/2.f3406e25.js" as="script">
+<link rel="preload" href="/formo/1be78505.51171ab1.js" as="script">
+<link rel="preload" href="/formo/935f2afb.a046cfba.js" as="script">
+<link rel="preload" href="/formo/17896441.b0622eec.js" as="script">
+<link rel="preload" href="/formo/5b3a4455.9761a566.js" as="script">
+</head>
+<body>
+<script>!function(){function t(t){document.documentElement.setAttribute("data-theme",t)}var e=function(){var t=null;try{t=localStorage.getItem("theme")}catch(t){}return t}();t(null!==e?e:"light")}()</script><div id="__docusaurus">
+<nav aria-label="Skip navigation links"><button type="button" tabindex="0" class="skipToContent_11B0">Skip to main content</button></nav><nav class="navbar navbar--fixed-top"><div class="navbar__inner"><div class="navbar__items"><div aria-label="Navigation bar toggle" class="navbar__toggle" role="button" tabindex="0"><svg aria-label="Menu" width="30" height="30" viewBox="0 0 30 30" role="img" focusable="false"><title>Menu</title><path stroke="currentColor" stroke-linecap="round" stroke-miterlimit="10" stroke-width="2" d="M4 7h22M4 15h22M4 23h22"></path></svg></div><a class="navbar__brand" href="/formo/"><img src="/formo/img/logo.svg" alt="formo" class="themedImage_YANc themedImage--light_3CMI navbar__logo"><img src="/formo/img/logo.svg" alt="formo" class="themedImage_YANc themedImage--dark_3ARp navbar__logo"><strong class="navbar__title">formo</strong></a></div><div class="navbar__items navbar__items--right"><a href="https://github.com/buildo/formo" target="_blank" rel="noopener noreferrer" class="navbar__item navbar__link">GitHub</a><div class="react-toggle react-toggle--disabled displayOnlyInLargeViewport_2N3Q"><div class="react-toggle-track"><div class="react-toggle-track-check"><span class="toggle_3NWk">🌜</span></div><div class="react-toggle-track-x"><span class="toggle_3NWk">🌞</span></div></div><div class="react-toggle-thumb"></div><input type="checkbox" disabled="" aria-label="Dark mode toggle" class="react-toggle-screenreader-only"></div></div></div><div role="presentation" class="navbar-sidebar__backdrop"></div><div class="navbar-sidebar"><div class="navbar-sidebar__brand"><a class="navbar__brand" href="/formo/"><img src="/formo/img/logo.svg" alt="formo" class="themedImage_YANc themedImage--light_3CMI navbar__logo"><img src="/formo/img/logo.svg" alt="formo" class="themedImage_YANc themedImage--dark_3ARp navbar__logo"><strong class="navbar__title">formo</strong></a></div><div class="navbar-sidebar__items"><div class="menu"><ul class="menu__list"><li class="menu__list-item"><a href="https://github.com/buildo/formo" target="_blank" rel="noopener noreferrer" class="menu__link">GitHub</a></li></ul></div></div></div></nav><div class="main-wrapper"><div class="docPage_vMrn"><div class="docSidebarContainer_3Ak5" role="complementary"><div class="sidebar_3gvy"><div class="menu menu--responsive thin-scrollbar menu_1yIk"><button aria-label="Open Menu" aria-haspopup="true" class="button button--secondary button--sm menu__button" type="button"><svg aria-label="Menu" class="sidebarMenuIcon_1CUI" width="24" height="24" viewBox="0 0 30 30" role="img" focusable="false"><title>Menu</title><path stroke="currentColor" stroke-linecap="round" stroke-miterlimit="10" stroke-width="2" d="M4 7h22M4 15h22M4 23h22"></path></svg></button><ul class="menu__list"><li class="menu__list-item"><a class="menu__link menu__link--sublist menu__link--active" href="#!">Docusaurus</a><ul class="menu__list"><li class="menu__list-item"><a class="menu__link" tabindex="0" href="/formo/">Quick start</a></li><li class="menu__list-item"><a class="menu__link" tabindex="0" href="/formo/recommended-patterns">Recommended patterns</a></li><li class="menu__list-item"><a class="menu__link" tabindex="0" href="/formo/validating-fields">Validating fields</a></li><li class="menu__list-item"><a class="menu__link" tabindex="0" href="/formo/submitting">Submitting a form</a></li><li class="menu__list-item"><a aria-current="page" class="menu__link menu__link--active active" tabindex="0" href="/formo/subform">Sub form</a></li></ul></li></ul></div></div></div><main class="docMainContainer_2iGs"><div class="container padding-vert--lg docItemWrapper_1bxp"><div class="row"><div class="col docItemCol_U38p"><div class="docItemContainer_a7m4"><article><header><h1 class="docTitle_Oumm">Sub form</h1></header><div class="markdown"><p><code>formo</code> provides a simple way to create subforms.
+A <code>subForm</code> is a nested form which requires its own validations.
+The typical use case is when you have a field which is a variable list of complex elements.</p><p>For example, let&#x27;s say you have a form asking the user their <code>name</code>, <code>surname</code> and <code>familyMembers</code>. The <code>familyMembers</code>, in turn, have their own fields (<code>name</code> and <code>surname</code>) that need to be validated <em>before</em> being added to the user&#x27;s field array.</p><pre class="shiki min-light twoslash lsp" style="background-color:#ffffff;color:#24292eff"><div class="language-id">tsx</div><div class="code-container"><code><div class="line"><span style="color:#D32F2F">import</span><span style="color:#24292EFF"> { <data-lsp lsp="(alias) function useFormo&lt;Values extends Record&lt;string, unknown&gt;, Validators extends Partial&lt;FieldValidators&lt;Values&gt;&gt;, ArrayValidators extends Partial&lt;SubFormValidators&lt;Values&gt;&gt;, FormErrors, Label&gt;(args_0: {
+    ...;
+}, args_1: {
+    ...;
+}): UseFormReturn&lt;Values, FormErrors, Label, ValidatorErrorType&lt;Values, Validators&gt;&gt;
+import useFormo">useFormo</data-lsp></span><span style="color:#212121">,</span><span style="color:#24292EFF"> <data-lsp lsp="(alias) function subFormValue&lt;A extends unknown[]&gt;(arrayFieldValue: A): SubFormValue&lt;A&gt;
+import subFormValue">subFormValue</data-lsp></span><span style="color:#212121">,</span><span style="color:#24292EFF"> <data-lsp lsp="(alias) function success&lt;L = never, R = never&gt;(success: R): Result&lt;L, R&gt;
+import success">success</data-lsp></span><span style="color:#212121">,</span><span style="color:#24292EFF"> <data-lsp lsp="(alias) const validators: {
+    lengthRange: &lt;E, S extends string&gt;(minLength: number, maxLength: number, errorMessage: E) =&gt; Validator&lt;string, S, E&gt;;
+    minLength: &lt;E, S extends string&gt;(length: number, errorMessage: E) =&gt; Validator&lt;...&gt;;
+    ... 11 more ...;
+    validateIfDefined: &lt;I, O, E&gt;(contentValidator: Validator&lt;...&gt;) =&gt; Validator&lt;...&gt;;
+}
+import validators">validators</data-lsp> } </span><span style="color:#D32F2F">from</span><span style="color:#24292EFF"> </span><span style="color:#22863A">&quot;@buildo/formo&quot;</span><span style="color:#24292EFF">;</span></div><div class="line"> </div><div class="line"><span style="color:#D32F2F">type</span><span style="color:#24292EFF"> </span><span style="color:#6F42C1"><data-lsp lsp="type FamilyMember = {
+    name: string;
+    surname: string;
+}">FamilyMember</data-lsp></span><span style="color:#24292EFF"> </span><span style="color:#D32F2F">=</span><span style="color:#24292EFF"> {</span></div><div class="line"><span style="color:#24292EFF">  <data-lsp lsp="(property) name: string">name</data-lsp></span><span style="color:#D32F2F">:</span><span style="color:#24292EFF"> </span><span style="color:#1976D2">string</span><span style="color:#24292EFF">;</span></div><div class="line"><span style="color:#24292EFF">  <data-lsp lsp="(property) surname: string">surname</data-lsp></span><span style="color:#D32F2F">:</span><span style="color:#24292EFF"> </span><span style="color:#1976D2">string</span><span style="color:#24292EFF">;</span></div><div class="line"><span style="color:#24292EFF">};</span></div><div class="line"> </div><div class="line"><span style="color:#D32F2F">export</span><span style="color:#24292EFF"> </span><span style="color:#D32F2F">const</span><span style="color:#24292EFF"> </span><span style="color:#6F42C1"><data-lsp lsp="const MyForm: () =&gt; JSX.Element">MyForm</data-lsp></span><span style="color:#24292EFF"> </span><span style="color:#D32F2F">=</span><span style="color:#24292EFF"> () </span><span style="color:#D32F2F">=&gt;</span><span style="color:#24292EFF"> {</span></div><div class="line"><span style="color:#24292EFF">  </span><span style="color:#D32F2F">const</span><span style="color:#24292EFF"> { </span><span style="color:#1976D2"><data-lsp lsp="const handleSubmit: () =&gt; Promise&lt;Result&lt;unknown, unknown&gt;&gt;">handleSubmit</data-lsp></span><span style="color:#212121">,</span><span style="color:#24292EFF"> </span><span style="color:#1976D2"><data-lsp lsp="const fieldProps: &lt;K extends SimpleValueKeys&lt;{
+    name: string;
+    surname: string;
+    familyMembers: SubFormValue&lt;FamilyMember[]&gt;;
+}&gt;&gt;(name: K) =&gt; ComputedFieldProps&lt;{
+    name: string;
+    surname: string;
+    familyMembers: SubFormValue&lt;FamilyMember[]&gt;;
+}[K], unknown, NonEmptyArray&lt;...&gt;&gt;">fieldProps</data-lsp></span><span style="color:#212121">,</span><span style="color:#24292EFF"> </span><span style="color:#1976D2"><data-lsp lsp="const subForm: &lt;K extends &quot;familyMembers&quot;&gt;(name: K) =&gt; SubForm&lt;{
+    name: string;
+    surname: string;
+    familyMembers: SubFormValue&lt;FamilyMember[]&gt;;
+}, K, unknown, never&gt;">subForm</data-lsp></span><span style="color:#212121">,</span><span style="color:#24292EFF"> </span><span style="color:#1976D2"><data-lsp lsp="const formErrors: undefined">formErrors</data-lsp></span><span style="color:#24292EFF"> } </span><span style="color:#D32F2F">=</span><span style="color:#24292EFF"> </span><span style="color:#6F42C1"><data-lsp lsp="(alias) useFormo&lt;{
+    name: string;
+    surname: string;
+    familyMembers: SubFormValue&lt;FamilyMember[]&gt;;
+}, {}, {
+    familyMembers: {
+        name: Validator&lt;string, string, string&gt;;
+        surname: Validator&lt;...&gt;;
+    };
+}, never, unknown&gt;(args_0: {
+    ...;
+}, args_1: {
+    ...;
+}): UseFormReturn&lt;...&gt;
+import useFormo">useFormo</data-lsp></span><span style="color:#24292EFF">(</span></div><div class="line"><span style="color:#24292EFF">    {</span></div><div class="line"><span style="color:#24292EFF">      <data-lsp lsp="(property) initialValues: {
+    name: string;
+    surname: string;
+    familyMembers: SubFormValue&lt;FamilyMember[]&gt;;
+}">initialValues</data-lsp></span><span style="color:#D32F2F">:</span><span style="color:#24292EFF"> {</span></div><div class="line"><span style="color:#24292EFF">        <data-lsp lsp="(property) name: string">name</data-lsp></span><span style="color:#D32F2F">:</span><span style="color:#24292EFF"> </span><span style="color:#22863A">&quot;Jhon&quot;</span><span style="color:#212121">,</span></div><div class="line"><span style="color:#24292EFF">        <data-lsp lsp="(property) surname: string">surname</data-lsp></span><span style="color:#D32F2F">:</span><span style="color:#24292EFF"> </span><span style="color:#22863A">&quot;Doe&quot;</span><span style="color:#212121">,</span></div><div class="line"><span style="color:#24292EFF">        <data-lsp lsp="(property) familyMembers: SubFormValue&lt;FamilyMember[]&gt;">familyMembers</data-lsp></span><span style="color:#D32F2F">:</span><span style="color:#24292EFF"> </span><span style="color:#6F42C1"><data-lsp lsp="(alias) subFormValue&lt;FamilyMember[]&gt;(arrayFieldValue: FamilyMember[]): SubFormValue&lt;FamilyMember[]&gt;
+import subFormValue">subFormValue</data-lsp></span><span style="color:#24292EFF">&lt;</span><span style="color:#6F42C1"><data-lsp lsp="interface Array&lt;T&gt;">Array</data-lsp></span><span style="color:#24292EFF">&lt;</span><span style="color:#6F42C1"><data-lsp lsp="type FamilyMember = {
+    name: string;
+    surname: string;
+}">FamilyMember</data-lsp></span><span style="color:#24292EFF">&gt;&gt;([])</span><span style="color:#212121">,</span></div><div class="line"><span style="color:#24292EFF">      }</span><span style="color:#212121">,</span></div><div class="line"><span style="color:#24292EFF">      </span><span style="color:#6F42C1"><data-lsp lsp="(property) fieldValidators: (values: {
+    name: string;
+    surname: string;
+    familyMembers: SubFormValue&lt;FamilyMember[]&gt;;
+}) =&gt; {}">fieldValidators</data-lsp></span><span style="color:#D32F2F">:</span><span style="color:#24292EFF"> () </span><span style="color:#D32F2F">=&gt;</span><span style="color:#24292EFF"> ({})</span><span style="color:#212121">,</span></div><div class="line"><span style="color:#24292EFF">      </span><span style="color:#6F42C1"><data-lsp lsp="(property) subFormValidators?: ((values: {
+    name: string;
+    surname: string;
+    familyMembers: SubFormValue&lt;FamilyMember[]&gt;;
+}, index: number) =&gt; {
+    familyMembers: {
+        name: Validator&lt;string, string, string&gt;;
+        surname: Validator&lt;...&gt;;
+    };
+}) | undefined">subFormValidators</data-lsp></span><span style="color:#D32F2F">:</span><span style="color:#24292EFF"> () </span><span style="color:#D32F2F">=&gt;</span><span style="color:#24292EFF"> ({</span></div><div class="line"><span style="color:#24292EFF">        <data-lsp lsp="(property) familyMembers: {
+    name: Validator&lt;string, string, string&gt;;
+    surname: Validator&lt;string, string, string&gt;;
+}">familyMembers</data-lsp></span><span style="color:#D32F2F">:</span><span style="color:#24292EFF"> {</span></div><div class="line"><span style="color:#24292EFF">          <data-lsp lsp="(property) name: Validator&lt;string, string, string&gt;">name</data-lsp></span><span style="color:#D32F2F">:</span><span style="color:#24292EFF"> </span><span style="color:#1976D2"><data-lsp lsp="(alias) const validators: {
+    lengthRange: &lt;E, S extends string&gt;(minLength: number, maxLength: number, errorMessage: E) =&gt; Validator&lt;string, S, E&gt;;
+    minLength: &lt;E, S extends string&gt;(length: number, errorMessage: E) =&gt; Validator&lt;...&gt;;
+    ... 11 more ...;
+    validateIfDefined: &lt;I, O, E&gt;(contentValidator: Validator&lt;...&gt;) =&gt; Validator&lt;...&gt;;
+}
+import validators">validators</data-lsp></span><span style="color:#6F42C1">.<data-lsp lsp="(property) minLength: &lt;string, string&gt;(length: number, errorMessage: string) =&gt; Validator&lt;string, string, string&gt;">minLength</data-lsp></span><span style="color:#24292EFF">(</span><span style="color:#1976D2">1</span><span style="color:#212121">,</span><span style="color:#24292EFF"> </span><span style="color:#22863A">&quot;Family member name is required&quot;</span><span style="color:#24292EFF">)</span><span style="color:#212121">,</span></div><div class="line"><span style="color:#24292EFF">          <data-lsp lsp="(property) surname: Validator&lt;string, string, string&gt;">surname</data-lsp></span><span style="color:#D32F2F">:</span><span style="color:#24292EFF"> </span><span style="color:#1976D2"><data-lsp lsp="(alias) const validators: {
+    lengthRange: &lt;E, S extends string&gt;(minLength: number, maxLength: number, errorMessage: E) =&gt; Validator&lt;string, S, E&gt;;
+    minLength: &lt;E, S extends string&gt;(length: number, errorMessage: E) =&gt; Validator&lt;...&gt;;
+    ... 11 more ...;
+    validateIfDefined: &lt;I, O, E&gt;(contentValidator: Validator&lt;...&gt;) =&gt; Validator&lt;...&gt;;
+}
+import validators">validators</data-lsp></span><span style="color:#6F42C1">.<data-lsp lsp="(property) minLength: &lt;string, string&gt;(length: number, errorMessage: string) =&gt; Validator&lt;string, string, string&gt;">minLength</data-lsp></span><span style="color:#24292EFF">(</span><span style="color:#1976D2">1</span><span style="color:#212121">,</span><span style="color:#24292EFF"> </span><span style="color:#22863A">&quot;Family member surname is required&quot;</span><span style="color:#24292EFF">)</span><span style="color:#212121">,</span></div><div class="line"><span style="color:#24292EFF">        }</span><span style="color:#212121">,</span></div><div class="line"><span style="color:#24292EFF">      })</span><span style="color:#212121">,</span></div><div class="line"><span style="color:#24292EFF">    }</span><span style="color:#212121">,</span></div><div class="line"><span style="color:#24292EFF">    {</span></div><div class="line"><span style="color:#24292EFF">      </span><span style="color:#6F42C1"><data-lsp lsp="(property) onSubmit: (values: ValidatedValues&lt;{
+    name: string;
+    surname: string;
+    familyMembers: SubFormValue&lt;FamilyMember[]&gt;;
+}, {}, {
+    familyMembers: {
+        name: Validator&lt;string, string, string&gt;;
+        surname: Validator&lt;...&gt;;
+    };
+}&gt;) =&gt; Promise&lt;...&gt;">onSubmit</data-lsp></span><span style="color:#D32F2F">:</span><span style="color:#24292EFF"> () </span><span style="color:#D32F2F">=&gt;</span><span style="color:#24292EFF"> </span><span style="color:#1976D2"><data-lsp lsp="var Promise: PromiseConstructor">Promise</data-lsp></span><span style="color:#6F42C1">.<data-lsp lsp="(method) PromiseConstructor.resolve&lt;Success&lt;null&gt; | Failure&lt;never&gt;&gt;(value: Success&lt;null&gt; | Failure&lt;never&gt; | PromiseLike&lt;Success&lt;null&gt; | Failure&lt;never&gt;&gt;): Promise&lt;...&gt; (+1 overload)">resolve</data-lsp></span><span style="color:#24292EFF">(</span><span style="color:#6F42C1"><data-lsp lsp="(alias) success&lt;never, null&gt;(success: null): Result&lt;never, null&gt;
+import success">success</data-lsp></span><span style="color:#24292EFF">(</span><span style="color:#1976D2">null</span><span style="color:#24292EFF">))</span><span style="color:#212121">,</span></div><div class="line"><span style="color:#24292EFF">    }</span></div><div class="line"><span style="color:#24292EFF">  );</span></div><div class="line"> </div><div class="line"><span style="color:#24292EFF">  </span><span style="color:#D32F2F">const</span><span style="color:#24292EFF"> </span><span style="color:#1976D2"><data-lsp lsp="const emptyFamilyMember: {
+    name: string;
+    surname: string;
+}">emptyFamilyMember</data-lsp></span><span style="color:#24292EFF"> </span><span style="color:#D32F2F">=</span><span style="color:#24292EFF"> {</span></div><div class="line"><span style="color:#24292EFF">    <data-lsp lsp="(property) name: string">name</data-lsp></span><span style="color:#D32F2F">:</span><span style="color:#24292EFF"> </span><span style="color:#22863A">&quot;&quot;</span><span style="color:#212121">,</span></div><div class="line"><span style="color:#24292EFF">    <data-lsp lsp="(property) surname: string">surname</data-lsp></span><span style="color:#D32F2F">:</span><span style="color:#24292EFF"> </span><span style="color:#22863A">&quot;&quot;</span><span style="color:#212121">,</span></div><div class="line"><span style="color:#24292EFF">  };</span></div><div class="line"> </div><div class="line"><span style="color:#24292EFF">  </span><span style="color:#D32F2F">return</span><span style="color:#24292EFF"> (</span></div><div class="line"><span style="color:#24292EFF">    &lt;</span><span style="color:#22863A"><data-lsp lsp="(property) JSX.IntrinsicElements.div: React.DetailedHTMLProps&lt;React.HTMLAttributes&lt;HTMLDivElement&gt;, HTMLDivElement&gt;">div</data-lsp></span><span style="color:#24292EFF">&gt;</span></div><div class="line"><span style="color:#24292EFF">      &lt;</span><span style="color:#1976D2"><data-lsp lsp="function TextField(props: Props): JSX.Element">TextField</data-lsp></span><span style="color:#24292EFF"> </span><span style="color:#6F42C1"><data-lsp lsp="(JSX attribute) label: string">label</data-lsp></span><span style="color:#D32F2F">=</span><span style="color:#22863A">&quot;name&quot;</span><span style="color:#24292EFF"> {</span><span style="color:#D32F2F">...</span><span style="color:#6F42C1"><data-lsp lsp="const fieldProps: &lt;&quot;name&quot;&gt;(name: &quot;name&quot;) =&gt; ComputedFieldProps&lt;string, unknown, NonEmptyArray&lt;never&gt;&gt;">fieldProps</data-lsp></span><span style="color:#24292EFF">(</span><span style="color:#22863A">&quot;name&quot;</span><span style="color:#24292EFF">)} /&gt;</span></div><div class="line"><span style="color:#24292EFF">      &lt;</span><span style="color:#1976D2"><data-lsp lsp="function TextField(props: Props): JSX.Element">TextField</data-lsp></span><span style="color:#24292EFF"> </span><span style="color:#6F42C1"><data-lsp lsp="(JSX attribute) label: string">label</data-lsp></span><span style="color:#D32F2F">=</span><span style="color:#22863A">&quot;surname&quot;</span><span style="color:#24292EFF"> {</span><span style="color:#D32F2F">...</span><span style="color:#6F42C1"><data-lsp lsp="const fieldProps: &lt;&quot;surname&quot;&gt;(name: &quot;surname&quot;) =&gt; ComputedFieldProps&lt;string, unknown, NonEmptyArray&lt;never&gt;&gt;">fieldProps</data-lsp></span><span style="color:#24292EFF">(</span><span style="color:#22863A">&quot;surname&quot;</span><span style="color:#24292EFF">)} /&gt;</span></div><div class="line"> </div><div class="line"><span style="color:#24292EFF">      &lt;</span><span style="color:#22863A"><data-lsp lsp="(property) JSX.IntrinsicElements.div: React.DetailedHTMLProps&lt;React.HTMLAttributes&lt;HTMLDivElement&gt;, HTMLDivElement&gt;">div</data-lsp></span><span style="color:#24292EFF">&gt;</span></div><div class="line"><span style="color:#24292EFF">        &lt;</span><span style="color:#22863A"><data-lsp lsp="(property) JSX.IntrinsicElements.button: React.DetailedHTMLProps&lt;React.ButtonHTMLAttributes&lt;HTMLButtonElement&gt;, HTMLButtonElement&gt;">button</data-lsp></span></div><div class="line"><span style="color:#24292EFF">          </span><span style="color:#6F42C1"><data-lsp lsp="(JSX attribute) React.DOMAttributes&lt;HTMLButtonElement&gt;.onClick?: React.MouseEventHandler&lt;HTMLButtonElement&gt; | undefined">onClick</data-lsp></span><span style="color:#D32F2F">=</span><span style="color:#24292EFF">{() </span><span style="color:#D32F2F">=&gt;</span><span style="color:#24292EFF"> </span><span style="color:#6F42C1"><data-lsp lsp="const subForm: &lt;&quot;familyMembers&quot;&gt;(name: &quot;familyMembers&quot;) =&gt; SubForm&lt;{
+    name: string;
+    surname: string;
+    familyMembers: SubFormValue&lt;FamilyMember[]&gt;;
+}, &quot;familyMembers&quot;, unknown, never&gt;">subForm</data-lsp></span><span style="color:#24292EFF">(</span><span style="color:#22863A">&quot;familyMembers&quot;</span><span style="color:#24292EFF">)</span><span style="color:#6F42C1">.<data-lsp lsp="(property) push: &lt;&quot;name&quot; | &quot;surname&quot;, ArrayRecord&lt;{
+    name: string;
+    surname: string;
+    familyMembers: SubFormValue&lt;FamilyMember[]&gt;;
+}, &quot;name&quot; | &quot;surname&quot;&gt;&gt;(value: FamilyMember) =&gt; void">push</data-lsp></span><span style="color:#24292EFF">(<data-lsp lsp="const emptyFamilyMember: {
+    name: string;
+    surname: string;
+}">emptyFamilyMember</data-lsp>)}</span></div><div class="line"><span style="color:#24292EFF">        &gt;</span></div><div class="line"><span style="color:#24292EFF">          Add family members</span></div><div class="line"><span style="color:#24292EFF">        &lt;/</span><span style="color:#22863A"><data-lsp lsp="(property) JSX.IntrinsicElements.button: React.DetailedHTMLProps&lt;React.ButtonHTMLAttributes&lt;HTMLButtonElement&gt;, HTMLButtonElement&gt;">button</data-lsp></span><span style="color:#24292EFF">&gt;</span></div><div class="line"> </div><div class="line"><span style="color:#24292EFF">        {</span><span style="color:#6F42C1"><data-lsp lsp="const subForm: &lt;&quot;familyMembers&quot;&gt;(name: &quot;familyMembers&quot;) =&gt; SubForm&lt;{
+    name: string;
+    surname: string;
+    familyMembers: SubFormValue&lt;FamilyMember[]&gt;;
+}, &quot;familyMembers&quot;, unknown, never&gt;">subForm</data-lsp></span><span style="color:#24292EFF">(</span><span style="color:#22863A">&quot;familyMembers&quot;</span><span style="color:#24292EFF">).</span><span style="color:#1976D2"><data-lsp lsp="(property) items: {
+    fieldProps: &lt;SK extends &quot;name&quot; | &quot;surname&quot;, V extends ArrayRecord&lt;{
+        name: string;
+        surname: string;
+        familyMembers: SubFormValue&lt;FamilyMember[]&gt;;
+    }, SK&gt;&gt;(name: SK) =&gt; ComputedFieldProps&lt;...&gt;;
+    onChangeValues: &lt;SK extends &quot;name&quot; | &quot;surname&quot;, V extends ArrayRecord&lt;...&gt;&gt;(v: V[&quot;familyMembers&quot;][number]) =&gt; unknown;
+    remove: () =&gt; void;
+    namePrefix: string;
+}[]">items</data-lsp></span><span style="color:#6F42C1">.<data-lsp lsp="(method) Array&lt;{ fieldProps: &lt;SK extends &quot;name&quot; | &quot;surname&quot;, V extends ArrayRecord&lt;{ name: string; surname: string; familyMembers: SubFormValue&lt;FamilyMember[]&gt;; }, SK&gt;&gt;(name: SK) =&gt; ComputedFieldProps&lt;...&gt;; onChangeValues: &lt;SK extends &quot;name&quot; | &quot;surname&quot;, V extends ArrayRecord&lt;...&gt;&gt;(v: V[&quot;familyMembers&quot;][number]) =&gt; unknown; remove: () =&gt; void; namePrefix: string; }&gt;.map&lt;JSX.Element&gt;(callbackfn: (value: {
+    fieldProps: &lt;SK, V&gt;(name: SK) =&gt; ComputedFieldProps&lt;V[&quot;familyMembers&quot;][number][SK], unknown, NonEmptyArray&lt;never&gt;&gt;;
+    onChangeValues: &lt;SK, V&gt;(v: V[&quot;familyMembers&quot;][number]) =&gt; unknown;
+    remove: () =&gt; void;
+    namePrefix: string;
+}, index: number, array: {
+    fieldProps: &lt;SK, V&gt;(name: SK) =&gt; ComputedFieldProps&lt;V[&quot;familyMembers&quot;][number][SK], unknown, NonEmptyArray&lt;never&gt;&gt;;
+    onChangeValues: &lt;SK, V&gt;(v: V[&quot;familyMembers&quot;][number]) =&gt; unknown;
+    remove: () =&gt; void;
+    namePrefix: string;
+}[]) =&gt; JSX.Element, thisArg?: any): JSX.Element[]">map</data-lsp></span><span style="color:#24292EFF">((<data-lsp lsp="(parameter) familyMember: {
+    fieldProps: &lt;SK extends &quot;name&quot; | &quot;surname&quot;, V extends ArrayRecord&lt;{
+        name: string;
+        surname: string;
+        familyMembers: SubFormValue&lt;FamilyMember[]&gt;;
+    }, SK&gt;&gt;(name: SK) =&gt; ComputedFieldProps&lt;...&gt;;
+    onChangeValues: &lt;SK extends &quot;name&quot; | &quot;surname&quot;, V extends ArrayRecord&lt;...&gt;&gt;(v: V[&quot;familyMembers&quot;][number]) =&gt; unknown;
+    remove: () =&gt; void;
+    namePrefix: string;
+}">familyMember</data-lsp></span><span style="color:#212121">,</span><span style="color:#24292EFF"> <data-lsp lsp="(parameter) index: number">index</data-lsp>) </span><span style="color:#D32F2F">=&gt;</span><span style="color:#24292EFF"> (</span></div><div class="line"><span style="color:#24292EFF">          &lt;</span><span style="color:#22863A"><data-lsp lsp="(property) JSX.IntrinsicElements.div: React.DetailedHTMLProps&lt;React.HTMLAttributes&lt;HTMLDivElement&gt;, HTMLDivElement&gt;">div</data-lsp></span><span style="color:#24292EFF"> </span><span style="color:#6F42C1"><data-lsp lsp="(JSX attribute) React.Attributes.key?: React.Key | null | undefined">key</data-lsp></span><span style="color:#D32F2F">=</span><span style="color:#24292EFF">{</span><span style="color:#22863A">`</span><span style="color:#D32F2F">${</span><span style="color:#1976D2"><data-lsp lsp="(parameter) familyMember: {
+    fieldProps: &lt;SK extends &quot;name&quot; | &quot;surname&quot;, V extends ArrayRecord&lt;{
+        name: string;
+        surname: string;
+        familyMembers: SubFormValue&lt;FamilyMember[]&gt;;
+    }, SK&gt;&gt;(name: SK) =&gt; ComputedFieldProps&lt;...&gt;;
+    onChangeValues: &lt;SK extends &quot;name&quot; | &quot;surname&quot;, V extends ArrayRecord&lt;...&gt;&gt;(v: V[&quot;familyMembers&quot;][number]) =&gt; unknown;
+    remove: () =&gt; void;
+    namePrefix: string;
+}">familyMember</data-lsp></span><span style="color:#24292EFF">.<data-lsp lsp="(property) namePrefix: string">namePrefix</data-lsp></span><span style="color:#D32F2F">}</span><span style="color:#22863A">-container`</span><span style="color:#24292EFF">}&gt;</span></div><div class="line"><span style="color:#24292EFF">            &lt;</span><span style="color:#1976D2"><data-lsp lsp="function TextField(props: Props): JSX.Element">TextField</data-lsp></span></div><div class="line"><span style="color:#24292EFF">              </span><span style="color:#6F42C1"><data-lsp lsp="(JSX attribute) label: string">label</data-lsp></span><span style="color:#D32F2F">=</span><span style="color:#24292EFF">{</span><span style="color:#22863A">`</span><span style="color:#D32F2F">${</span><span style="color:#24292EFF"><data-lsp lsp="(parameter) index: number">index</data-lsp></span><span style="color:#D32F2F">}</span><span style="color:#22863A">-name`</span><span style="color:#24292EFF">}</span></div><div class="line"><span style="color:#24292EFF">              {</span><span style="color:#D32F2F">...</span><span style="color:#1976D2"><data-lsp lsp="(parameter) familyMember: {
+    fieldProps: &lt;SK extends &quot;name&quot; | &quot;surname&quot;, V extends ArrayRecord&lt;{
+        name: string;
+        surname: string;
+        familyMembers: SubFormValue&lt;FamilyMember[]&gt;;
+    }, SK&gt;&gt;(name: SK) =&gt; ComputedFieldProps&lt;...&gt;;
+    onChangeValues: &lt;SK extends &quot;name&quot; | &quot;surname&quot;, V extends ArrayRecord&lt;...&gt;&gt;(v: V[&quot;familyMembers&quot;][number]) =&gt; unknown;
+    remove: () =&gt; void;
+    namePrefix: string;
+}">familyMember</data-lsp></span><span style="color:#6F42C1">.<data-lsp lsp="(property) fieldProps: &lt;&quot;name&quot;, ArrayRecord&lt;{
+    name: string;
+    surname: string;
+    familyMembers: SubFormValue&lt;FamilyMember[]&gt;;
+}, &quot;name&quot;&gt;&gt;(name: &quot;name&quot;) =&gt; ComputedFieldProps&lt;string, unknown, NonEmptyArray&lt;...&gt;&gt;">fieldProps</data-lsp></span><span style="color:#24292EFF">(</span><span style="color:#22863A">&quot;name&quot;</span><span style="color:#24292EFF">)}</span></div><div class="line"><span style="color:#24292EFF">            /&gt;</span></div><div class="line"><span style="color:#24292EFF">            &lt;</span><span style="color:#1976D2"><data-lsp lsp="function TextField(props: Props): JSX.Element">TextField</data-lsp></span></div><div class="line"><span style="color:#24292EFF">              </span><span style="color:#6F42C1"><data-lsp lsp="(JSX attribute) label: string">label</data-lsp></span><span style="color:#D32F2F">=</span><span style="color:#24292EFF">{</span><span style="color:#22863A">`</span><span style="color:#D32F2F">${</span><span style="color:#24292EFF"><data-lsp lsp="(parameter) index: number">index</data-lsp></span><span style="color:#D32F2F">}</span><span style="color:#22863A">-surname`</span><span style="color:#24292EFF">}</span></div><div class="line"><span style="color:#24292EFF">              {</span><span style="color:#D32F2F">...</span><span style="color:#1976D2"><data-lsp lsp="(parameter) familyMember: {
+    fieldProps: &lt;SK extends &quot;name&quot; | &quot;surname&quot;, V extends ArrayRecord&lt;{
+        name: string;
+        surname: string;
+        familyMembers: SubFormValue&lt;FamilyMember[]&gt;;
+    }, SK&gt;&gt;(name: SK) =&gt; ComputedFieldProps&lt;...&gt;;
+    onChangeValues: &lt;SK extends &quot;name&quot; | &quot;surname&quot;, V extends ArrayRecord&lt;...&gt;&gt;(v: V[&quot;familyMembers&quot;][number]) =&gt; unknown;
+    remove: () =&gt; void;
+    namePrefix: string;
+}">familyMember</data-lsp></span><span style="color:#6F42C1">.<data-lsp lsp="(property) fieldProps: &lt;&quot;surname&quot;, ArrayRecord&lt;{
+    name: string;
+    surname: string;
+    familyMembers: SubFormValue&lt;FamilyMember[]&gt;;
+}, &quot;surname&quot;&gt;&gt;(name: &quot;surname&quot;) =&gt; ComputedFieldProps&lt;string, unknown, NonEmptyArray&lt;...&gt;&gt;">fieldProps</data-lsp></span><span style="color:#24292EFF">(</span><span style="color:#22863A">&quot;surname&quot;</span><span style="color:#24292EFF">)}</span></div><div class="line"><span style="color:#24292EFF">            /&gt;</span></div><div class="line"><span style="color:#24292EFF">            &lt;</span><span style="color:#22863A"><data-lsp lsp="(property) JSX.IntrinsicElements.p: React.DetailedHTMLProps&lt;React.HTMLAttributes&lt;HTMLParagraphElement&gt;, HTMLParagraphElement&gt;">p</data-lsp></span><span style="color:#24292EFF">&gt;</span></div><div class="line"><span style="color:#24292EFF">              {</span><span style="color:#1976D2"><data-lsp lsp="(parameter) familyMember: {
+    fieldProps: &lt;SK extends &quot;name&quot; | &quot;surname&quot;, V extends ArrayRecord&lt;{
+        name: string;
+        surname: string;
+        familyMembers: SubFormValue&lt;FamilyMember[]&gt;;
+    }, SK&gt;&gt;(name: SK) =&gt; ComputedFieldProps&lt;...&gt;;
+    onChangeValues: &lt;SK extends &quot;name&quot; | &quot;surname&quot;, V extends ArrayRecord&lt;...&gt;&gt;(v: V[&quot;familyMembers&quot;][number]) =&gt; unknown;
+    remove: () =&gt; void;
+    namePrefix: string;
+}">familyMember</data-lsp></span><span style="color:#6F42C1">.<data-lsp lsp="(property) fieldProps: &lt;&quot;name&quot;, ArrayRecord&lt;{
+    name: string;
+    surname: string;
+    familyMembers: SubFormValue&lt;FamilyMember[]&gt;;
+}, &quot;name&quot;&gt;&gt;(name: &quot;name&quot;) =&gt; ComputedFieldProps&lt;string, unknown, NonEmptyArray&lt;...&gt;&gt;">fieldProps</data-lsp></span><span style="color:#24292EFF">(</span><span style="color:#22863A">&quot;name&quot;</span><span style="color:#24292EFF">).<data-lsp lsp="(property) issues?: NonEmptyArray&lt;never&gt; | undefined">issues</data-lsp>}</span></div><div class="line"><span style="color:#24292EFF">              &lt;</span><span style="color:#22863A"><data-lsp lsp="(property) JSX.IntrinsicElements.br: React.DetailedHTMLProps&lt;React.HTMLAttributes&lt;HTMLBRElement&gt;, HTMLBRElement&gt;">br</data-lsp></span><span style="color:#24292EFF"> /&gt;</span></div><div class="line"><span style="color:#24292EFF">              {</span><span style="color:#1976D2"><data-lsp lsp="(parameter) familyMember: {
+    fieldProps: &lt;SK extends &quot;name&quot; | &quot;surname&quot;, V extends ArrayRecord&lt;{
+        name: string;
+        surname: string;
+        familyMembers: SubFormValue&lt;FamilyMember[]&gt;;
+    }, SK&gt;&gt;(name: SK) =&gt; ComputedFieldProps&lt;...&gt;;
+    onChangeValues: &lt;SK extends &quot;name&quot; | &quot;surname&quot;, V extends ArrayRecord&lt;...&gt;&gt;(v: V[&quot;familyMembers&quot;][number]) =&gt; unknown;
+    remove: () =&gt; void;
+    namePrefix: string;
+}">familyMember</data-lsp></span><span style="color:#6F42C1">.<data-lsp lsp="(property) fieldProps: &lt;&quot;surname&quot;, ArrayRecord&lt;{
+    name: string;
+    surname: string;
+    familyMembers: SubFormValue&lt;FamilyMember[]&gt;;
+}, &quot;surname&quot;&gt;&gt;(name: &quot;surname&quot;) =&gt; ComputedFieldProps&lt;string, unknown, NonEmptyArray&lt;...&gt;&gt;">fieldProps</data-lsp></span><span style="color:#24292EFF">(</span><span style="color:#22863A">&quot;surname&quot;</span><span style="color:#24292EFF">).<data-lsp lsp="(property) issues?: NonEmptyArray&lt;never&gt; | undefined">issues</data-lsp>}</span></div><div class="line"><span style="color:#24292EFF">            &lt;/</span><span style="color:#22863A"><data-lsp lsp="(property) JSX.IntrinsicElements.p: React.DetailedHTMLProps&lt;React.HTMLAttributes&lt;HTMLParagraphElement&gt;, HTMLParagraphElement&gt;">p</data-lsp></span><span style="color:#24292EFF">&gt;</span></div><div class="line"><span style="color:#24292EFF">          &lt;/</span><span style="color:#22863A"><data-lsp lsp="(property) JSX.IntrinsicElements.div: React.DetailedHTMLProps&lt;React.HTMLAttributes&lt;HTMLDivElement&gt;, HTMLDivElement&gt;">div</data-lsp></span><span style="color:#24292EFF">&gt;</span></div><div class="line"><span style="color:#24292EFF">        ))}</span></div><div class="line"><span style="color:#24292EFF">      &lt;/</span><span style="color:#22863A"><data-lsp lsp="(property) JSX.IntrinsicElements.div: React.DetailedHTMLProps&lt;React.HTMLAttributes&lt;HTMLDivElement&gt;, HTMLDivElement&gt;">div</data-lsp></span><span style="color:#24292EFF">&gt;</span></div><div class="line"> </div><div class="line"><span style="color:#24292EFF">      &lt;</span><span style="color:#22863A"><data-lsp lsp="(property) JSX.IntrinsicElements.button: React.DetailedHTMLProps&lt;React.ButtonHTMLAttributes&lt;HTMLButtonElement&gt;, HTMLButtonElement&gt;">button</data-lsp></span><span style="color:#24292EFF"> </span><span style="color:#6F42C1"><data-lsp lsp="(JSX attribute) React.DOMAttributes&lt;HTMLButtonElement&gt;.onClick?: React.MouseEventHandler&lt;HTMLButtonElement&gt; | undefined">onClick</data-lsp></span><span style="color:#D32F2F">=</span><span style="color:#24292EFF">{<data-lsp lsp="const handleSubmit: () =&gt; Promise&lt;Result&lt;unknown, unknown&gt;&gt;">handleSubmit</data-lsp>}&gt;Sign up&lt;/</span><span style="color:#22863A"><data-lsp lsp="(property) JSX.IntrinsicElements.button: React.DetailedHTMLProps&lt;React.ButtonHTMLAttributes&lt;HTMLButtonElement&gt;, HTMLButtonElement&gt;">button</data-lsp></span><span style="color:#24292EFF">&gt;</span></div><div class="line"><span style="color:#24292EFF">    &lt;/</span><span style="color:#22863A"><data-lsp lsp="(property) JSX.IntrinsicElements.div: React.DetailedHTMLProps&lt;React.HTMLAttributes&lt;HTMLDivElement&gt;, HTMLDivElement&gt;">div</data-lsp></span><span style="color:#24292EFF">&gt;</span></div><div class="line"><span style="color:#24292EFF">  );</span></div><div class="line"><span style="color:#24292EFF">};</span></div></code></div><button type="button" aria-label="Copy code to clipboard" class="copy-button">Copy</button></pre><pre class="shiki one-dark-pro twoslash lsp" style="background-color:#282c34;color:#abb2bf"><div class="language-id">tsx</div><div class="code-container"><code><div class="line"><span style="color:#C678DD">import</span><span style="color:#ABB2BF"> { </span><span style="color:#E06C75"><data-lsp lsp="(alias) function useFormo&lt;Values extends Record&lt;string, unknown&gt;, Validators extends Partial&lt;FieldValidators&lt;Values&gt;&gt;, ArrayValidators extends Partial&lt;SubFormValidators&lt;Values&gt;&gt;, FormErrors, Label&gt;(args_0: {
+    ...;
+}, args_1: {
+    ...;
+}): UseFormReturn&lt;Values, FormErrors, Label, ValidatorErrorType&lt;Values, Validators&gt;&gt;
+import useFormo">useFormo</data-lsp></span><span style="color:#ABB2BF">, </span><span style="color:#E06C75"><data-lsp lsp="(alias) function subFormValue&lt;A extends unknown[]&gt;(arrayFieldValue: A): SubFormValue&lt;A&gt;
+import subFormValue">subFormValue</data-lsp></span><span style="color:#ABB2BF">, </span><span style="color:#E06C75"><data-lsp lsp="(alias) function success&lt;L = never, R = never&gt;(success: R): Result&lt;L, R&gt;
+import success">success</data-lsp></span><span style="color:#ABB2BF">, </span><span style="color:#E06C75"><data-lsp lsp="(alias) const validators: {
+    lengthRange: &lt;E, S extends string&gt;(minLength: number, maxLength: number, errorMessage: E) =&gt; Validator&lt;string, S, E&gt;;
+    minLength: &lt;E, S extends string&gt;(length: number, errorMessage: E) =&gt; Validator&lt;...&gt;;
+    ... 11 more ...;
+    validateIfDefined: &lt;I, O, E&gt;(contentValidator: Validator&lt;...&gt;) =&gt; Validator&lt;...&gt;;
+}
+import validators">validators</data-lsp></span><span style="color:#ABB2BF"> } </span><span style="color:#C678DD">from</span><span style="color:#ABB2BF"> </span><span style="color:#98C379">&quot;@buildo/formo&quot;</span><span style="color:#ABB2BF">;</span></div><div class="line"> </div><div class="line"><span style="color:#C678DD">type</span><span style="color:#ABB2BF"> </span><span style="color:#E5C07B"><data-lsp lsp="type FamilyMember = {
+    name: string;
+    surname: string;
+}">FamilyMember</data-lsp></span><span style="color:#ABB2BF"> </span><span style="color:#56B6C2">=</span><span style="color:#ABB2BF"> {</span></div><div class="line"><span style="color:#ABB2BF">  </span><span style="color:#E06C75"><data-lsp lsp="(property) name: string">name</data-lsp></span><span style="color:#ABB2BF">: </span><span style="color:#E5C07B">string</span><span style="color:#ABB2BF">;</span></div><div class="line"><span style="color:#ABB2BF">  </span><span style="color:#E06C75"><data-lsp lsp="(property) surname: string">surname</data-lsp></span><span style="color:#ABB2BF">: </span><span style="color:#E5C07B">string</span><span style="color:#ABB2BF">;</span></div><div class="line"><span style="color:#ABB2BF">};</span></div><div class="line"> </div><div class="line"><span style="color:#C678DD">export</span><span style="color:#ABB2BF"> </span><span style="color:#C678DD">const</span><span style="color:#ABB2BF"> </span><span style="color:#61AFEF"><data-lsp lsp="const MyForm: () =&gt; JSX.Element">MyForm</data-lsp></span><span style="color:#ABB2BF"> </span><span style="color:#56B6C2">=</span><span style="color:#ABB2BF"> () </span><span style="color:#C678DD">=&gt;</span><span style="color:#ABB2BF"> {</span></div><div class="line"><span style="color:#ABB2BF">  </span><span style="color:#C678DD">const</span><span style="color:#ABB2BF"> { </span><span style="color:#E5C07B"><data-lsp lsp="const handleSubmit: () =&gt; Promise&lt;Result&lt;unknown, unknown&gt;&gt;">handleSubmit</data-lsp></span><span style="color:#ABB2BF">, </span><span style="color:#E5C07B"><data-lsp lsp="const fieldProps: &lt;K extends SimpleValueKeys&lt;{
+    name: string;
+    surname: string;
+    familyMembers: SubFormValue&lt;FamilyMember[]&gt;;
+}&gt;&gt;(name: K) =&gt; ComputedFieldProps&lt;{
+    name: string;
+    surname: string;
+    familyMembers: SubFormValue&lt;FamilyMember[]&gt;;
+}[K], unknown, NonEmptyArray&lt;...&gt;&gt;">fieldProps</data-lsp></span><span style="color:#ABB2BF">, </span><span style="color:#E5C07B"><data-lsp lsp="const subForm: &lt;K extends &quot;familyMembers&quot;&gt;(name: K) =&gt; SubForm&lt;{
+    name: string;
+    surname: string;
+    familyMembers: SubFormValue&lt;FamilyMember[]&gt;;
+}, K, unknown, never&gt;">subForm</data-lsp></span><span style="color:#ABB2BF">, </span><span style="color:#E5C07B"><data-lsp lsp="const formErrors: undefined">formErrors</data-lsp></span><span style="color:#ABB2BF"> } </span><span style="color:#56B6C2">=</span><span style="color:#ABB2BF"> </span><span style="color:#61AFEF"><data-lsp lsp="(alias) useFormo&lt;{
+    name: string;
+    surname: string;
+    familyMembers: SubFormValue&lt;FamilyMember[]&gt;;
+}, {}, {
+    familyMembers: {
+        name: Validator&lt;string, string, string&gt;;
+        surname: Validator&lt;...&gt;;
+    };
+}, never, unknown&gt;(args_0: {
+    ...;
+}, args_1: {
+    ...;
+}): UseFormReturn&lt;...&gt;
+import useFormo">useFormo</data-lsp></span><span style="color:#ABB2BF">(</span></div><div class="line"><span style="color:#ABB2BF">    {</span></div><div class="line"><span style="color:#ABB2BF">      </span><span style="color:#E06C75"><data-lsp lsp="(property) initialValues: {
+    name: string;
+    surname: string;
+    familyMembers: SubFormValue&lt;FamilyMember[]&gt;;
+}">initialValues</data-lsp></span><span style="color:#ABB2BF">: {</span></div><div class="line"><span style="color:#ABB2BF">        </span><span style="color:#E06C75"><data-lsp lsp="(property) name: string">name</data-lsp></span><span style="color:#ABB2BF">: </span><span style="color:#98C379">&quot;Jhon&quot;</span><span style="color:#ABB2BF">,</span></div><div class="line"><span style="color:#ABB2BF">        </span><span style="color:#E06C75"><data-lsp lsp="(property) surname: string">surname</data-lsp></span><span style="color:#ABB2BF">: </span><span style="color:#98C379">&quot;Doe&quot;</span><span style="color:#ABB2BF">,</span></div><div class="line"><span style="color:#ABB2BF">        </span><span style="color:#E06C75"><data-lsp lsp="(property) familyMembers: SubFormValue&lt;FamilyMember[]&gt;">familyMembers</data-lsp></span><span style="color:#ABB2BF">: </span><span style="color:#61AFEF"><data-lsp lsp="(alias) subFormValue&lt;FamilyMember[]&gt;(arrayFieldValue: FamilyMember[]): SubFormValue&lt;FamilyMember[]&gt;
+import subFormValue">subFormValue</data-lsp></span><span style="color:#ABB2BF">&lt;</span><span style="color:#E5C07B"><data-lsp lsp="interface Array&lt;T&gt;">Array</data-lsp></span><span style="color:#ABB2BF">&lt;</span><span style="color:#E5C07B"><data-lsp lsp="type FamilyMember = {
+    name: string;
+    surname: string;
+}">FamilyMember</data-lsp></span><span style="color:#ABB2BF">&gt;&gt;([]),</span></div><div class="line"><span style="color:#ABB2BF">      },</span></div><div class="line"><span style="color:#ABB2BF">      </span><span style="color:#61AFEF"><data-lsp lsp="(property) fieldValidators: (values: {
+    name: string;
+    surname: string;
+    familyMembers: SubFormValue&lt;FamilyMember[]&gt;;
+}) =&gt; {}">fieldValidators</data-lsp></span><span style="color:#ABB2BF">: () </span><span style="color:#C678DD">=&gt;</span><span style="color:#ABB2BF"> ({}),</span></div><div class="line"><span style="color:#ABB2BF">      </span><span style="color:#61AFEF"><data-lsp lsp="(property) subFormValidators?: ((values: {
+    name: string;
+    surname: string;
+    familyMembers: SubFormValue&lt;FamilyMember[]&gt;;
+}, index: number) =&gt; {
+    familyMembers: {
+        name: Validator&lt;string, string, string&gt;;
+        surname: Validator&lt;...&gt;;
+    };
+}) | undefined">subFormValidators</data-lsp></span><span style="color:#ABB2BF">: () </span><span style="color:#C678DD">=&gt;</span><span style="color:#ABB2BF"> ({</span></div><div class="line"><span style="color:#ABB2BF">        </span><span style="color:#E06C75"><data-lsp lsp="(property) familyMembers: {
+    name: Validator&lt;string, string, string&gt;;
+    surname: Validator&lt;string, string, string&gt;;
+}">familyMembers</data-lsp></span><span style="color:#ABB2BF">: {</span></div><div class="line"><span style="color:#ABB2BF">          </span><span style="color:#E06C75"><data-lsp lsp="(property) name: Validator&lt;string, string, string&gt;">name</data-lsp></span><span style="color:#ABB2BF">: </span><span style="color:#E5C07B"><data-lsp lsp="(alias) const validators: {
+    lengthRange: &lt;E, S extends string&gt;(minLength: number, maxLength: number, errorMessage: E) =&gt; Validator&lt;string, S, E&gt;;
+    minLength: &lt;E, S extends string&gt;(length: number, errorMessage: E) =&gt; Validator&lt;...&gt;;
+    ... 11 more ...;
+    validateIfDefined: &lt;I, O, E&gt;(contentValidator: Validator&lt;...&gt;) =&gt; Validator&lt;...&gt;;
+}
+import validators">validators</data-lsp></span><span style="color:#ABB2BF">.</span><span style="color:#61AFEF"><data-lsp lsp="(property) minLength: &lt;string, string&gt;(length: number, errorMessage: string) =&gt; Validator&lt;string, string, string&gt;">minLength</data-lsp></span><span style="color:#ABB2BF">(</span><span style="color:#D19A66">1</span><span style="color:#ABB2BF">, </span><span style="color:#98C379">&quot;Family member name is required&quot;</span><span style="color:#ABB2BF">),</span></div><div class="line"><span style="color:#ABB2BF">          </span><span style="color:#E06C75"><data-lsp lsp="(property) surname: Validator&lt;string, string, string&gt;">surname</data-lsp></span><span style="color:#ABB2BF">: </span><span style="color:#E5C07B"><data-lsp lsp="(alias) const validators: {
+    lengthRange: &lt;E, S extends string&gt;(minLength: number, maxLength: number, errorMessage: E) =&gt; Validator&lt;string, S, E&gt;;
+    minLength: &lt;E, S extends string&gt;(length: number, errorMessage: E) =&gt; Validator&lt;...&gt;;
+    ... 11 more ...;
+    validateIfDefined: &lt;I, O, E&gt;(contentValidator: Validator&lt;...&gt;) =&gt; Validator&lt;...&gt;;
+}
+import validators">validators</data-lsp></span><span style="color:#ABB2BF">.</span><span style="color:#61AFEF"><data-lsp lsp="(property) minLength: &lt;string, string&gt;(length: number, errorMessage: string) =&gt; Validator&lt;string, string, string&gt;">minLength</data-lsp></span><span style="color:#ABB2BF">(</span><span style="color:#D19A66">1</span><span style="color:#ABB2BF">, </span><span style="color:#98C379">&quot;Family member surname is required&quot;</span><span style="color:#ABB2BF">),</span></div><div class="line"><span style="color:#ABB2BF">        },</span></div><div class="line"><span style="color:#ABB2BF">      }),</span></div><div class="line"><span style="color:#ABB2BF">    },</span></div><div class="line"><span style="color:#ABB2BF">    {</span></div><div class="line"><span style="color:#ABB2BF">      </span><span style="color:#61AFEF"><data-lsp lsp="(property) onSubmit: (values: ValidatedValues&lt;{
+    name: string;
+    surname: string;
+    familyMembers: SubFormValue&lt;FamilyMember[]&gt;;
+}, {}, {
+    familyMembers: {
+        name: Validator&lt;string, string, string&gt;;
+        surname: Validator&lt;...&gt;;
+    };
+}&gt;) =&gt; Promise&lt;...&gt;">onSubmit</data-lsp></span><span style="color:#ABB2BF">: () </span><span style="color:#C678DD">=&gt;</span><span style="color:#ABB2BF"> </span><span style="color:#E5C07B"><data-lsp lsp="var Promise: PromiseConstructor">Promise</data-lsp></span><span style="color:#ABB2BF">.</span><span style="color:#61AFEF"><data-lsp lsp="(method) PromiseConstructor.resolve&lt;Success&lt;null&gt; | Failure&lt;never&gt;&gt;(value: Success&lt;null&gt; | Failure&lt;never&gt; | PromiseLike&lt;Success&lt;null&gt; | Failure&lt;never&gt;&gt;): Promise&lt;...&gt; (+1 overload)">resolve</data-lsp></span><span style="color:#ABB2BF">(</span><span style="color:#61AFEF"><data-lsp lsp="(alias) success&lt;never, null&gt;(success: null): Result&lt;never, null&gt;
+import success">success</data-lsp></span><span style="color:#ABB2BF">(</span><span style="color:#D19A66">null</span><span style="color:#ABB2BF">)),</span></div><div class="line"><span style="color:#ABB2BF">    }</span></div><div class="line"><span style="color:#ABB2BF">  );</span></div><div class="line"> </div><div class="line"><span style="color:#ABB2BF">  </span><span style="color:#C678DD">const</span><span style="color:#ABB2BF"> </span><span style="color:#E5C07B"><data-lsp lsp="const emptyFamilyMember: {
+    name: string;
+    surname: string;
+}">emptyFamilyMember</data-lsp></span><span style="color:#ABB2BF"> </span><span style="color:#56B6C2">=</span><span style="color:#ABB2BF"> {</span></div><div class="line"><span style="color:#ABB2BF">    </span><span style="color:#E06C75"><data-lsp lsp="(property) name: string">name</data-lsp></span><span style="color:#ABB2BF">: </span><span style="color:#98C379">&quot;&quot;</span><span style="color:#ABB2BF">,</span></div><div class="line"><span style="color:#ABB2BF">    </span><span style="color:#E06C75"><data-lsp lsp="(property) surname: string">surname</data-lsp></span><span style="color:#ABB2BF">: </span><span style="color:#98C379">&quot;&quot;</span><span style="color:#ABB2BF">,</span></div><div class="line"><span style="color:#ABB2BF">  };</span></div><div class="line"> </div><div class="line"><span style="color:#ABB2BF">  </span><span style="color:#C678DD">return</span><span style="color:#ABB2BF"> (</span></div><div class="line"><span style="color:#ABB2BF">    &lt;</span><span style="color:#E06C75"><data-lsp lsp="(property) JSX.IntrinsicElements.div: React.DetailedHTMLProps&lt;React.HTMLAttributes&lt;HTMLDivElement&gt;, HTMLDivElement&gt;">div</data-lsp></span><span style="color:#ABB2BF">&gt;</span></div><div class="line"><span style="color:#ABB2BF">      &lt;</span><span style="color:#E5C07B"><data-lsp lsp="function TextField(props: Props): JSX.Element">TextField</data-lsp></span><span style="color:#ABB2BF"> </span><span style="color:#D19A66"><data-lsp lsp="(JSX attribute) label: string">label</data-lsp></span><span style="color:#56B6C2">=</span><span style="color:#98C379">&quot;name&quot;</span><span style="color:#ABB2BF"> </span><span style="color:#C678DD">{</span><span style="color:#ABB2BF">...</span><span style="color:#61AFEF"><data-lsp lsp="const fieldProps: &lt;&quot;name&quot;&gt;(name: &quot;name&quot;) =&gt; ComputedFieldProps&lt;string, unknown, NonEmptyArray&lt;never&gt;&gt;">fieldProps</data-lsp></span><span style="color:#ABB2BF">(</span><span style="color:#98C379">&quot;name&quot;</span><span style="color:#ABB2BF">)</span><span style="color:#C678DD">}</span><span style="color:#ABB2BF"> /&gt;</span></div><div class="line"><span style="color:#ABB2BF">      &lt;</span><span style="color:#E5C07B"><data-lsp lsp="function TextField(props: Props): JSX.Element">TextField</data-lsp></span><span style="color:#ABB2BF"> </span><span style="color:#D19A66"><data-lsp lsp="(JSX attribute) label: string">label</data-lsp></span><span style="color:#56B6C2">=</span><span style="color:#98C379">&quot;surname&quot;</span><span style="color:#ABB2BF"> </span><span style="color:#C678DD">{</span><span style="color:#ABB2BF">...</span><span style="color:#61AFEF"><data-lsp lsp="const fieldProps: &lt;&quot;surname&quot;&gt;(name: &quot;surname&quot;) =&gt; ComputedFieldProps&lt;string, unknown, NonEmptyArray&lt;never&gt;&gt;">fieldProps</data-lsp></span><span style="color:#ABB2BF">(</span><span style="color:#98C379">&quot;surname&quot;</span><span style="color:#ABB2BF">)</span><span style="color:#C678DD">}</span><span style="color:#ABB2BF"> /&gt;</span></div><div class="line"> </div><div class="line"><span style="color:#ABB2BF">      &lt;</span><span style="color:#E06C75"><data-lsp lsp="(property) JSX.IntrinsicElements.div: React.DetailedHTMLProps&lt;React.HTMLAttributes&lt;HTMLDivElement&gt;, HTMLDivElement&gt;">div</data-lsp></span><span style="color:#ABB2BF">&gt;</span></div><div class="line"><span style="color:#ABB2BF">        &lt;</span><span style="color:#E06C75"><data-lsp lsp="(property) JSX.IntrinsicElements.button: React.DetailedHTMLProps&lt;React.ButtonHTMLAttributes&lt;HTMLButtonElement&gt;, HTMLButtonElement&gt;">button</data-lsp></span></div><div class="line"><span style="color:#ABB2BF">          </span><span style="color:#D19A66"><data-lsp lsp="(JSX attribute) React.DOMAttributes&lt;HTMLButtonElement&gt;.onClick?: React.MouseEventHandler&lt;HTMLButtonElement&gt; | undefined">onClick</data-lsp></span><span style="color:#56B6C2">=</span><span style="color:#C678DD">{</span><span style="color:#ABB2BF">() </span><span style="color:#C678DD">=&gt;</span><span style="color:#ABB2BF"> </span><span style="color:#61AFEF"><data-lsp lsp="const subForm: &lt;&quot;familyMembers&quot;&gt;(name: &quot;familyMembers&quot;) =&gt; SubForm&lt;{
+    name: string;
+    surname: string;
+    familyMembers: SubFormValue&lt;FamilyMember[]&gt;;
+}, &quot;familyMembers&quot;, unknown, never&gt;">subForm</data-lsp></span><span style="color:#ABB2BF">(</span><span style="color:#98C379">&quot;familyMembers&quot;</span><span style="color:#ABB2BF">).</span><span style="color:#61AFEF"><data-lsp lsp="(property) push: &lt;&quot;name&quot; | &quot;surname&quot;, ArrayRecord&lt;{
+    name: string;
+    surname: string;
+    familyMembers: SubFormValue&lt;FamilyMember[]&gt;;
+}, &quot;name&quot; | &quot;surname&quot;&gt;&gt;(value: FamilyMember) =&gt; void">push</data-lsp></span><span style="color:#ABB2BF">(</span><span style="color:#E06C75"><data-lsp lsp="const emptyFamilyMember: {
+    name: string;
+    surname: string;
+}">emptyFamilyMember</data-lsp></span><span style="color:#ABB2BF">)</span><span style="color:#C678DD">}</span></div><div class="line"><span style="color:#ABB2BF">        &gt;</span></div><div class="line"><span style="color:#ABB2BF">          Add family members</span></div><div class="line"><span style="color:#ABB2BF">        &lt;/</span><span style="color:#E06C75"><data-lsp lsp="(property) JSX.IntrinsicElements.button: React.DetailedHTMLProps&lt;React.ButtonHTMLAttributes&lt;HTMLButtonElement&gt;, HTMLButtonElement&gt;">button</data-lsp></span><span style="color:#ABB2BF">&gt;</span></div><div class="line"> </div><div class="line"><span style="color:#ABB2BF">        </span><span style="color:#C678DD">{</span><span style="color:#61AFEF"><data-lsp lsp="const subForm: &lt;&quot;familyMembers&quot;&gt;(name: &quot;familyMembers&quot;) =&gt; SubForm&lt;{
+    name: string;
+    surname: string;
+    familyMembers: SubFormValue&lt;FamilyMember[]&gt;;
+}, &quot;familyMembers&quot;, unknown, never&gt;">subForm</data-lsp></span><span style="color:#ABB2BF">(</span><span style="color:#98C379">&quot;familyMembers&quot;</span><span style="color:#ABB2BF">).</span><span style="color:#E5C07B"><data-lsp lsp="(property) items: {
+    fieldProps: &lt;SK extends &quot;name&quot; | &quot;surname&quot;, V extends ArrayRecord&lt;{
+        name: string;
+        surname: string;
+        familyMembers: SubFormValue&lt;FamilyMember[]&gt;;
+    }, SK&gt;&gt;(name: SK) =&gt; ComputedFieldProps&lt;...&gt;;
+    onChangeValues: &lt;SK extends &quot;name&quot; | &quot;surname&quot;, V extends ArrayRecord&lt;...&gt;&gt;(v: V[&quot;familyMembers&quot;][number]) =&gt; unknown;
+    remove: () =&gt; void;
+    namePrefix: string;
+}[]">items</data-lsp></span><span style="color:#ABB2BF">.</span><span style="color:#61AFEF"><data-lsp lsp="(method) Array&lt;{ fieldProps: &lt;SK extends &quot;name&quot; | &quot;surname&quot;, V extends ArrayRecord&lt;{ name: string; surname: string; familyMembers: SubFormValue&lt;FamilyMember[]&gt;; }, SK&gt;&gt;(name: SK) =&gt; ComputedFieldProps&lt;...&gt;; onChangeValues: &lt;SK extends &quot;name&quot; | &quot;surname&quot;, V extends ArrayRecord&lt;...&gt;&gt;(v: V[&quot;familyMembers&quot;][number]) =&gt; unknown; remove: () =&gt; void; namePrefix: string; }&gt;.map&lt;JSX.Element&gt;(callbackfn: (value: {
+    fieldProps: &lt;SK, V&gt;(name: SK) =&gt; ComputedFieldProps&lt;V[&quot;familyMembers&quot;][number][SK], unknown, NonEmptyArray&lt;never&gt;&gt;;
+    onChangeValues: &lt;SK, V&gt;(v: V[&quot;familyMembers&quot;][number]) =&gt; unknown;
+    remove: () =&gt; void;
+    namePrefix: string;
+}, index: number, array: {
+    fieldProps: &lt;SK, V&gt;(name: SK) =&gt; ComputedFieldProps&lt;V[&quot;familyMembers&quot;][number][SK], unknown, NonEmptyArray&lt;never&gt;&gt;;
+    onChangeValues: &lt;SK, V&gt;(v: V[&quot;familyMembers&quot;][number]) =&gt; unknown;
+    remove: () =&gt; void;
+    namePrefix: string;
+}[]) =&gt; JSX.Element, thisArg?: any): JSX.Element[]">map</data-lsp></span><span style="color:#ABB2BF">((</span><span style="color:#E06C75"><data-lsp lsp="(parameter) familyMember: {
+    fieldProps: &lt;SK extends &quot;name&quot; | &quot;surname&quot;, V extends ArrayRecord&lt;{
+        name: string;
+        surname: string;
+        familyMembers: SubFormValue&lt;FamilyMember[]&gt;;
+    }, SK&gt;&gt;(name: SK) =&gt; ComputedFieldProps&lt;...&gt;;
+    onChangeValues: &lt;SK extends &quot;name&quot; | &quot;surname&quot;, V extends ArrayRecord&lt;...&gt;&gt;(v: V[&quot;familyMembers&quot;][number]) =&gt; unknown;
+    remove: () =&gt; void;
+    namePrefix: string;
+}">familyMember</data-lsp></span><span style="color:#ABB2BF">, </span><span style="color:#E06C75"><data-lsp lsp="(parameter) index: number">index</data-lsp></span><span style="color:#ABB2BF">) </span><span style="color:#C678DD">=&gt;</span><span style="color:#ABB2BF"> (</span></div><div class="line"><span style="color:#ABB2BF">          &lt;</span><span style="color:#E06C75"><data-lsp lsp="(property) JSX.IntrinsicElements.div: React.DetailedHTMLProps&lt;React.HTMLAttributes&lt;HTMLDivElement&gt;, HTMLDivElement&gt;">div</data-lsp></span><span style="color:#ABB2BF"> </span><span style="color:#D19A66"><data-lsp lsp="(JSX attribute) React.Attributes.key?: React.Key | null | undefined">key</data-lsp></span><span style="color:#56B6C2">=</span><span style="color:#C678DD">{</span><span style="color:#98C379">`</span><span style="color:#C678DD">${</span><span style="color:#E5C07B"><data-lsp lsp="(parameter) familyMember: {
+    fieldProps: &lt;SK extends &quot;name&quot; | &quot;surname&quot;, V extends ArrayRecord&lt;{
+        name: string;
+        surname: string;
+        familyMembers: SubFormValue&lt;FamilyMember[]&gt;;
+    }, SK&gt;&gt;(name: SK) =&gt; ComputedFieldProps&lt;...&gt;;
+    onChangeValues: &lt;SK extends &quot;name&quot; | &quot;surname&quot;, V extends ArrayRecord&lt;...&gt;&gt;(v: V[&quot;familyMembers&quot;][number]) =&gt; unknown;
+    remove: () =&gt; void;
+    namePrefix: string;
+}">familyMember</data-lsp></span><span style="color:#ABB2BF">.</span><span style="color:#E06C75"><data-lsp lsp="(property) namePrefix: string">namePrefix</data-lsp></span><span style="color:#C678DD">}</span><span style="color:#98C379">-container`</span><span style="color:#C678DD">}</span><span style="color:#ABB2BF">&gt;</span></div><div class="line"><span style="color:#ABB2BF">            &lt;</span><span style="color:#E5C07B"><data-lsp lsp="function TextField(props: Props): JSX.Element">TextField</data-lsp></span></div><div class="line"><span style="color:#ABB2BF">              </span><span style="color:#D19A66"><data-lsp lsp="(JSX attribute) label: string">label</data-lsp></span><span style="color:#56B6C2">=</span><span style="color:#C678DD">{</span><span style="color:#98C379">`</span><span style="color:#C678DD">${</span><span style="color:#E06C75"><data-lsp lsp="(parameter) index: number">index</data-lsp></span><span style="color:#C678DD">}</span><span style="color:#98C379">-name`</span><span style="color:#C678DD">}</span></div><div class="line"><span style="color:#ABB2BF">              </span><span style="color:#C678DD">{</span><span style="color:#ABB2BF">...</span><span style="color:#E5C07B"><data-lsp lsp="(parameter) familyMember: {
+    fieldProps: &lt;SK extends &quot;name&quot; | &quot;surname&quot;, V extends ArrayRecord&lt;{
+        name: string;
+        surname: string;
+        familyMembers: SubFormValue&lt;FamilyMember[]&gt;;
+    }, SK&gt;&gt;(name: SK) =&gt; ComputedFieldProps&lt;...&gt;;
+    onChangeValues: &lt;SK extends &quot;name&quot; | &quot;surname&quot;, V extends ArrayRecord&lt;...&gt;&gt;(v: V[&quot;familyMembers&quot;][number]) =&gt; unknown;
+    remove: () =&gt; void;
+    namePrefix: string;
+}">familyMember</data-lsp></span><span style="color:#ABB2BF">.</span><span style="color:#61AFEF"><data-lsp lsp="(property) fieldProps: &lt;&quot;name&quot;, ArrayRecord&lt;{
+    name: string;
+    surname: string;
+    familyMembers: SubFormValue&lt;FamilyMember[]&gt;;
+}, &quot;name&quot;&gt;&gt;(name: &quot;name&quot;) =&gt; ComputedFieldProps&lt;string, unknown, NonEmptyArray&lt;...&gt;&gt;">fieldProps</data-lsp></span><span style="color:#ABB2BF">(</span><span style="color:#98C379">&quot;name&quot;</span><span style="color:#ABB2BF">)</span><span style="color:#C678DD">}</span></div><div class="line"><span style="color:#ABB2BF">            /&gt;</span></div><div class="line"><span style="color:#ABB2BF">            &lt;</span><span style="color:#E5C07B"><data-lsp lsp="function TextField(props: Props): JSX.Element">TextField</data-lsp></span></div><div class="line"><span style="color:#ABB2BF">              </span><span style="color:#D19A66"><data-lsp lsp="(JSX attribute) label: string">label</data-lsp></span><span style="color:#56B6C2">=</span><span style="color:#C678DD">{</span><span style="color:#98C379">`</span><span style="color:#C678DD">${</span><span style="color:#E06C75"><data-lsp lsp="(parameter) index: number">index</data-lsp></span><span style="color:#C678DD">}</span><span style="color:#98C379">-surname`</span><span style="color:#C678DD">}</span></div><div class="line"><span style="color:#ABB2BF">              </span><span style="color:#C678DD">{</span><span style="color:#ABB2BF">...</span><span style="color:#E5C07B"><data-lsp lsp="(parameter) familyMember: {
+    fieldProps: &lt;SK extends &quot;name&quot; | &quot;surname&quot;, V extends ArrayRecord&lt;{
+        name: string;
+        surname: string;
+        familyMembers: SubFormValue&lt;FamilyMember[]&gt;;
+    }, SK&gt;&gt;(name: SK) =&gt; ComputedFieldProps&lt;...&gt;;
+    onChangeValues: &lt;SK extends &quot;name&quot; | &quot;surname&quot;, V extends ArrayRecord&lt;...&gt;&gt;(v: V[&quot;familyMembers&quot;][number]) =&gt; unknown;
+    remove: () =&gt; void;
+    namePrefix: string;
+}">familyMember</data-lsp></span><span style="color:#ABB2BF">.</span><span style="color:#61AFEF"><data-lsp lsp="(property) fieldProps: &lt;&quot;surname&quot;, ArrayRecord&lt;{
+    name: string;
+    surname: string;
+    familyMembers: SubFormValue&lt;FamilyMember[]&gt;;
+}, &quot;surname&quot;&gt;&gt;(name: &quot;surname&quot;) =&gt; ComputedFieldProps&lt;string, unknown, NonEmptyArray&lt;...&gt;&gt;">fieldProps</data-lsp></span><span style="color:#ABB2BF">(</span><span style="color:#98C379">&quot;surname&quot;</span><span style="color:#ABB2BF">)</span><span style="color:#C678DD">}</span></div><div class="line"><span style="color:#ABB2BF">            /&gt;</span></div><div class="line"><span style="color:#ABB2BF">            &lt;</span><span style="color:#E06C75"><data-lsp lsp="(property) JSX.IntrinsicElements.p: React.DetailedHTMLProps&lt;React.HTMLAttributes&lt;HTMLParagraphElement&gt;, HTMLParagraphElement&gt;">p</data-lsp></span><span style="color:#ABB2BF">&gt;</span></div><div class="line"><span style="color:#ABB2BF">              </span><span style="color:#C678DD">{</span><span style="color:#E5C07B"><data-lsp lsp="(parameter) familyMember: {
+    fieldProps: &lt;SK extends &quot;name&quot; | &quot;surname&quot;, V extends ArrayRecord&lt;{
+        name: string;
+        surname: string;
+        familyMembers: SubFormValue&lt;FamilyMember[]&gt;;
+    }, SK&gt;&gt;(name: SK) =&gt; ComputedFieldProps&lt;...&gt;;
+    onChangeValues: &lt;SK extends &quot;name&quot; | &quot;surname&quot;, V extends ArrayRecord&lt;...&gt;&gt;(v: V[&quot;familyMembers&quot;][number]) =&gt; unknown;
+    remove: () =&gt; void;
+    namePrefix: string;
+}">familyMember</data-lsp></span><span style="color:#ABB2BF">.</span><span style="color:#61AFEF"><data-lsp lsp="(property) fieldProps: &lt;&quot;name&quot;, ArrayRecord&lt;{
+    name: string;
+    surname: string;
+    familyMembers: SubFormValue&lt;FamilyMember[]&gt;;
+}, &quot;name&quot;&gt;&gt;(name: &quot;name&quot;) =&gt; ComputedFieldProps&lt;string, unknown, NonEmptyArray&lt;...&gt;&gt;">fieldProps</data-lsp></span><span style="color:#ABB2BF">(</span><span style="color:#98C379">&quot;name&quot;</span><span style="color:#ABB2BF">).</span><span style="color:#E06C75"><data-lsp lsp="(property) issues?: NonEmptyArray&lt;never&gt; | undefined">issues</data-lsp></span><span style="color:#C678DD">}</span></div><div class="line"><span style="color:#ABB2BF">              &lt;</span><span style="color:#E06C75"><data-lsp lsp="(property) JSX.IntrinsicElements.br: React.DetailedHTMLProps&lt;React.HTMLAttributes&lt;HTMLBRElement&gt;, HTMLBRElement&gt;">br</data-lsp></span><span style="color:#ABB2BF"> /&gt;</span></div><div class="line"><span style="color:#ABB2BF">              </span><span style="color:#C678DD">{</span><span style="color:#E5C07B"><data-lsp lsp="(parameter) familyMember: {
+    fieldProps: &lt;SK extends &quot;name&quot; | &quot;surname&quot;, V extends ArrayRecord&lt;{
+        name: string;
+        surname: string;
+        familyMembers: SubFormValue&lt;FamilyMember[]&gt;;
+    }, SK&gt;&gt;(name: SK) =&gt; ComputedFieldProps&lt;...&gt;;
+    onChangeValues: &lt;SK extends &quot;name&quot; | &quot;surname&quot;, V extends ArrayRecord&lt;...&gt;&gt;(v: V[&quot;familyMembers&quot;][number]) =&gt; unknown;
+    remove: () =&gt; void;
+    namePrefix: string;
+}">familyMember</data-lsp></span><span style="color:#ABB2BF">.</span><span style="color:#61AFEF"><data-lsp lsp="(property) fieldProps: &lt;&quot;surname&quot;, ArrayRecord&lt;{
+    name: string;
+    surname: string;
+    familyMembers: SubFormValue&lt;FamilyMember[]&gt;;
+}, &quot;surname&quot;&gt;&gt;(name: &quot;surname&quot;) =&gt; ComputedFieldProps&lt;string, unknown, NonEmptyArray&lt;...&gt;&gt;">fieldProps</data-lsp></span><span style="color:#ABB2BF">(</span><span style="color:#98C379">&quot;surname&quot;</span><span style="color:#ABB2BF">).</span><span style="color:#E06C75"><data-lsp lsp="(property) issues?: NonEmptyArray&lt;never&gt; | undefined">issues</data-lsp></span><span style="color:#C678DD">}</span></div><div class="line"><span style="color:#ABB2BF">            &lt;/</span><span style="color:#E06C75"><data-lsp lsp="(property) JSX.IntrinsicElements.p: React.DetailedHTMLProps&lt;React.HTMLAttributes&lt;HTMLParagraphElement&gt;, HTMLParagraphElement&gt;">p</data-lsp></span><span style="color:#ABB2BF">&gt;</span></div><div class="line"><span style="color:#ABB2BF">          &lt;/</span><span style="color:#E06C75"><data-lsp lsp="(property) JSX.IntrinsicElements.div: React.DetailedHTMLProps&lt;React.HTMLAttributes&lt;HTMLDivElement&gt;, HTMLDivElement&gt;">div</data-lsp></span><span style="color:#ABB2BF">&gt;</span></div><div class="line"><span style="color:#ABB2BF">        ))</span><span style="color:#C678DD">}</span></div><div class="line"><span style="color:#ABB2BF">      &lt;/</span><span style="color:#E06C75"><data-lsp lsp="(property) JSX.IntrinsicElements.div: React.DetailedHTMLProps&lt;React.HTMLAttributes&lt;HTMLDivElement&gt;, HTMLDivElement&gt;">div</data-lsp></span><span style="color:#ABB2BF">&gt;</span></div><div class="line"> </div><div class="line"><span style="color:#ABB2BF">      &lt;</span><span style="color:#E06C75"><data-lsp lsp="(property) JSX.IntrinsicElements.button: React.DetailedHTMLProps&lt;React.ButtonHTMLAttributes&lt;HTMLButtonElement&gt;, HTMLButtonElement&gt;">button</data-lsp></span><span style="color:#ABB2BF"> </span><span style="color:#D19A66"><data-lsp lsp="(JSX attribute) React.DOMAttributes&lt;HTMLButtonElement&gt;.onClick?: React.MouseEventHandler&lt;HTMLButtonElement&gt; | undefined">onClick</data-lsp></span><span style="color:#56B6C2">=</span><span style="color:#C678DD">{</span><span style="color:#E06C75"><data-lsp lsp="const handleSubmit: () =&gt; Promise&lt;Result&lt;unknown, unknown&gt;&gt;">handleSubmit</data-lsp></span><span style="color:#C678DD">}</span><span style="color:#ABB2BF">&gt;Sign up&lt;/</span><span style="color:#E06C75"><data-lsp lsp="(property) JSX.IntrinsicElements.button: React.DetailedHTMLProps&lt;React.ButtonHTMLAttributes&lt;HTMLButtonElement&gt;, HTMLButtonElement&gt;">button</data-lsp></span><span style="color:#ABB2BF">&gt;</span></div><div class="line"><span style="color:#ABB2BF">    &lt;/</span><span style="color:#E06C75"><data-lsp lsp="(property) JSX.IntrinsicElements.div: React.DetailedHTMLProps&lt;React.HTMLAttributes&lt;HTMLDivElement&gt;, HTMLDivElement&gt;">div</data-lsp></span><span style="color:#ABB2BF">&gt;</span></div><div class="line"><span style="color:#ABB2BF">  );</span></div><div class="line"><span style="color:#ABB2BF">};</span></div></code></div><button type="button" aria-label="Copy code to clipboard" class="copy-button">Copy</button></pre><p>Let&#x27;s break down the code above.</p><h2><a aria-hidden="true" tabindex="-1" class="anchor enhancedAnchor_prK2" id="define-a-sub-form"></a>Define a sub form<a class="hash-link" href="#define-a-sub-form" title="Direct link to heading">#</a></h2><p>The <code>subFormValue</code> function is used to initialize a subform: this instructs <code>formo</code> to treat the field as a sub form, rather than a regular top-level field.
+If the initial state is an empty array you will need to provide a type hint, since TypeScript won&#x27;t be able to infer the type for you, for example:</p><pre class="shiki min-light twoslash lsp" style="background-color:#ffffff;color:#24292eff"><div class="language-id">ts</div><div class="code-container"><code><div class="line"><span style="color:#6F42C1"><data-lsp lsp="(alias) subFormValue&lt;FamilyMember[]&gt;(arrayFieldValue: FamilyMember[]): SubFormValue&lt;FamilyMember[]&gt;
+import subFormValue" style="border-bottom:solid 2px lightgrey">subFormValue</data-lsp></span><span style="color:#24292EFF">([] </span><span style="color:#D32F2F">as</span><span style="color:#24292EFF"> </span><span style="color:#6F42C1"><data-lsp lsp="interface Array&lt;T&gt;">Array</data-lsp></span><span style="color:#24292EFF">&lt;</span><span style="color:#6F42C1"><data-lsp lsp="type FamilyMember = {
+    name: string;
+    surname: string;
+}">FamilyMember</data-lsp></span><span style="color:#24292EFF">&gt;);</span></div><div class="meta-line"><span class="popover-prefix">     </span><span class="popover"><div class="arrow"></div>(alias) subFormValue&lt;FamilyMember[]&gt;(arrayFieldValue: FamilyMember[]): SubFormValue&lt;FamilyMember[]&gt;
+import subFormValue</span></div></code></div><button type="button" aria-label="Copy code to clipboard" class="copy-button">Copy</button></pre><pre class="shiki one-dark-pro twoslash lsp" style="background-color:#282c34;color:#abb2bf"><div class="language-id">ts</div><div class="code-container"><code><div class="line"><span style="color:#61AFEF"><data-lsp lsp="(alias) subFormValue&lt;FamilyMember[]&gt;(arrayFieldValue: FamilyMember[]): SubFormValue&lt;FamilyMember[]&gt;
+import subFormValue" style="border-bottom:solid 2px lightgrey">subFormValue</data-lsp></span><span style="color:#ABB2BF">([] </span><span style="color:#C678DD">as</span><span style="color:#ABB2BF"> </span><span style="color:#E5C07B"><data-lsp lsp="interface Array&lt;T&gt;">Array</data-lsp></span><span style="color:#ABB2BF">&lt;</span><span style="color:#E5C07B"><data-lsp lsp="type FamilyMember = {
+    name: string;
+    surname: string;
+}">FamilyMember</data-lsp></span><span style="color:#ABB2BF">&gt;);</span></div><div class="meta-line"><span class="popover-prefix">     </span><span class="popover"><div class="arrow"></div>(alias) subFormValue&lt;FamilyMember[]&gt;(arrayFieldValue: FamilyMember[]): SubFormValue&lt;FamilyMember[]&gt;
+import subFormValue</span></div></code></div><button type="button" aria-label="Copy code to clipboard" class="copy-button">Copy</button></pre><p>otherwise, you can explicitly define the type of the assigned constant</p><pre class="shiki min-light twoslash lsp" style="background-color:#ffffff;color:#24292eff"><div class="language-id">ts</div><div class="code-container"><code><div class="line"><span style="color:#D32F2F">const</span><span style="color:#24292EFF"> </span><span style="color:#1976D2"><data-lsp lsp="const familyMembersInitialState: FamilyMember[]">familyMembersInitialState</data-lsp></span><span style="color:#D32F2F">:</span><span style="color:#24292EFF"> </span><span style="color:#6F42C1"><data-lsp lsp="interface Array&lt;T&gt;">Array</data-lsp></span><span style="color:#24292EFF">&lt;</span><span style="color:#6F42C1"><data-lsp lsp="type FamilyMember = {
+    name: string;
+    surname: string;
+}">FamilyMember</data-lsp></span><span style="color:#24292EFF">&gt; </span><span style="color:#D32F2F">=</span><span style="color:#24292EFF"> [];</span></div><div class="line"><span style="color:#6F42C1"><data-lsp lsp="(alias) subFormValue&lt;FamilyMember[]&gt;(arrayFieldValue: FamilyMember[]): SubFormValue&lt;FamilyMember[]&gt;
+import subFormValue" style="border-bottom:solid 2px lightgrey">subFormValue</data-lsp></span><span style="color:#24292EFF">(<data-lsp lsp="const familyMembersInitialState: FamilyMember[]">familyMembersInitialState</data-lsp>);</span></div><div class="meta-line"><span class="popover-prefix">     </span><span class="popover"><div class="arrow"></div>(alias) subFormValue&lt;FamilyMember[]&gt;(arrayFieldValue: FamilyMember[]): SubFormValue&lt;FamilyMember[]&gt;
+import subFormValue</span></div></code></div><button type="button" aria-label="Copy code to clipboard" class="copy-button">Copy</button></pre><pre class="shiki one-dark-pro twoslash lsp" style="background-color:#282c34;color:#abb2bf"><div class="language-id">ts</div><div class="code-container"><code><div class="line"><span style="color:#C678DD">const</span><span style="color:#ABB2BF"> </span><span style="color:#E5C07B"><data-lsp lsp="const familyMembersInitialState: FamilyMember[]">familyMembersInitialState</data-lsp></span><span style="color:#ABB2BF">: </span><span style="color:#E5C07B"><data-lsp lsp="interface Array&lt;T&gt;">Array</data-lsp></span><span style="color:#ABB2BF">&lt;</span><span style="color:#E5C07B"><data-lsp lsp="type FamilyMember = {
+    name: string;
+    surname: string;
+}">FamilyMember</data-lsp></span><span style="color:#ABB2BF">&gt; </span><span style="color:#56B6C2">=</span><span style="color:#ABB2BF"> [];</span></div><div class="line"><span style="color:#61AFEF"><data-lsp lsp="(alias) subFormValue&lt;FamilyMember[]&gt;(arrayFieldValue: FamilyMember[]): SubFormValue&lt;FamilyMember[]&gt;
+import subFormValue" style="border-bottom:solid 2px lightgrey">subFormValue</data-lsp></span><span style="color:#ABB2BF">(</span><span style="color:#E06C75"><data-lsp lsp="const familyMembersInitialState: FamilyMember[]">familyMembersInitialState</data-lsp></span><span style="color:#ABB2BF">);</span></div><div class="meta-line"><span class="popover-prefix">     </span><span class="popover"><div class="arrow"></div>(alias) subFormValue&lt;FamilyMember[]&gt;(arrayFieldValue: FamilyMember[]): SubFormValue&lt;FamilyMember[]&gt;
+import subFormValue</span></div></code></div><button type="button" aria-label="Copy code to clipboard" class="copy-button">Copy</button></pre><p><code>subFormValidators</code> work the same as <code>fieldValidators</code>, except they are applied to each of the members of the &quot;sub form&quot; fields.</p><pre class="shiki min-light twoslash lsp" style="background-color:#ffffff;color:#24292eff"><div class="language-id">ts</div><div class="code-container"><code><div class="line"><span style="color:#D32F2F">const</span><span style="color:#24292EFF"> { </span><span style="color:#1976D2"><data-lsp lsp="const handleSubmit: () =&gt; Promise&lt;Result&lt;unknown, unknown&gt;&gt;">handleSubmit</data-lsp></span><span style="color:#212121">,</span><span style="color:#24292EFF"> </span><span style="color:#1976D2"><data-lsp lsp="const fieldProps: &lt;K extends SimpleValueKeys&lt;{
+    name: string;
+    surname: string;
+    familyMembers: SubFormValue&lt;FamilyMember[]&gt;;
+}&gt;&gt;(name: K) =&gt; ComputedFieldProps&lt;{
+    name: string;
+    surname: string;
+    familyMembers: SubFormValue&lt;FamilyMember[]&gt;;
+}[K], unknown, NonEmptyArray&lt;...&gt;&gt;">fieldProps</data-lsp></span><span style="color:#212121">,</span><span style="color:#24292EFF"> </span><span style="color:#1976D2"><data-lsp lsp="const subForm: &lt;K extends &quot;familyMembers&quot;&gt;(name: K) =&gt; SubForm&lt;{
+    name: string;
+    surname: string;
+    familyMembers: SubFormValue&lt;FamilyMember[]&gt;;
+}, K, unknown, never&gt;">subForm</data-lsp></span><span style="color:#212121">,</span><span style="color:#24292EFF"> </span><span style="color:#1976D2"><data-lsp lsp="const formErrors: undefined">formErrors</data-lsp></span><span style="color:#24292EFF"> } </span><span style="color:#D32F2F">=</span><span style="color:#24292EFF"> </span><span style="color:#6F42C1"><data-lsp lsp="(alias) useFormo&lt;{
+    name: string;
+    surname: string;
+    familyMembers: SubFormValue&lt;FamilyMember[]&gt;;
+}, {}, {
+    familyMembers: {
+        name: Validator&lt;unknown, unknown, string&gt;;
+        surname: Validator&lt;unknown, unknown, string&gt;;
+    };
+}, never, unknown&gt;(args_0: {
+    ...;
+}, args_1: {
+    ...;
+}): UseFormReturn&lt;...&gt;
+import useFormo">useFormo</data-lsp></span><span style="color:#24292EFF">(</span></div><div class="line"><span style="color:#24292EFF">  {</span></div><div class="line"><span style="color:#24292EFF">    <data-lsp lsp="(property) initialValues: {
+    name: string;
+    surname: string;
+    familyMembers: SubFormValue&lt;FamilyMember[]&gt;;
+}">initialValues</data-lsp></span><span style="color:#D32F2F">:</span><span style="color:#24292EFF"> {</span></div><div class="line"><span style="color:#24292EFF">      <data-lsp lsp="(property) name: string">name</data-lsp></span><span style="color:#D32F2F">:</span><span style="color:#24292EFF"> </span><span style="color:#22863A">&quot;Jhon&quot;</span><span style="color:#212121">,</span></div><div class="line"><span style="color:#24292EFF">      <data-lsp lsp="(property) surname: string">surname</data-lsp></span><span style="color:#D32F2F">:</span><span style="color:#24292EFF"> </span><span style="color:#22863A">&quot;Doe&quot;</span><span style="color:#212121">,</span></div><div class="line"><span style="color:#24292EFF">      <data-lsp lsp="(property) familyMembers: SubFormValue&lt;FamilyMember[]&gt;">familyMembers</data-lsp></span><span style="color:#D32F2F">:</span><span style="color:#24292EFF"> </span><span style="color:#6F42C1"><data-lsp lsp="(alias) subFormValue&lt;FamilyMember[]&gt;(arrayFieldValue: FamilyMember[]): SubFormValue&lt;FamilyMember[]&gt;
+import subFormValue">subFormValue</data-lsp></span><span style="color:#24292EFF">&lt;</span><span style="color:#6F42C1"><data-lsp lsp="interface Array&lt;T&gt;">Array</data-lsp></span><span style="color:#24292EFF">&lt;</span><span style="color:#6F42C1"><data-lsp lsp="type FamilyMember = {
+    name: string;
+    surname: string;
+}">FamilyMember</data-lsp></span><span style="color:#24292EFF">&gt;&gt;([])</span><span style="color:#212121">,</span></div><div class="line"><span style="color:#24292EFF">    }</span><span style="color:#212121">,</span></div><div class="line"><span style="color:#24292EFF">    </span><span style="color:#6F42C1"><data-lsp lsp="(property) fieldValidators: (values: {
+    name: string;
+    surname: string;
+    familyMembers: SubFormValue&lt;FamilyMember[]&gt;;
+}) =&gt; {}">fieldValidators</data-lsp></span><span style="color:#D32F2F">:</span><span style="color:#24292EFF"> () </span><span style="color:#D32F2F">=&gt;</span><span style="color:#24292EFF"> ({})</span><span style="color:#212121">,</span></div><div class="line"><span style="color:#24292EFF">    </span><span style="color:#6F42C1"><data-lsp lsp="(property) subFormValidators?: ((values: {
+    name: string;
+    surname: string;
+    familyMembers: SubFormValue&lt;FamilyMember[]&gt;;
+}, index: number) =&gt; {
+    familyMembers: {
+        name: Validator&lt;unknown, unknown, string&gt;;
+        surname: Validator&lt;...&gt;;
+    };
+}) | undefined">subFormValidators</data-lsp></span><span style="color:#D32F2F">:</span><span style="color:#24292EFF"> () </span><span style="color:#D32F2F">=&gt;</span><span style="color:#24292EFF"> ({</span></div><div class="line"><span style="color:#24292EFF">      <data-lsp lsp="(property) familyMembers: {
+    name: Validator&lt;unknown, unknown, string&gt;;
+    surname: Validator&lt;unknown, unknown, string&gt;;
+}">familyMembers</data-lsp></span><span style="color:#D32F2F">:</span><span style="color:#24292EFF"> {</span></div><div class="line"><span style="color:#24292EFF">        <data-lsp lsp="(property) name: Validator&lt;unknown, unknown, string&gt;">name</data-lsp></span><span style="color:#D32F2F">:</span><span style="color:#24292EFF"> </span><span style="color:#1976D2"><data-lsp lsp="(alias) const validators: {
+    lengthRange: &lt;E, S extends string&gt;(minLength: number, maxLength: number, errorMessage: E) =&gt; Validator&lt;string, S, E&gt;;
+    minLength: &lt;E, S extends string&gt;(length: number, errorMessage: E) =&gt; Validator&lt;...&gt;;
+    ... 11 more ...;
+    validateIfDefined: &lt;I, O, E&gt;(contentValidator: Validator&lt;...&gt;) =&gt; Validator&lt;...&gt;;
+}
+import validators">validators</data-lsp></span><span style="color:#6F42C1">.<data-lsp lsp="(property) fromPredicate: &lt;unknown, string&gt;(predicate: (input: unknown) =&gt; boolean, errorMessage: string) =&gt; Validator&lt;unknown, unknown, string&gt; (+1 overload)">fromPredicate</data-lsp></span><span style="color:#24292EFF">(</span></div><div class="line"><span style="color:#24292EFF">          (<data-lsp lsp="(parameter) i: unknown">i</data-lsp>) </span><span style="color:#D32F2F">=&gt;</span><span style="color:#24292EFF"> </span><span style="color:#D32F2F">typeof</span><span style="color:#24292EFF"> <data-lsp lsp="(parameter) i: unknown">i</data-lsp> </span><span style="color:#D32F2F">===</span><span style="color:#24292EFF"> </span><span style="color:#22863A">&quot;string&quot;</span><span style="color:#24292EFF"> </span><span style="color:#D32F2F">&amp;&amp;</span><span style="color:#24292EFF"> </span><span style="color:#1976D2"><data-lsp lsp="(parameter) i: string">i</data-lsp></span><span style="color:#24292EFF">.</span><span style="color:#1976D2"><data-lsp lsp="(property) String.length: number">length</data-lsp></span><span style="color:#24292EFF"> </span><span style="color:#D32F2F">&gt;</span><span style="color:#24292EFF"> </span><span style="color:#1976D2">0</span><span style="color:#212121">,</span></div><div class="line"><span style="color:#24292EFF">          </span><span style="color:#22863A">&quot;Family member name is required&quot;</span></div><div class="line"><span style="color:#24292EFF">        )</span><span style="color:#212121">,</span></div><div class="line"><span style="color:#24292EFF">        <data-lsp lsp="(property) surname: Validator&lt;unknown, unknown, string&gt;">surname</data-lsp></span><span style="color:#D32F2F">:</span><span style="color:#24292EFF"> </span><span style="color:#1976D2"><data-lsp lsp="(alias) const validators: {
+    lengthRange: &lt;E, S extends string&gt;(minLength: number, maxLength: number, errorMessage: E) =&gt; Validator&lt;string, S, E&gt;;
+    minLength: &lt;E, S extends string&gt;(length: number, errorMessage: E) =&gt; Validator&lt;...&gt;;
+    ... 11 more ...;
+    validateIfDefined: &lt;I, O, E&gt;(contentValidator: Validator&lt;...&gt;) =&gt; Validator&lt;...&gt;;
+}
+import validators">validators</data-lsp></span><span style="color:#6F42C1">.<data-lsp lsp="(property) fromPredicate: &lt;unknown, string&gt;(predicate: (input: unknown) =&gt; boolean, errorMessage: string) =&gt; Validator&lt;unknown, unknown, string&gt; (+1 overload)">fromPredicate</data-lsp></span><span style="color:#24292EFF">(</span></div><div class="line"><span style="color:#24292EFF">          (<data-lsp lsp="(parameter) i: unknown">i</data-lsp>) </span><span style="color:#D32F2F">=&gt;</span><span style="color:#24292EFF"> </span><span style="color:#D32F2F">typeof</span><span style="color:#24292EFF"> <data-lsp lsp="(parameter) i: unknown">i</data-lsp> </span><span style="color:#D32F2F">===</span><span style="color:#24292EFF"> </span><span style="color:#22863A">&quot;string&quot;</span><span style="color:#24292EFF"> </span><span style="color:#D32F2F">&amp;&amp;</span><span style="color:#24292EFF"> </span><span style="color:#1976D2"><data-lsp lsp="(parameter) i: string">i</data-lsp></span><span style="color:#24292EFF">.</span><span style="color:#1976D2"><data-lsp lsp="(property) String.length: number">length</data-lsp></span><span style="color:#24292EFF"> </span><span style="color:#D32F2F">&gt;</span><span style="color:#24292EFF"> </span><span style="color:#1976D2">0</span><span style="color:#212121">,</span></div><div class="line"><span style="color:#24292EFF">          </span><span style="color:#22863A">&quot;Family member surname is required&quot;</span></div><div class="line"><span style="color:#24292EFF">        )</span><span style="color:#212121">,</span></div><div class="line"><span style="color:#24292EFF">      }</span><span style="color:#212121">,</span></div><div class="line"><span style="color:#24292EFF">    })</span><span style="color:#212121">,</span></div><div class="line"><span style="color:#24292EFF">  }</span><span style="color:#212121">,</span></div><div class="line"><span style="color:#24292EFF">  {</span></div><div class="line"><span style="color:#24292EFF">    </span><span style="color:#6F42C1"><data-lsp lsp="(property) onSubmit: (values: ValidatedValues&lt;{
+    name: string;
+    surname: string;
+    familyMembers: SubFormValue&lt;FamilyMember[]&gt;;
+}, {}, {
+    familyMembers: {
+        name: Validator&lt;unknown, unknown, string&gt;;
+        surname: Validator&lt;...&gt;;
+    };
+}&gt;) =&gt; Promise&lt;...&gt;">onSubmit</data-lsp></span><span style="color:#D32F2F">:</span><span style="color:#24292EFF"> () </span><span style="color:#D32F2F">=&gt;</span><span style="color:#24292EFF"> </span><span style="color:#1976D2"><data-lsp lsp="var Promise: PromiseConstructor">Promise</data-lsp></span><span style="color:#6F42C1">.<data-lsp lsp="(method) PromiseConstructor.resolve&lt;Success&lt;null&gt; | Failure&lt;never&gt;&gt;(value: Success&lt;null&gt; | Failure&lt;never&gt; | PromiseLike&lt;Success&lt;null&gt; | Failure&lt;never&gt;&gt;): Promise&lt;...&gt; (+1 overload)">resolve</data-lsp></span><span style="color:#24292EFF">(</span><span style="color:#6F42C1"><data-lsp lsp="(alias) success&lt;never, null&gt;(success: null): Result&lt;never, null&gt;
+import success">success</data-lsp></span><span style="color:#24292EFF">(</span><span style="color:#1976D2">null</span><span style="color:#24292EFF">))</span><span style="color:#212121">,</span></div><div class="line"><span style="color:#24292EFF">  }</span></div><div class="line"><span style="color:#24292EFF">);</span></div><div class="line"> </div></code></div><button type="button" aria-label="Copy code to clipboard" class="copy-button">Copy</button></pre><pre class="shiki one-dark-pro twoslash lsp" style="background-color:#282c34;color:#abb2bf"><div class="language-id">ts</div><div class="code-container"><code><div class="line"><span style="color:#C678DD">const</span><span style="color:#ABB2BF"> { </span><span style="color:#E5C07B"><data-lsp lsp="const handleSubmit: () =&gt; Promise&lt;Result&lt;unknown, unknown&gt;&gt;">handleSubmit</data-lsp></span><span style="color:#ABB2BF">, </span><span style="color:#E5C07B"><data-lsp lsp="const fieldProps: &lt;K extends SimpleValueKeys&lt;{
+    name: string;
+    surname: string;
+    familyMembers: SubFormValue&lt;FamilyMember[]&gt;;
+}&gt;&gt;(name: K) =&gt; ComputedFieldProps&lt;{
+    name: string;
+    surname: string;
+    familyMembers: SubFormValue&lt;FamilyMember[]&gt;;
+}[K], unknown, NonEmptyArray&lt;...&gt;&gt;">fieldProps</data-lsp></span><span style="color:#ABB2BF">, </span><span style="color:#E5C07B"><data-lsp lsp="const subForm: &lt;K extends &quot;familyMembers&quot;&gt;(name: K) =&gt; SubForm&lt;{
+    name: string;
+    surname: string;
+    familyMembers: SubFormValue&lt;FamilyMember[]&gt;;
+}, K, unknown, never&gt;">subForm</data-lsp></span><span style="color:#ABB2BF">, </span><span style="color:#E5C07B"><data-lsp lsp="const formErrors: undefined">formErrors</data-lsp></span><span style="color:#ABB2BF"> } </span><span style="color:#56B6C2">=</span><span style="color:#ABB2BF"> </span><span style="color:#61AFEF"><data-lsp lsp="(alias) useFormo&lt;{
+    name: string;
+    surname: string;
+    familyMembers: SubFormValue&lt;FamilyMember[]&gt;;
+}, {}, {
+    familyMembers: {
+        name: Validator&lt;unknown, unknown, string&gt;;
+        surname: Validator&lt;unknown, unknown, string&gt;;
+    };
+}, never, unknown&gt;(args_0: {
+    ...;
+}, args_1: {
+    ...;
+}): UseFormReturn&lt;...&gt;
+import useFormo">useFormo</data-lsp></span><span style="color:#ABB2BF">(</span></div><div class="line"><span style="color:#ABB2BF">  {</span></div><div class="line"><span style="color:#ABB2BF">    </span><span style="color:#E06C75"><data-lsp lsp="(property) initialValues: {
+    name: string;
+    surname: string;
+    familyMembers: SubFormValue&lt;FamilyMember[]&gt;;
+}">initialValues</data-lsp></span><span style="color:#ABB2BF">: {</span></div><div class="line"><span style="color:#ABB2BF">      </span><span style="color:#E06C75"><data-lsp lsp="(property) name: string">name</data-lsp></span><span style="color:#ABB2BF">: </span><span style="color:#98C379">&quot;Jhon&quot;</span><span style="color:#ABB2BF">,</span></div><div class="line"><span style="color:#ABB2BF">      </span><span style="color:#E06C75"><data-lsp lsp="(property) surname: string">surname</data-lsp></span><span style="color:#ABB2BF">: </span><span style="color:#98C379">&quot;Doe&quot;</span><span style="color:#ABB2BF">,</span></div><div class="line"><span style="color:#ABB2BF">      </span><span style="color:#E06C75"><data-lsp lsp="(property) familyMembers: SubFormValue&lt;FamilyMember[]&gt;">familyMembers</data-lsp></span><span style="color:#ABB2BF">: </span><span style="color:#61AFEF"><data-lsp lsp="(alias) subFormValue&lt;FamilyMember[]&gt;(arrayFieldValue: FamilyMember[]): SubFormValue&lt;FamilyMember[]&gt;
+import subFormValue">subFormValue</data-lsp></span><span style="color:#ABB2BF">&lt;</span><span style="color:#E5C07B"><data-lsp lsp="interface Array&lt;T&gt;">Array</data-lsp></span><span style="color:#ABB2BF">&lt;</span><span style="color:#E5C07B"><data-lsp lsp="type FamilyMember = {
+    name: string;
+    surname: string;
+}">FamilyMember</data-lsp></span><span style="color:#ABB2BF">&gt;&gt;([]),</span></div><div class="line"><span style="color:#ABB2BF">    },</span></div><div class="line"><span style="color:#ABB2BF">    </span><span style="color:#61AFEF"><data-lsp lsp="(property) fieldValidators: (values: {
+    name: string;
+    surname: string;
+    familyMembers: SubFormValue&lt;FamilyMember[]&gt;;
+}) =&gt; {}">fieldValidators</data-lsp></span><span style="color:#ABB2BF">: () </span><span style="color:#C678DD">=&gt;</span><span style="color:#ABB2BF"> ({}),</span></div><div class="line"><span style="color:#ABB2BF">    </span><span style="color:#61AFEF"><data-lsp lsp="(property) subFormValidators?: ((values: {
+    name: string;
+    surname: string;
+    familyMembers: SubFormValue&lt;FamilyMember[]&gt;;
+}, index: number) =&gt; {
+    familyMembers: {
+        name: Validator&lt;unknown, unknown, string&gt;;
+        surname: Validator&lt;...&gt;;
+    };
+}) | undefined">subFormValidators</data-lsp></span><span style="color:#ABB2BF">: () </span><span style="color:#C678DD">=&gt;</span><span style="color:#ABB2BF"> ({</span></div><div class="line"><span style="color:#ABB2BF">      </span><span style="color:#E06C75"><data-lsp lsp="(property) familyMembers: {
+    name: Validator&lt;unknown, unknown, string&gt;;
+    surname: Validator&lt;unknown, unknown, string&gt;;
+}">familyMembers</data-lsp></span><span style="color:#ABB2BF">: {</span></div><div class="line"><span style="color:#ABB2BF">        </span><span style="color:#E06C75"><data-lsp lsp="(property) name: Validator&lt;unknown, unknown, string&gt;">name</data-lsp></span><span style="color:#ABB2BF">: </span><span style="color:#E5C07B"><data-lsp lsp="(alias) const validators: {
+    lengthRange: &lt;E, S extends string&gt;(minLength: number, maxLength: number, errorMessage: E) =&gt; Validator&lt;string, S, E&gt;;
+    minLength: &lt;E, S extends string&gt;(length: number, errorMessage: E) =&gt; Validator&lt;...&gt;;
+    ... 11 more ...;
+    validateIfDefined: &lt;I, O, E&gt;(contentValidator: Validator&lt;...&gt;) =&gt; Validator&lt;...&gt;;
+}
+import validators">validators</data-lsp></span><span style="color:#ABB2BF">.</span><span style="color:#61AFEF"><data-lsp lsp="(property) fromPredicate: &lt;unknown, string&gt;(predicate: (input: unknown) =&gt; boolean, errorMessage: string) =&gt; Validator&lt;unknown, unknown, string&gt; (+1 overload)">fromPredicate</data-lsp></span><span style="color:#ABB2BF">(</span></div><div class="line"><span style="color:#ABB2BF">          (</span><span style="color:#E06C75"><data-lsp lsp="(parameter) i: unknown">i</data-lsp></span><span style="color:#ABB2BF">) </span><span style="color:#C678DD">=&gt;</span><span style="color:#ABB2BF"> </span><span style="color:#C678DD">typeof</span><span style="color:#ABB2BF"> </span><span style="color:#E06C75"><data-lsp lsp="(parameter) i: unknown">i</data-lsp></span><span style="color:#ABB2BF"> </span><span style="color:#56B6C2">===</span><span style="color:#ABB2BF"> </span><span style="color:#98C379">&quot;string&quot;</span><span style="color:#ABB2BF"> </span><span style="color:#56B6C2">&amp;&amp;</span><span style="color:#ABB2BF"> </span><span style="color:#E5C07B"><data-lsp lsp="(parameter) i: string">i</data-lsp></span><span style="color:#ABB2BF">.</span><span style="color:#E06C75"><data-lsp lsp="(property) String.length: number">length</data-lsp></span><span style="color:#ABB2BF"> </span><span style="color:#56B6C2">&gt;</span><span style="color:#ABB2BF"> </span><span style="color:#D19A66">0</span><span style="color:#ABB2BF">,</span></div><div class="line"><span style="color:#ABB2BF">          </span><span style="color:#98C379">&quot;Family member name is required&quot;</span></div><div class="line"><span style="color:#ABB2BF">        ),</span></div><div class="line"><span style="color:#ABB2BF">        </span><span style="color:#E06C75"><data-lsp lsp="(property) surname: Validator&lt;unknown, unknown, string&gt;">surname</data-lsp></span><span style="color:#ABB2BF">: </span><span style="color:#E5C07B"><data-lsp lsp="(alias) const validators: {
+    lengthRange: &lt;E, S extends string&gt;(minLength: number, maxLength: number, errorMessage: E) =&gt; Validator&lt;string, S, E&gt;;
+    minLength: &lt;E, S extends string&gt;(length: number, errorMessage: E) =&gt; Validator&lt;...&gt;;
+    ... 11 more ...;
+    validateIfDefined: &lt;I, O, E&gt;(contentValidator: Validator&lt;...&gt;) =&gt; Validator&lt;...&gt;;
+}
+import validators">validators</data-lsp></span><span style="color:#ABB2BF">.</span><span style="color:#61AFEF"><data-lsp lsp="(property) fromPredicate: &lt;unknown, string&gt;(predicate: (input: unknown) =&gt; boolean, errorMessage: string) =&gt; Validator&lt;unknown, unknown, string&gt; (+1 overload)">fromPredicate</data-lsp></span><span style="color:#ABB2BF">(</span></div><div class="line"><span style="color:#ABB2BF">          (</span><span style="color:#E06C75"><data-lsp lsp="(parameter) i: unknown">i</data-lsp></span><span style="color:#ABB2BF">) </span><span style="color:#C678DD">=&gt;</span><span style="color:#ABB2BF"> </span><span style="color:#C678DD">typeof</span><span style="color:#ABB2BF"> </span><span style="color:#E06C75"><data-lsp lsp="(parameter) i: unknown">i</data-lsp></span><span style="color:#ABB2BF"> </span><span style="color:#56B6C2">===</span><span style="color:#ABB2BF"> </span><span style="color:#98C379">&quot;string&quot;</span><span style="color:#ABB2BF"> </span><span style="color:#56B6C2">&amp;&amp;</span><span style="color:#ABB2BF"> </span><span style="color:#E5C07B"><data-lsp lsp="(parameter) i: string">i</data-lsp></span><span style="color:#ABB2BF">.</span><span style="color:#E06C75"><data-lsp lsp="(property) String.length: number">length</data-lsp></span><span style="color:#ABB2BF"> </span><span style="color:#56B6C2">&gt;</span><span style="color:#ABB2BF"> </span><span style="color:#D19A66">0</span><span style="color:#ABB2BF">,</span></div><div class="line"><span style="color:#ABB2BF">          </span><span style="color:#98C379">&quot;Family member surname is required&quot;</span></div><div class="line"><span style="color:#ABB2BF">        ),</span></div><div class="line"><span style="color:#ABB2BF">      },</span></div><div class="line"><span style="color:#ABB2BF">    }),</span></div><div class="line"><span style="color:#ABB2BF">  },</span></div><div class="line"><span style="color:#ABB2BF">  {</span></div><div class="line"><span style="color:#ABB2BF">    </span><span style="color:#61AFEF"><data-lsp lsp="(property) onSubmit: (values: ValidatedValues&lt;{
+    name: string;
+    surname: string;
+    familyMembers: SubFormValue&lt;FamilyMember[]&gt;;
+}, {}, {
+    familyMembers: {
+        name: Validator&lt;unknown, unknown, string&gt;;
+        surname: Validator&lt;...&gt;;
+    };
+}&gt;) =&gt; Promise&lt;...&gt;">onSubmit</data-lsp></span><span style="color:#ABB2BF">: () </span><span style="color:#C678DD">=&gt;</span><span style="color:#ABB2BF"> </span><span style="color:#E5C07B"><data-lsp lsp="var Promise: PromiseConstructor">Promise</data-lsp></span><span style="color:#ABB2BF">.</span><span style="color:#61AFEF"><data-lsp lsp="(method) PromiseConstructor.resolve&lt;Success&lt;null&gt; | Failure&lt;never&gt;&gt;(value: Success&lt;null&gt; | Failure&lt;never&gt; | PromiseLike&lt;Success&lt;null&gt; | Failure&lt;never&gt;&gt;): Promise&lt;...&gt; (+1 overload)">resolve</data-lsp></span><span style="color:#ABB2BF">(</span><span style="color:#61AFEF"><data-lsp lsp="(alias) success&lt;never, null&gt;(success: null): Result&lt;never, null&gt;
+import success">success</data-lsp></span><span style="color:#ABB2BF">(</span><span style="color:#D19A66">null</span><span style="color:#ABB2BF">)),</span></div><div class="line"><span style="color:#ABB2BF">  }</span></div><div class="line"><span style="color:#ABB2BF">);</span></div><div class="line"> </div></code></div><button type="button" aria-label="Copy code to clipboard" class="copy-button">Copy</button></pre><h2><a aria-hidden="true" tabindex="-1" class="anchor enhancedAnchor_prK2" id="accessing-sub-forms"></a>Accessing sub forms<a class="hash-link" href="#accessing-sub-forms" title="Direct link to heading">#</a></h2><p>Note how <code>subForm</code> and <code>fieldProps</code> statically enforce the correct field names: for example, you can&#x27;t accidentally call <code>subForm(&quot;surname&quot;)</code></p><pre class="shiki min-light twoslash lsp" style="background-color:#ffffff;color:#24292eff"><div class="language-id">ts</div><div class="code-container"><code><div class="line"><span style="color:#6F42C1"><data-lsp lsp="const subForm: &lt;&quot;familyMembers&quot;&gt;(name: &quot;familyMembers&quot;) =&gt; SubForm&lt;{
+    name: string;
+    surname: string;
+    familyMembers: SubFormValue&lt;FamilyMember[]&gt;;
+}, &quot;familyMembers&quot;, unknown, never&gt;">subForm</data-lsp></span><span style="color:#24292EFF">(</span><span style="color:#22863A"><data-err>&quot;name&quot;</data-err></span><span style="color:#24292EFF">);</span></div><span class="error"><span>Argument of type &#x27;&quot;name&quot;&#x27; is not assignable to parameter of type &#x27;&quot;familyMembers&quot;&#x27;.</span><span class="code">2345</span></span><span class="error-behind">Argument of type &#x27;&quot;name&quot;&#x27; is not assignable to parameter of type &#x27;&quot;familyMembers&quot;&#x27;.</span><div class="line"><span style="color:#6F42C1"><data-lsp lsp="const subForm: &lt;&quot;familyMembers&quot;&gt;(name: &quot;familyMembers&quot;) =&gt; SubForm&lt;{
+    name: string;
+    surname: string;
+    familyMembers: SubFormValue&lt;FamilyMember[]&gt;;
+}, &quot;familyMembers&quot;, unknown, never&gt;">subForm</data-lsp></span><span style="color:#24292EFF">(</span><span style="color:#22863A"><data-err>&quot;surname&quot;</data-err></span><span style="color:#24292EFF">);</span></div><span class="error"><span>Argument of type &#x27;&quot;surname&quot;&#x27; is not assignable to parameter of type &#x27;&quot;familyMembers&quot;&#x27;.</span><span class="code">2345</span></span><span class="error-behind">Argument of type &#x27;&quot;surname&quot;&#x27; is not assignable to parameter of type &#x27;&quot;familyMembers&quot;&#x27;.</span><div class="line"> </div><div class="line"><span style="color:#6F42C1"><data-lsp lsp="const subForm: &lt;&quot;familyMembers&quot;&gt;(name: &quot;familyMembers&quot;) =&gt; SubForm&lt;{
+    name: string;
+    surname: string;
+    familyMembers: SubFormValue&lt;FamilyMember[]&gt;;
+}, &quot;familyMembers&quot;, unknown, never&gt;">subForm</data-lsp></span><span style="color:#24292EFF">(</span><span style="color:#22863A">&quot;familyMembers&quot;</span><span style="color:#24292EFF">);</span></div></code></div><button type="button" aria-label="Copy code to clipboard" class="copy-button">Copy</button></pre><pre class="shiki one-dark-pro twoslash lsp" style="background-color:#282c34;color:#abb2bf"><div class="language-id">ts</div><div class="code-container"><code><div class="line"><span style="color:#61AFEF"><data-lsp lsp="const subForm: &lt;&quot;familyMembers&quot;&gt;(name: &quot;familyMembers&quot;) =&gt; SubForm&lt;{
+    name: string;
+    surname: string;
+    familyMembers: SubFormValue&lt;FamilyMember[]&gt;;
+}, &quot;familyMembers&quot;, unknown, never&gt;">subForm</data-lsp></span><span style="color:#ABB2BF">(</span><span style="color:#98C379"><data-err>&quot;name&quot;</data-err></span><span style="color:#ABB2BF">);</span></div><span class="error"><span>Argument of type &#x27;&quot;name&quot;&#x27; is not assignable to parameter of type &#x27;&quot;familyMembers&quot;&#x27;.</span><span class="code">2345</span></span><span class="error-behind">Argument of type &#x27;&quot;name&quot;&#x27; is not assignable to parameter of type &#x27;&quot;familyMembers&quot;&#x27;.</span><div class="line"><span style="color:#61AFEF"><data-lsp lsp="const subForm: &lt;&quot;familyMembers&quot;&gt;(name: &quot;familyMembers&quot;) =&gt; SubForm&lt;{
+    name: string;
+    surname: string;
+    familyMembers: SubFormValue&lt;FamilyMember[]&gt;;
+}, &quot;familyMembers&quot;, unknown, never&gt;">subForm</data-lsp></span><span style="color:#ABB2BF">(</span><span style="color:#98C379"><data-err>&quot;surname&quot;</data-err></span><span style="color:#ABB2BF">);</span></div><span class="error"><span>Argument of type &#x27;&quot;surname&quot;&#x27; is not assignable to parameter of type &#x27;&quot;familyMembers&quot;&#x27;.</span><span class="code">2345</span></span><span class="error-behind">Argument of type &#x27;&quot;surname&quot;&#x27; is not assignable to parameter of type &#x27;&quot;familyMembers&quot;&#x27;.</span><div class="line"> </div><div class="line"><span style="color:#61AFEF"><data-lsp lsp="const subForm: &lt;&quot;familyMembers&quot;&gt;(name: &quot;familyMembers&quot;) =&gt; SubForm&lt;{
+    name: string;
+    surname: string;
+    familyMembers: SubFormValue&lt;FamilyMember[]&gt;;
+}, &quot;familyMembers&quot;, unknown, never&gt;">subForm</data-lsp></span><span style="color:#ABB2BF">(</span><span style="color:#98C379">&quot;familyMembers&quot;</span><span style="color:#ABB2BF">);</span></div></code></div><button type="button" aria-label="Copy code to clipboard" class="copy-button">Copy</button></pre><p>You can add new sub forms to a field using <code>push</code> or <code>insertAt</code>:</p><pre class="shiki min-light twoslash lsp" style="background-color:#ffffff;color:#24292eff"><div class="language-id">tsx</div><div class="code-container"><code><div class="line"><span style="color:#6F42C1"><data-lsp lsp="const subForm: &lt;&quot;familyMembers&quot;&gt;(name: &quot;familyMembers&quot;) =&gt; SubForm&lt;{
+    name: string;
+    surname: string;
+    familyMembers: SubFormValue&lt;FamilyMember[]&gt;;
+}, &quot;familyMembers&quot;, unknown, never&gt;">subForm</data-lsp></span><span style="color:#24292EFF">(</span><span style="color:#22863A">&quot;familyMembers&quot;</span><span style="color:#24292EFF">).<data-lsp lsp="(property) insertAt: &lt;SK extends &quot;name&quot; | &quot;surname&quot;, V extends ArrayRecord&lt;{
+    name: string;
+    surname: string;
+    familyMembers: SubFormValue&lt;FamilyMember[]&gt;;
+}, SK&gt;&gt;(index: number, value: V[&quot;familyMembers&quot;][number]) =&gt; void" style="border-bottom:solid 2px lightgrey">insertAt</data-lsp>;</span></div><div class="meta-line"><span class="popover-prefix">                            </span><span class="popover"><div class="arrow"></div>(property) insertAt: &lt;SK extends &quot;name&quot; | &quot;surname&quot;, V extends ArrayRecord&lt;{
+    name: string;
+    surname: string;
+    familyMembers: SubFormValue&lt;FamilyMember[]&gt;;
+}, SK&gt;&gt;(index: number, value: V[&quot;familyMembers&quot;][number]) =&gt; void</span></div><div class="line"><span style="color:#6F42C1"><data-lsp lsp="const subForm: &lt;&quot;familyMembers&quot;&gt;(name: &quot;familyMembers&quot;) =&gt; SubForm&lt;{
+    name: string;
+    surname: string;
+    familyMembers: SubFormValue&lt;FamilyMember[]&gt;;
+}, &quot;familyMembers&quot;, unknown, never&gt;">subForm</data-lsp></span><span style="color:#24292EFF">(</span><span style="color:#22863A">&quot;familyMembers&quot;</span><span style="color:#24292EFF">).<data-lsp lsp="(property) push: &lt;SK extends &quot;name&quot; | &quot;surname&quot;, V extends ArrayRecord&lt;{
+    name: string;
+    surname: string;
+    familyMembers: SubFormValue&lt;FamilyMember[]&gt;;
+}, SK&gt;&gt;(value: V[&quot;familyMembers&quot;][number]) =&gt; void" style="border-bottom:solid 2px lightgrey">push</data-lsp>;</span></div><div class="meta-line"><span class="popover-prefix">                          </span><span class="popover"><div class="arrow"></div>(property) push: &lt;SK extends &quot;name&quot; | &quot;surname&quot;, V extends ArrayRecord&lt;{
+    name: string;
+    surname: string;
+    familyMembers: SubFormValue&lt;FamilyMember[]&gt;;
+}, SK&gt;&gt;(value: V[&quot;familyMembers&quot;][number]) =&gt; void</span></div></code></div><button type="button" aria-label="Copy code to clipboard" class="copy-button">Copy</button></pre><pre class="shiki one-dark-pro twoslash lsp" style="background-color:#282c34;color:#abb2bf"><div class="language-id">tsx</div><div class="code-container"><code><div class="line"><span style="color:#61AFEF"><data-lsp lsp="const subForm: &lt;&quot;familyMembers&quot;&gt;(name: &quot;familyMembers&quot;) =&gt; SubForm&lt;{
+    name: string;
+    surname: string;
+    familyMembers: SubFormValue&lt;FamilyMember[]&gt;;
+}, &quot;familyMembers&quot;, unknown, never&gt;">subForm</data-lsp></span><span style="color:#ABB2BF">(</span><span style="color:#98C379">&quot;familyMembers&quot;</span><span style="color:#ABB2BF">).</span><span style="color:#E06C75"><data-lsp lsp="(property) insertAt: &lt;SK extends &quot;name&quot; | &quot;surname&quot;, V extends ArrayRecord&lt;{
+    name: string;
+    surname: string;
+    familyMembers: SubFormValue&lt;FamilyMember[]&gt;;
+}, SK&gt;&gt;(index: number, value: V[&quot;familyMembers&quot;][number]) =&gt; void" style="border-bottom:solid 2px lightgrey">insertAt</data-lsp></span><span style="color:#ABB2BF">;</span></div><div class="meta-line"><span class="popover-prefix">                            </span><span class="popover"><div class="arrow"></div>(property) insertAt: &lt;SK extends &quot;name&quot; | &quot;surname&quot;, V extends ArrayRecord&lt;{
+    name: string;
+    surname: string;
+    familyMembers: SubFormValue&lt;FamilyMember[]&gt;;
+}, SK&gt;&gt;(index: number, value: V[&quot;familyMembers&quot;][number]) =&gt; void</span></div><div class="line"><span style="color:#61AFEF"><data-lsp lsp="const subForm: &lt;&quot;familyMembers&quot;&gt;(name: &quot;familyMembers&quot;) =&gt; SubForm&lt;{
+    name: string;
+    surname: string;
+    familyMembers: SubFormValue&lt;FamilyMember[]&gt;;
+}, &quot;familyMembers&quot;, unknown, never&gt;">subForm</data-lsp></span><span style="color:#ABB2BF">(</span><span style="color:#98C379">&quot;familyMembers&quot;</span><span style="color:#ABB2BF">).</span><span style="color:#E06C75"><data-lsp lsp="(property) push: &lt;SK extends &quot;name&quot; | &quot;surname&quot;, V extends ArrayRecord&lt;{
+    name: string;
+    surname: string;
+    familyMembers: SubFormValue&lt;FamilyMember[]&gt;;
+}, SK&gt;&gt;(value: V[&quot;familyMembers&quot;][number]) =&gt; void" style="border-bottom:solid 2px lightgrey">push</data-lsp></span><span style="color:#ABB2BF">;</span></div><div class="meta-line"><span class="popover-prefix">                          </span><span class="popover"><div class="arrow"></div>(property) push: &lt;SK extends &quot;name&quot; | &quot;surname&quot;, V extends ArrayRecord&lt;{
+    name: string;
+    surname: string;
+    familyMembers: SubFormValue&lt;FamilyMember[]&gt;;
+}, SK&gt;&gt;(value: V[&quot;familyMembers&quot;][number]) =&gt; void</span></div></code></div><button type="button" aria-label="Copy code to clipboard" class="copy-button">Copy</button></pre><p>For example, to add a new family member with an initial state, you can use the <code>push</code> method inside a button <code>onClick</code></p><pre class="shiki min-light twoslash lsp" style="background-color:#ffffff;color:#24292eff"><div class="language-id">tsx</div><div class="code-container"><code><div class="line"><span style="color:#D32F2F">const</span><span style="color:#24292EFF"> </span><span style="color:#1976D2"><data-lsp lsp="const emptyFamilyMember: {
+    name: string;
+    surname: string;
+}">emptyFamilyMember</data-lsp></span><span style="color:#24292EFF"> </span><span style="color:#D32F2F">=</span><span style="color:#24292EFF"> {</span></div><div class="line"><span style="color:#24292EFF">  <data-lsp lsp="(property) name: string">name</data-lsp></span><span style="color:#D32F2F">:</span><span style="color:#24292EFF"> </span><span style="color:#22863A">&quot;&quot;</span><span style="color:#212121">,</span></div><div class="line"><span style="color:#24292EFF">  <data-lsp lsp="(property) surname: string">surname</data-lsp></span><span style="color:#D32F2F">:</span><span style="color:#24292EFF"> </span><span style="color:#22863A">&quot;&quot;</span><span style="color:#212121">,</span></div><div class="line"><span style="color:#24292EFF">};</span></div><div class="line"> </div><div class="line"><span style="color:#24292EFF">&lt;</span><span style="color:#22863A"><data-lsp lsp="(property) JSX.IntrinsicElements.button: React.DetailedHTMLProps&lt;React.ButtonHTMLAttributes&lt;HTMLButtonElement&gt;, HTMLButtonElement&gt;">button</data-lsp></span><span style="color:#24292EFF"> </span><span style="color:#6F42C1"><data-lsp lsp="(JSX attribute) React.DOMAttributes&lt;HTMLButtonElement&gt;.onClick?: React.MouseEventHandler&lt;HTMLButtonElement&gt; | undefined">onClick</data-lsp></span><span style="color:#D32F2F">=</span><span style="color:#24292EFF">{() </span><span style="color:#D32F2F">=&gt;</span><span style="color:#24292EFF"> </span><span style="color:#6F42C1"><data-lsp lsp="const subForm: &lt;&quot;familyMembers&quot;&gt;(name: &quot;familyMembers&quot;) =&gt; SubForm&lt;{
+    name: string;
+    surname: string;
+    familyMembers: SubFormValue&lt;FamilyMember[]&gt;;
+}, &quot;familyMembers&quot;, unknown, never&gt;">subForm</data-lsp></span><span style="color:#24292EFF">(</span><span style="color:#22863A">&quot;familyMembers&quot;</span><span style="color:#24292EFF">)</span><span style="color:#6F42C1">.<data-lsp lsp="(property) push: &lt;&quot;name&quot; | &quot;surname&quot;, ArrayRecord&lt;{
+    name: string;
+    surname: string;
+    familyMembers: SubFormValue&lt;FamilyMember[]&gt;;
+}, &quot;name&quot; | &quot;surname&quot;&gt;&gt;(value: FamilyMember) =&gt; void">push</data-lsp></span><span style="color:#24292EFF">(<data-lsp lsp="const emptyFamilyMember: {
+    name: string;
+    surname: string;
+}">emptyFamilyMember</data-lsp>)}&gt;</span></div><div class="line"><span style="color:#24292EFF">  Add family member</span></div><div class="line"><span style="color:#24292EFF">&lt;/</span><span style="color:#22863A"><data-lsp lsp="(property) JSX.IntrinsicElements.button: React.DetailedHTMLProps&lt;React.ButtonHTMLAttributes&lt;HTMLButtonElement&gt;, HTMLButtonElement&gt;">button</data-lsp></span><span style="color:#24292EFF">&gt;;</span></div></code></div><button type="button" aria-label="Copy code to clipboard" class="copy-button">Copy</button></pre><pre class="shiki one-dark-pro twoslash lsp" style="background-color:#282c34;color:#abb2bf"><div class="language-id">tsx</div><div class="code-container"><code><div class="line"><span style="color:#C678DD">const</span><span style="color:#ABB2BF"> </span><span style="color:#E5C07B"><data-lsp lsp="const emptyFamilyMember: {
+    name: string;
+    surname: string;
+}">emptyFamilyMember</data-lsp></span><span style="color:#ABB2BF"> </span><span style="color:#56B6C2">=</span><span style="color:#ABB2BF"> {</span></div><div class="line"><span style="color:#ABB2BF">  </span><span style="color:#E06C75"><data-lsp lsp="(property) name: string">name</data-lsp></span><span style="color:#ABB2BF">: </span><span style="color:#98C379">&quot;&quot;</span><span style="color:#ABB2BF">,</span></div><div class="line"><span style="color:#ABB2BF">  </span><span style="color:#E06C75"><data-lsp lsp="(property) surname: string">surname</data-lsp></span><span style="color:#ABB2BF">: </span><span style="color:#98C379">&quot;&quot;</span><span style="color:#ABB2BF">,</span></div><div class="line"><span style="color:#ABB2BF">};</span></div><div class="line"> </div><div class="line"><span style="color:#ABB2BF">&lt;</span><span style="color:#E06C75"><data-lsp lsp="(property) JSX.IntrinsicElements.button: React.DetailedHTMLProps&lt;React.ButtonHTMLAttributes&lt;HTMLButtonElement&gt;, HTMLButtonElement&gt;">button</data-lsp></span><span style="color:#ABB2BF"> </span><span style="color:#D19A66"><data-lsp lsp="(JSX attribute) React.DOMAttributes&lt;HTMLButtonElement&gt;.onClick?: React.MouseEventHandler&lt;HTMLButtonElement&gt; | undefined">onClick</data-lsp></span><span style="color:#56B6C2">=</span><span style="color:#C678DD">{</span><span style="color:#ABB2BF">() </span><span style="color:#C678DD">=&gt;</span><span style="color:#ABB2BF"> </span><span style="color:#61AFEF"><data-lsp lsp="const subForm: &lt;&quot;familyMembers&quot;&gt;(name: &quot;familyMembers&quot;) =&gt; SubForm&lt;{
+    name: string;
+    surname: string;
+    familyMembers: SubFormValue&lt;FamilyMember[]&gt;;
+}, &quot;familyMembers&quot;, unknown, never&gt;">subForm</data-lsp></span><span style="color:#ABB2BF">(</span><span style="color:#98C379">&quot;familyMembers&quot;</span><span style="color:#ABB2BF">).</span><span style="color:#61AFEF"><data-lsp lsp="(property) push: &lt;&quot;name&quot; | &quot;surname&quot;, ArrayRecord&lt;{
+    name: string;
+    surname: string;
+    familyMembers: SubFormValue&lt;FamilyMember[]&gt;;
+}, &quot;name&quot; | &quot;surname&quot;&gt;&gt;(value: FamilyMember) =&gt; void">push</data-lsp></span><span style="color:#ABB2BF">(</span><span style="color:#E06C75"><data-lsp lsp="const emptyFamilyMember: {
+    name: string;
+    surname: string;
+}">emptyFamilyMember</data-lsp></span><span style="color:#ABB2BF">)</span><span style="color:#C678DD">}</span><span style="color:#ABB2BF">&gt;</span></div><div class="line"><span style="color:#ABB2BF">  Add family member</span></div><div class="line"><span style="color:#ABB2BF">&lt;/</span><span style="color:#E06C75"><data-lsp lsp="(property) JSX.IntrinsicElements.button: React.DetailedHTMLProps&lt;React.ButtonHTMLAttributes&lt;HTMLButtonElement&gt;, HTMLButtonElement&gt;">button</data-lsp></span><span style="color:#ABB2BF">&gt;;</span></div></code></div><button type="button" aria-label="Copy code to clipboard" class="copy-button">Copy</button></pre><p>To access all the elements of a sub form field, use the <code>items</code> property</p><pre class="shiki min-light twoslash lsp" style="background-color:#ffffff;color:#24292eff"><div class="language-id">ts</div><div class="code-container"><code><div class="line"><span style="color:#6F42C1"><data-lsp lsp="const subForm: &lt;&quot;familyMembers&quot;&gt;(name: &quot;familyMembers&quot;) =&gt; SubForm&lt;{
+    name: string;
+    surname: string;
+    familyMembers: SubFormValue&lt;FamilyMember[]&gt;;
+}, &quot;familyMembers&quot;, unknown, never&gt;">subForm</data-lsp></span><span style="color:#24292EFF">(</span><span style="color:#22863A">&quot;familyMembers&quot;</span><span style="color:#24292EFF">).<data-lsp lsp="(property) items: {
+    fieldProps: &lt;SK extends &quot;name&quot; | &quot;surname&quot;, V extends ArrayRecord&lt;{
+        name: string;
+        surname: string;
+        familyMembers: SubFormValue&lt;FamilyMember[]&gt;;
+    }, SK&gt;&gt;(name: SK) =&gt; ComputedFieldProps&lt;...&gt;;
+    onChangeValues: &lt;SK extends &quot;name&quot; | &quot;surname&quot;, V extends ArrayRecord&lt;...&gt;&gt;(v: V[&quot;familyMembers&quot;][number]) =&gt; unknown;
+    remove: () =&gt; void;
+    namePrefix: string;
+}[]" style="border-bottom:solid 2px lightgrey">items</data-lsp>;</span></div><div class="meta-line"><span class="popover-prefix">                          </span><span class="popover"><div class="arrow"></div>(property) items: {
+    fieldProps: &lt;SK extends &quot;name&quot; | &quot;surname&quot;, V extends ArrayRecord&lt;{
+        name: string;
+        surname: string;
+        familyMembers: SubFormValue&lt;FamilyMember[]&gt;;
+    }, SK&gt;&gt;(name: SK) =&gt; ComputedFieldProps&lt;...&gt;;
+    onChangeValues: &lt;SK extends &quot;name&quot; | &quot;surname&quot;, V extends ArrayRecord&lt;...&gt;&gt;(v: V[&quot;familyMembers&quot;][number]) =&gt; unknown;
+    remove: () =&gt; void;
+    namePrefix: string;
+}[]</span></div></code></div><button type="button" aria-label="Copy code to clipboard" class="copy-button">Copy</button></pre><pre class="shiki one-dark-pro twoslash lsp" style="background-color:#282c34;color:#abb2bf"><div class="language-id">ts</div><div class="code-container"><code><div class="line"><span style="color:#61AFEF"><data-lsp lsp="const subForm: &lt;&quot;familyMembers&quot;&gt;(name: &quot;familyMembers&quot;) =&gt; SubForm&lt;{
+    name: string;
+    surname: string;
+    familyMembers: SubFormValue&lt;FamilyMember[]&gt;;
+}, &quot;familyMembers&quot;, unknown, never&gt;">subForm</data-lsp></span><span style="color:#ABB2BF">(</span><span style="color:#98C379">&quot;familyMembers&quot;</span><span style="color:#ABB2BF">).</span><span style="color:#E06C75"><data-lsp lsp="(property) items: {
+    fieldProps: &lt;SK extends &quot;name&quot; | &quot;surname&quot;, V extends ArrayRecord&lt;{
+        name: string;
+        surname: string;
+        familyMembers: SubFormValue&lt;FamilyMember[]&gt;;
+    }, SK&gt;&gt;(name: SK) =&gt; ComputedFieldProps&lt;...&gt;;
+    onChangeValues: &lt;SK extends &quot;name&quot; | &quot;surname&quot;, V extends ArrayRecord&lt;...&gt;&gt;(v: V[&quot;familyMembers&quot;][number]) =&gt; unknown;
+    remove: () =&gt; void;
+    namePrefix: string;
+}[]" style="border-bottom:solid 2px lightgrey">items</data-lsp></span><span style="color:#ABB2BF">;</span></div><div class="meta-line"><span class="popover-prefix">                          </span><span class="popover"><div class="arrow"></div>(property) items: {
+    fieldProps: &lt;SK extends &quot;name&quot; | &quot;surname&quot;, V extends ArrayRecord&lt;{
+        name: string;
+        surname: string;
+        familyMembers: SubFormValue&lt;FamilyMember[]&gt;;
+    }, SK&gt;&gt;(name: SK) =&gt; ComputedFieldProps&lt;...&gt;;
+    onChangeValues: &lt;SK extends &quot;name&quot; | &quot;surname&quot;, V extends ArrayRecord&lt;...&gt;&gt;(v: V[&quot;familyMembers&quot;][number]) =&gt; unknown;
+    remove: () =&gt; void;
+    namePrefix: string;
+}[]</span></div></code></div><button type="button" aria-label="Copy code to clipboard" class="copy-button">Copy</button></pre><p>Each of the items provides a <code>fieldProps</code> function analogous to the top-level <code>fieldProps</code>, that can be used to render a form element:</p><pre class="shiki min-light twoslash lsp" style="background-color:#ffffff;color:#24292eff"><div class="language-id">tsx</div><div class="code-container"><code><div class="line"><span style="color:#6F42C1"><data-lsp lsp="const subForm: &lt;&quot;familyMembers&quot;&gt;(name: &quot;familyMembers&quot;) =&gt; SubForm&lt;{
+    name: string;
+    surname: string;
+    familyMembers: SubFormValue&lt;FamilyMember[]&gt;;
+}, &quot;familyMembers&quot;, unknown, never&gt;">subForm</data-lsp></span><span style="color:#24292EFF">(</span><span style="color:#22863A">&quot;familyMembers&quot;</span><span style="color:#24292EFF">).</span><span style="color:#1976D2"><data-lsp lsp="(property) items: {
+    fieldProps: &lt;SK extends &quot;name&quot; | &quot;surname&quot;, V extends ArrayRecord&lt;{
+        name: string;
+        surname: string;
+        familyMembers: SubFormValue&lt;FamilyMember[]&gt;;
+    }, SK&gt;&gt;(name: SK) =&gt; ComputedFieldProps&lt;...&gt;;
+    onChangeValues: &lt;SK extends &quot;name&quot; | &quot;surname&quot;, V extends ArrayRecord&lt;...&gt;&gt;(v: V[&quot;familyMembers&quot;][number]) =&gt; unknown;
+    remove: () =&gt; void;
+    namePrefix: string;
+}[]">items</data-lsp></span><span style="color:#6F42C1">.<data-lsp lsp="(method) Array&lt;{ fieldProps: &lt;SK extends &quot;name&quot; | &quot;surname&quot;, V extends ArrayRecord&lt;{ name: string; surname: string; familyMembers: SubFormValue&lt;FamilyMember[]&gt;; }, SK&gt;&gt;(name: SK) =&gt; ComputedFieldProps&lt;...&gt;; onChangeValues: &lt;SK extends &quot;name&quot; | &quot;surname&quot;, V extends ArrayRecord&lt;...&gt;&gt;(v: V[&quot;familyMembers&quot;][number]) =&gt; unknown; remove: () =&gt; void; namePrefix: string; }&gt;.map&lt;JSX.Element&gt;(callbackfn: (value: {
+    fieldProps: &lt;SK, V&gt;(name: SK) =&gt; ComputedFieldProps&lt;V[&quot;familyMembers&quot;][number][SK], unknown, NonEmptyArray&lt;never&gt;&gt;;
+    onChangeValues: &lt;SK, V&gt;(v: V[&quot;familyMembers&quot;][number]) =&gt; unknown;
+    remove: () =&gt; void;
+    namePrefix: string;
+}, index: number, array: {
+    fieldProps: &lt;SK, V&gt;(name: SK) =&gt; ComputedFieldProps&lt;V[&quot;familyMembers&quot;][number][SK], unknown, NonEmptyArray&lt;never&gt;&gt;;
+    onChangeValues: &lt;SK, V&gt;(v: V[&quot;familyMembers&quot;][number]) =&gt; unknown;
+    remove: () =&gt; void;
+    namePrefix: string;
+}[]) =&gt; JSX.Element, thisArg?: any): JSX.Element[]">map</data-lsp></span><span style="color:#24292EFF">((<data-lsp lsp="(parameter) familyMember: {
+    fieldProps: &lt;SK extends &quot;name&quot; | &quot;surname&quot;, V extends ArrayRecord&lt;{
+        name: string;
+        surname: string;
+        familyMembers: SubFormValue&lt;FamilyMember[]&gt;;
+    }, SK&gt;&gt;(name: SK) =&gt; ComputedFieldProps&lt;...&gt;;
+    onChangeValues: &lt;SK extends &quot;name&quot; | &quot;surname&quot;, V extends ArrayRecord&lt;...&gt;&gt;(v: V[&quot;familyMembers&quot;][number]) =&gt; unknown;
+    remove: () =&gt; void;
+    namePrefix: string;
+}">familyMember</data-lsp></span><span style="color:#212121">,</span><span style="color:#24292EFF"> <data-lsp lsp="(parameter) index: number">index</data-lsp>) </span><span style="color:#D32F2F">=&gt;</span><span style="color:#24292EFF"> (</span></div><div class="line"><span style="color:#24292EFF">  &lt;</span><span style="color:#22863A"><data-lsp lsp="(property) JSX.IntrinsicElements.div: React.DetailedHTMLProps&lt;React.HTMLAttributes&lt;HTMLDivElement&gt;, HTMLDivElement&gt;">div</data-lsp></span><span style="color:#24292EFF">&gt;</span></div><div class="line"><span style="color:#24292EFF">    &lt;</span><span style="color:#1976D2"><data-lsp lsp="function TextField(props: Props): JSX.Element">TextField</data-lsp></span></div><div class="line"><span style="color:#24292EFF">      </span><span style="color:#6F42C1"><data-lsp lsp="(JSX attribute) React.Attributes.key?: React.Key | null | undefined">key</data-lsp></span><span style="color:#D32F2F">=</span><span style="color:#24292EFF">{</span><span style="color:#22863A">`</span><span style="color:#D32F2F">${</span><span style="color:#1976D2"><data-lsp lsp="(parameter) familyMember: {
+    fieldProps: &lt;SK extends &quot;name&quot; | &quot;surname&quot;, V extends ArrayRecord&lt;{
+        name: string;
+        surname: string;
+        familyMembers: SubFormValue&lt;FamilyMember[]&gt;;
+    }, SK&gt;&gt;(name: SK) =&gt; ComputedFieldProps&lt;...&gt;;
+    onChangeValues: &lt;SK extends &quot;name&quot; | &quot;surname&quot;, V extends ArrayRecord&lt;...&gt;&gt;(v: V[&quot;familyMembers&quot;][number]) =&gt; unknown;
+    remove: () =&gt; void;
+    namePrefix: string;
+}">familyMember</data-lsp></span><span style="color:#24292EFF">.<data-lsp lsp="(property) namePrefix: string">namePrefix</data-lsp></span><span style="color:#D32F2F">}</span><span style="color:#22863A">-name`</span><span style="color:#24292EFF">}</span></div><div class="line"><span style="color:#24292EFF">      </span><span style="color:#6F42C1"><data-lsp lsp="(JSX attribute) label: string">label</data-lsp></span><span style="color:#D32F2F">=</span><span style="color:#24292EFF">{</span><span style="color:#22863A">`</span><span style="color:#D32F2F">${</span><span style="color:#24292EFF"><data-lsp lsp="(parameter) index: number">index</data-lsp></span><span style="color:#D32F2F">}</span><span style="color:#22863A">-name`</span><span style="color:#24292EFF">}</span></div><div class="line"><span style="color:#24292EFF">      {</span><span style="color:#D32F2F">...</span><span style="color:#1976D2"><data-lsp lsp="(parameter) familyMember: {
+    fieldProps: &lt;SK extends &quot;name&quot; | &quot;surname&quot;, V extends ArrayRecord&lt;{
+        name: string;
+        surname: string;
+        familyMembers: SubFormValue&lt;FamilyMember[]&gt;;
+    }, SK&gt;&gt;(name: SK) =&gt; ComputedFieldProps&lt;...&gt;;
+    onChangeValues: &lt;SK extends &quot;name&quot; | &quot;surname&quot;, V extends ArrayRecord&lt;...&gt;&gt;(v: V[&quot;familyMembers&quot;][number]) =&gt; unknown;
+    remove: () =&gt; void;
+    namePrefix: string;
+}">familyMember</data-lsp></span><span style="color:#6F42C1">.<data-lsp lsp="(property) fieldProps: &lt;&quot;name&quot;, ArrayRecord&lt;{
+    name: string;
+    surname: string;
+    familyMembers: SubFormValue&lt;FamilyMember[]&gt;;
+}, &quot;name&quot;&gt;&gt;(name: &quot;name&quot;) =&gt; ComputedFieldProps&lt;string, unknown, NonEmptyArray&lt;...&gt;&gt;">fieldProps</data-lsp></span><span style="color:#24292EFF">(</span><span style="color:#22863A">&quot;name&quot;</span><span style="color:#24292EFF">)}</span></div><div class="line"><span style="color:#24292EFF">    /&gt;</span></div><div class="line"><span style="color:#24292EFF">    &lt;</span><span style="color:#1976D2"><data-lsp lsp="function TextField(props: Props): JSX.Element">TextField</data-lsp></span></div><div class="line"><span style="color:#24292EFF">      </span><span style="color:#6F42C1"><data-lsp lsp="(JSX attribute) React.Attributes.key?: React.Key | null | undefined">key</data-lsp></span><span style="color:#D32F2F">=</span><span style="color:#24292EFF">{</span><span style="color:#22863A">`</span><span style="color:#D32F2F">${</span><span style="color:#1976D2"><data-lsp lsp="(parameter) familyMember: {
+    fieldProps: &lt;SK extends &quot;name&quot; | &quot;surname&quot;, V extends ArrayRecord&lt;{
+        name: string;
+        surname: string;
+        familyMembers: SubFormValue&lt;FamilyMember[]&gt;;
+    }, SK&gt;&gt;(name: SK) =&gt; ComputedFieldProps&lt;...&gt;;
+    onChangeValues: &lt;SK extends &quot;name&quot; | &quot;surname&quot;, V extends ArrayRecord&lt;...&gt;&gt;(v: V[&quot;familyMembers&quot;][number]) =&gt; unknown;
+    remove: () =&gt; void;
+    namePrefix: string;
+}">familyMember</data-lsp></span><span style="color:#24292EFF">.<data-lsp lsp="(property) namePrefix: string">namePrefix</data-lsp></span><span style="color:#D32F2F">}</span><span style="color:#22863A">-surname`</span><span style="color:#24292EFF">}</span></div><div class="line"><span style="color:#24292EFF">      </span><span style="color:#6F42C1"><data-lsp lsp="(JSX attribute) label: string">label</data-lsp></span><span style="color:#D32F2F">=</span><span style="color:#24292EFF">{</span><span style="color:#22863A">`</span><span style="color:#D32F2F">${</span><span style="color:#24292EFF"><data-lsp lsp="(parameter) index: number">index</data-lsp></span><span style="color:#D32F2F">}</span><span style="color:#22863A">-surname`</span><span style="color:#24292EFF">}</span></div><div class="line"><span style="color:#24292EFF">      {</span><span style="color:#D32F2F">...</span><span style="color:#1976D2"><data-lsp lsp="(parameter) familyMember: {
+    fieldProps: &lt;SK extends &quot;name&quot; | &quot;surname&quot;, V extends ArrayRecord&lt;{
+        name: string;
+        surname: string;
+        familyMembers: SubFormValue&lt;FamilyMember[]&gt;;
+    }, SK&gt;&gt;(name: SK) =&gt; ComputedFieldProps&lt;...&gt;;
+    onChangeValues: &lt;SK extends &quot;name&quot; | &quot;surname&quot;, V extends ArrayRecord&lt;...&gt;&gt;(v: V[&quot;familyMembers&quot;][number]) =&gt; unknown;
+    remove: () =&gt; void;
+    namePrefix: string;
+}">familyMember</data-lsp></span><span style="color:#6F42C1">.<data-lsp lsp="(property) fieldProps: &lt;&quot;surname&quot;, ArrayRecord&lt;{
+    name: string;
+    surname: string;
+    familyMembers: SubFormValue&lt;FamilyMember[]&gt;;
+}, &quot;surname&quot;&gt;&gt;(name: &quot;surname&quot;) =&gt; ComputedFieldProps&lt;string, unknown, NonEmptyArray&lt;...&gt;&gt;">fieldProps</data-lsp></span><span style="color:#24292EFF">(</span><span style="color:#22863A">&quot;surname&quot;</span><span style="color:#24292EFF">)}</span></div><div class="line"><span style="color:#24292EFF">    /&gt;</span></div><div class="line"><span style="color:#24292EFF">    &lt;</span><span style="color:#22863A"><data-lsp lsp="(property) JSX.IntrinsicElements.p: React.DetailedHTMLProps&lt;React.HTMLAttributes&lt;HTMLParagraphElement&gt;, HTMLParagraphElement&gt;">p</data-lsp></span><span style="color:#24292EFF">&gt;</span></div><div class="line"><span style="color:#24292EFF">      {</span><span style="color:#1976D2"><data-lsp lsp="(parameter) familyMember: {
+    fieldProps: &lt;SK extends &quot;name&quot; | &quot;surname&quot;, V extends ArrayRecord&lt;{
+        name: string;
+        surname: string;
+        familyMembers: SubFormValue&lt;FamilyMember[]&gt;;
+    }, SK&gt;&gt;(name: SK) =&gt; ComputedFieldProps&lt;...&gt;;
+    onChangeValues: &lt;SK extends &quot;name&quot; | &quot;surname&quot;, V extends ArrayRecord&lt;...&gt;&gt;(v: V[&quot;familyMembers&quot;][number]) =&gt; unknown;
+    remove: () =&gt; void;
+    namePrefix: string;
+}">familyMember</data-lsp></span><span style="color:#6F42C1">.<data-lsp lsp="(property) fieldProps: &lt;&quot;name&quot;, ArrayRecord&lt;{
+    name: string;
+    surname: string;
+    familyMembers: SubFormValue&lt;FamilyMember[]&gt;;
+}, &quot;name&quot;&gt;&gt;(name: &quot;name&quot;) =&gt; ComputedFieldProps&lt;string, unknown, NonEmptyArray&lt;...&gt;&gt;">fieldProps</data-lsp></span><span style="color:#24292EFF">(</span><span style="color:#22863A">&quot;name&quot;</span><span style="color:#24292EFF">).<data-lsp lsp="(property) issues?: NonEmptyArray&lt;never&gt; | undefined">issues</data-lsp>}</span></div><div class="line"><span style="color:#24292EFF">      &lt;</span><span style="color:#22863A"><data-lsp lsp="(property) JSX.IntrinsicElements.br: React.DetailedHTMLProps&lt;React.HTMLAttributes&lt;HTMLBRElement&gt;, HTMLBRElement&gt;">br</data-lsp></span><span style="color:#24292EFF">&gt;&lt;/</span><span style="color:#22863A"><data-lsp lsp="(property) JSX.IntrinsicElements.br: React.DetailedHTMLProps&lt;React.HTMLAttributes&lt;HTMLBRElement&gt;, HTMLBRElement&gt;">br</data-lsp></span><span style="color:#24292EFF">&gt;</span></div><div class="line"><span style="color:#24292EFF">      {</span><span style="color:#1976D2"><data-lsp lsp="(parameter) familyMember: {
+    fieldProps: &lt;SK extends &quot;name&quot; | &quot;surname&quot;, V extends ArrayRecord&lt;{
+        name: string;
+        surname: string;
+        familyMembers: SubFormValue&lt;FamilyMember[]&gt;;
+    }, SK&gt;&gt;(name: SK) =&gt; ComputedFieldProps&lt;...&gt;;
+    onChangeValues: &lt;SK extends &quot;name&quot; | &quot;surname&quot;, V extends ArrayRecord&lt;...&gt;&gt;(v: V[&quot;familyMembers&quot;][number]) =&gt; unknown;
+    remove: () =&gt; void;
+    namePrefix: string;
+}">familyMember</data-lsp></span><span style="color:#6F42C1">.<data-lsp lsp="(property) fieldProps: &lt;&quot;surname&quot;, ArrayRecord&lt;{
+    name: string;
+    surname: string;
+    familyMembers: SubFormValue&lt;FamilyMember[]&gt;;
+}, &quot;surname&quot;&gt;&gt;(name: &quot;surname&quot;) =&gt; ComputedFieldProps&lt;string, unknown, NonEmptyArray&lt;...&gt;&gt;">fieldProps</data-lsp></span><span style="color:#24292EFF">(</span><span style="color:#22863A">&quot;surname&quot;</span><span style="color:#24292EFF">).<data-lsp lsp="(property) issues?: NonEmptyArray&lt;never&gt; | undefined">issues</data-lsp>}</span></div><div class="line"><span style="color:#24292EFF">    &lt;/</span><span style="color:#22863A"><data-lsp lsp="(property) JSX.IntrinsicElements.p: React.DetailedHTMLProps&lt;React.HTMLAttributes&lt;HTMLParagraphElement&gt;, HTMLParagraphElement&gt;">p</data-lsp></span><span style="color:#24292EFF">&gt;</span></div><div class="line"><span style="color:#24292EFF">  &lt;/</span><span style="color:#22863A"><data-lsp lsp="(property) JSX.IntrinsicElements.div: React.DetailedHTMLProps&lt;React.HTMLAttributes&lt;HTMLDivElement&gt;, HTMLDivElement&gt;">div</data-lsp></span><span style="color:#24292EFF">&gt;</span></div><div class="line"><span style="color:#24292EFF">));</span></div></code></div><button type="button" aria-label="Copy code to clipboard" class="copy-button">Copy</button></pre><pre class="shiki one-dark-pro twoslash lsp" style="background-color:#282c34;color:#abb2bf"><div class="language-id">tsx</div><div class="code-container"><code><div class="line"><span style="color:#61AFEF"><data-lsp lsp="const subForm: &lt;&quot;familyMembers&quot;&gt;(name: &quot;familyMembers&quot;) =&gt; SubForm&lt;{
+    name: string;
+    surname: string;
+    familyMembers: SubFormValue&lt;FamilyMember[]&gt;;
+}, &quot;familyMembers&quot;, unknown, never&gt;">subForm</data-lsp></span><span style="color:#ABB2BF">(</span><span style="color:#98C379">&quot;familyMembers&quot;</span><span style="color:#ABB2BF">).</span><span style="color:#E5C07B"><data-lsp lsp="(property) items: {
+    fieldProps: &lt;SK extends &quot;name&quot; | &quot;surname&quot;, V extends ArrayRecord&lt;{
+        name: string;
+        surname: string;
+        familyMembers: SubFormValue&lt;FamilyMember[]&gt;;
+    }, SK&gt;&gt;(name: SK) =&gt; ComputedFieldProps&lt;...&gt;;
+    onChangeValues: &lt;SK extends &quot;name&quot; | &quot;surname&quot;, V extends ArrayRecord&lt;...&gt;&gt;(v: V[&quot;familyMembers&quot;][number]) =&gt; unknown;
+    remove: () =&gt; void;
+    namePrefix: string;
+}[]">items</data-lsp></span><span style="color:#ABB2BF">.</span><span style="color:#61AFEF"><data-lsp lsp="(method) Array&lt;{ fieldProps: &lt;SK extends &quot;name&quot; | &quot;surname&quot;, V extends ArrayRecord&lt;{ name: string; surname: string; familyMembers: SubFormValue&lt;FamilyMember[]&gt;; }, SK&gt;&gt;(name: SK) =&gt; ComputedFieldProps&lt;...&gt;; onChangeValues: &lt;SK extends &quot;name&quot; | &quot;surname&quot;, V extends ArrayRecord&lt;...&gt;&gt;(v: V[&quot;familyMembers&quot;][number]) =&gt; unknown; remove: () =&gt; void; namePrefix: string; }&gt;.map&lt;JSX.Element&gt;(callbackfn: (value: {
+    fieldProps: &lt;SK, V&gt;(name: SK) =&gt; ComputedFieldProps&lt;V[&quot;familyMembers&quot;][number][SK], unknown, NonEmptyArray&lt;never&gt;&gt;;
+    onChangeValues: &lt;SK, V&gt;(v: V[&quot;familyMembers&quot;][number]) =&gt; unknown;
+    remove: () =&gt; void;
+    namePrefix: string;
+}, index: number, array: {
+    fieldProps: &lt;SK, V&gt;(name: SK) =&gt; ComputedFieldProps&lt;V[&quot;familyMembers&quot;][number][SK], unknown, NonEmptyArray&lt;never&gt;&gt;;
+    onChangeValues: &lt;SK, V&gt;(v: V[&quot;familyMembers&quot;][number]) =&gt; unknown;
+    remove: () =&gt; void;
+    namePrefix: string;
+}[]) =&gt; JSX.Element, thisArg?: any): JSX.Element[]">map</data-lsp></span><span style="color:#ABB2BF">((</span><span style="color:#E06C75"><data-lsp lsp="(parameter) familyMember: {
+    fieldProps: &lt;SK extends &quot;name&quot; | &quot;surname&quot;, V extends ArrayRecord&lt;{
+        name: string;
+        surname: string;
+        familyMembers: SubFormValue&lt;FamilyMember[]&gt;;
+    }, SK&gt;&gt;(name: SK) =&gt; ComputedFieldProps&lt;...&gt;;
+    onChangeValues: &lt;SK extends &quot;name&quot; | &quot;surname&quot;, V extends ArrayRecord&lt;...&gt;&gt;(v: V[&quot;familyMembers&quot;][number]) =&gt; unknown;
+    remove: () =&gt; void;
+    namePrefix: string;
+}">familyMember</data-lsp></span><span style="color:#ABB2BF">, </span><span style="color:#E06C75"><data-lsp lsp="(parameter) index: number">index</data-lsp></span><span style="color:#ABB2BF">) </span><span style="color:#C678DD">=&gt;</span><span style="color:#ABB2BF"> (</span></div><div class="line"><span style="color:#ABB2BF">  &lt;</span><span style="color:#E06C75"><data-lsp lsp="(property) JSX.IntrinsicElements.div: React.DetailedHTMLProps&lt;React.HTMLAttributes&lt;HTMLDivElement&gt;, HTMLDivElement&gt;">div</data-lsp></span><span style="color:#ABB2BF">&gt;</span></div><div class="line"><span style="color:#ABB2BF">    &lt;</span><span style="color:#E5C07B"><data-lsp lsp="function TextField(props: Props): JSX.Element">TextField</data-lsp></span></div><div class="line"><span style="color:#ABB2BF">      </span><span style="color:#D19A66"><data-lsp lsp="(JSX attribute) React.Attributes.key?: React.Key | null | undefined">key</data-lsp></span><span style="color:#56B6C2">=</span><span style="color:#C678DD">{</span><span style="color:#98C379">`</span><span style="color:#C678DD">${</span><span style="color:#E5C07B"><data-lsp lsp="(parameter) familyMember: {
+    fieldProps: &lt;SK extends &quot;name&quot; | &quot;surname&quot;, V extends ArrayRecord&lt;{
+        name: string;
+        surname: string;
+        familyMembers: SubFormValue&lt;FamilyMember[]&gt;;
+    }, SK&gt;&gt;(name: SK) =&gt; ComputedFieldProps&lt;...&gt;;
+    onChangeValues: &lt;SK extends &quot;name&quot; | &quot;surname&quot;, V extends ArrayRecord&lt;...&gt;&gt;(v: V[&quot;familyMembers&quot;][number]) =&gt; unknown;
+    remove: () =&gt; void;
+    namePrefix: string;
+}">familyMember</data-lsp></span><span style="color:#ABB2BF">.</span><span style="color:#E06C75"><data-lsp lsp="(property) namePrefix: string">namePrefix</data-lsp></span><span style="color:#C678DD">}</span><span style="color:#98C379">-name`</span><span style="color:#C678DD">}</span></div><div class="line"><span style="color:#ABB2BF">      </span><span style="color:#D19A66"><data-lsp lsp="(JSX attribute) label: string">label</data-lsp></span><span style="color:#56B6C2">=</span><span style="color:#C678DD">{</span><span style="color:#98C379">`</span><span style="color:#C678DD">${</span><span style="color:#E06C75"><data-lsp lsp="(parameter) index: number">index</data-lsp></span><span style="color:#C678DD">}</span><span style="color:#98C379">-name`</span><span style="color:#C678DD">}</span></div><div class="line"><span style="color:#ABB2BF">      </span><span style="color:#C678DD">{</span><span style="color:#ABB2BF">...</span><span style="color:#E5C07B"><data-lsp lsp="(parameter) familyMember: {
+    fieldProps: &lt;SK extends &quot;name&quot; | &quot;surname&quot;, V extends ArrayRecord&lt;{
+        name: string;
+        surname: string;
+        familyMembers: SubFormValue&lt;FamilyMember[]&gt;;
+    }, SK&gt;&gt;(name: SK) =&gt; ComputedFieldProps&lt;...&gt;;
+    onChangeValues: &lt;SK extends &quot;name&quot; | &quot;surname&quot;, V extends ArrayRecord&lt;...&gt;&gt;(v: V[&quot;familyMembers&quot;][number]) =&gt; unknown;
+    remove: () =&gt; void;
+    namePrefix: string;
+}">familyMember</data-lsp></span><span style="color:#ABB2BF">.</span><span style="color:#61AFEF"><data-lsp lsp="(property) fieldProps: &lt;&quot;name&quot;, ArrayRecord&lt;{
+    name: string;
+    surname: string;
+    familyMembers: SubFormValue&lt;FamilyMember[]&gt;;
+}, &quot;name&quot;&gt;&gt;(name: &quot;name&quot;) =&gt; ComputedFieldProps&lt;string, unknown, NonEmptyArray&lt;...&gt;&gt;">fieldProps</data-lsp></span><span style="color:#ABB2BF">(</span><span style="color:#98C379">&quot;name&quot;</span><span style="color:#ABB2BF">)</span><span style="color:#C678DD">}</span></div><div class="line"><span style="color:#ABB2BF">    /&gt;</span></div><div class="line"><span style="color:#ABB2BF">    &lt;</span><span style="color:#E5C07B"><data-lsp lsp="function TextField(props: Props): JSX.Element">TextField</data-lsp></span></div><div class="line"><span style="color:#ABB2BF">      </span><span style="color:#D19A66"><data-lsp lsp="(JSX attribute) React.Attributes.key?: React.Key | null | undefined">key</data-lsp></span><span style="color:#56B6C2">=</span><span style="color:#C678DD">{</span><span style="color:#98C379">`</span><span style="color:#C678DD">${</span><span style="color:#E5C07B"><data-lsp lsp="(parameter) familyMember: {
+    fieldProps: &lt;SK extends &quot;name&quot; | &quot;surname&quot;, V extends ArrayRecord&lt;{
+        name: string;
+        surname: string;
+        familyMembers: SubFormValue&lt;FamilyMember[]&gt;;
+    }, SK&gt;&gt;(name: SK) =&gt; ComputedFieldProps&lt;...&gt;;
+    onChangeValues: &lt;SK extends &quot;name&quot; | &quot;surname&quot;, V extends ArrayRecord&lt;...&gt;&gt;(v: V[&quot;familyMembers&quot;][number]) =&gt; unknown;
+    remove: () =&gt; void;
+    namePrefix: string;
+}">familyMember</data-lsp></span><span style="color:#ABB2BF">.</span><span style="color:#E06C75"><data-lsp lsp="(property) namePrefix: string">namePrefix</data-lsp></span><span style="color:#C678DD">}</span><span style="color:#98C379">-surname`</span><span style="color:#C678DD">}</span></div><div class="line"><span style="color:#ABB2BF">      </span><span style="color:#D19A66"><data-lsp lsp="(JSX attribute) label: string">label</data-lsp></span><span style="color:#56B6C2">=</span><span style="color:#C678DD">{</span><span style="color:#98C379">`</span><span style="color:#C678DD">${</span><span style="color:#E06C75"><data-lsp lsp="(parameter) index: number">index</data-lsp></span><span style="color:#C678DD">}</span><span style="color:#98C379">-surname`</span><span style="color:#C678DD">}</span></div><div class="line"><span style="color:#ABB2BF">      </span><span style="color:#C678DD">{</span><span style="color:#ABB2BF">...</span><span style="color:#E5C07B"><data-lsp lsp="(parameter) familyMember: {
+    fieldProps: &lt;SK extends &quot;name&quot; | &quot;surname&quot;, V extends ArrayRecord&lt;{
+        name: string;
+        surname: string;
+        familyMembers: SubFormValue&lt;FamilyMember[]&gt;;
+    }, SK&gt;&gt;(name: SK) =&gt; ComputedFieldProps&lt;...&gt;;
+    onChangeValues: &lt;SK extends &quot;name&quot; | &quot;surname&quot;, V extends ArrayRecord&lt;...&gt;&gt;(v: V[&quot;familyMembers&quot;][number]) =&gt; unknown;
+    remove: () =&gt; void;
+    namePrefix: string;
+}">familyMember</data-lsp></span><span style="color:#ABB2BF">.</span><span style="color:#61AFEF"><data-lsp lsp="(property) fieldProps: &lt;&quot;surname&quot;, ArrayRecord&lt;{
+    name: string;
+    surname: string;
+    familyMembers: SubFormValue&lt;FamilyMember[]&gt;;
+}, &quot;surname&quot;&gt;&gt;(name: &quot;surname&quot;) =&gt; ComputedFieldProps&lt;string, unknown, NonEmptyArray&lt;...&gt;&gt;">fieldProps</data-lsp></span><span style="color:#ABB2BF">(</span><span style="color:#98C379">&quot;surname&quot;</span><span style="color:#ABB2BF">)</span><span style="color:#C678DD">}</span></div><div class="line"><span style="color:#ABB2BF">    /&gt;</span></div><div class="line"><span style="color:#ABB2BF">    &lt;</span><span style="color:#E06C75"><data-lsp lsp="(property) JSX.IntrinsicElements.p: React.DetailedHTMLProps&lt;React.HTMLAttributes&lt;HTMLParagraphElement&gt;, HTMLParagraphElement&gt;">p</data-lsp></span><span style="color:#ABB2BF">&gt;</span></div><div class="line"><span style="color:#ABB2BF">      </span><span style="color:#C678DD">{</span><span style="color:#E5C07B"><data-lsp lsp="(parameter) familyMember: {
+    fieldProps: &lt;SK extends &quot;name&quot; | &quot;surname&quot;, V extends ArrayRecord&lt;{
+        name: string;
+        surname: string;
+        familyMembers: SubFormValue&lt;FamilyMember[]&gt;;
+    }, SK&gt;&gt;(name: SK) =&gt; ComputedFieldProps&lt;...&gt;;
+    onChangeValues: &lt;SK extends &quot;name&quot; | &quot;surname&quot;, V extends ArrayRecord&lt;...&gt;&gt;(v: V[&quot;familyMembers&quot;][number]) =&gt; unknown;
+    remove: () =&gt; void;
+    namePrefix: string;
+}">familyMember</data-lsp></span><span style="color:#ABB2BF">.</span><span style="color:#61AFEF"><data-lsp lsp="(property) fieldProps: &lt;&quot;name&quot;, ArrayRecord&lt;{
+    name: string;
+    surname: string;
+    familyMembers: SubFormValue&lt;FamilyMember[]&gt;;
+}, &quot;name&quot;&gt;&gt;(name: &quot;name&quot;) =&gt; ComputedFieldProps&lt;string, unknown, NonEmptyArray&lt;...&gt;&gt;">fieldProps</data-lsp></span><span style="color:#ABB2BF">(</span><span style="color:#98C379">&quot;name&quot;</span><span style="color:#ABB2BF">).</span><span style="color:#E06C75"><data-lsp lsp="(property) issues?: NonEmptyArray&lt;never&gt; | undefined">issues</data-lsp></span><span style="color:#C678DD">}</span></div><div class="line"><span style="color:#ABB2BF">      &lt;</span><span style="color:#E06C75"><data-lsp lsp="(property) JSX.IntrinsicElements.br: React.DetailedHTMLProps&lt;React.HTMLAttributes&lt;HTMLBRElement&gt;, HTMLBRElement&gt;">br</data-lsp></span><span style="color:#ABB2BF">&gt;&lt;/</span><span style="color:#E06C75"><data-lsp lsp="(property) JSX.IntrinsicElements.br: React.DetailedHTMLProps&lt;React.HTMLAttributes&lt;HTMLBRElement&gt;, HTMLBRElement&gt;">br</data-lsp></span><span style="color:#ABB2BF">&gt;</span></div><div class="line"><span style="color:#ABB2BF">      </span><span style="color:#C678DD">{</span><span style="color:#E5C07B"><data-lsp lsp="(parameter) familyMember: {
+    fieldProps: &lt;SK extends &quot;name&quot; | &quot;surname&quot;, V extends ArrayRecord&lt;{
+        name: string;
+        surname: string;
+        familyMembers: SubFormValue&lt;FamilyMember[]&gt;;
+    }, SK&gt;&gt;(name: SK) =&gt; ComputedFieldProps&lt;...&gt;;
+    onChangeValues: &lt;SK extends &quot;name&quot; | &quot;surname&quot;, V extends ArrayRecord&lt;...&gt;&gt;(v: V[&quot;familyMembers&quot;][number]) =&gt; unknown;
+    remove: () =&gt; void;
+    namePrefix: string;
+}">familyMember</data-lsp></span><span style="color:#ABB2BF">.</span><span style="color:#61AFEF"><data-lsp lsp="(property) fieldProps: &lt;&quot;surname&quot;, ArrayRecord&lt;{
+    name: string;
+    surname: string;
+    familyMembers: SubFormValue&lt;FamilyMember[]&gt;;
+}, &quot;surname&quot;&gt;&gt;(name: &quot;surname&quot;) =&gt; ComputedFieldProps&lt;string, unknown, NonEmptyArray&lt;...&gt;&gt;">fieldProps</data-lsp></span><span style="color:#ABB2BF">(</span><span style="color:#98C379">&quot;surname&quot;</span><span style="color:#ABB2BF">).</span><span style="color:#E06C75"><data-lsp lsp="(property) issues?: NonEmptyArray&lt;never&gt; | undefined">issues</data-lsp></span><span style="color:#C678DD">}</span></div><div class="line"><span style="color:#ABB2BF">    &lt;/</span><span style="color:#E06C75"><data-lsp lsp="(property) JSX.IntrinsicElements.p: React.DetailedHTMLProps&lt;React.HTMLAttributes&lt;HTMLParagraphElement&gt;, HTMLParagraphElement&gt;">p</data-lsp></span><span style="color:#ABB2BF">&gt;</span></div><div class="line"><span style="color:#ABB2BF">  &lt;/</span><span style="color:#E06C75"><data-lsp lsp="(property) JSX.IntrinsicElements.div: React.DetailedHTMLProps&lt;React.HTMLAttributes&lt;HTMLDivElement&gt;, HTMLDivElement&gt;">div</data-lsp></span><span style="color:#ABB2BF">&gt;</span></div><div class="line"><span style="color:#ABB2BF">));</span></div></code></div><button type="button" aria-label="Copy code to clipboard" class="copy-button">Copy</button></pre></div></article><div class="margin-vert--xl"><div class="row"><div class="col"><a href="https://github.com/buildo/formo/edit/main/website/docs/subform.md" target="_blank" rel="noreferrer noopener"><svg fill="currentColor" height="1.2em" width="1.2em" preserveAspectRatio="xMidYMid meet" role="img" viewBox="0 0 40 40" class="iconEdit_2LL7"><g><path d="m34.5 11.7l-3 3.1-6.3-6.3 3.1-3q0.5-0.5 1.2-0.5t1.1 0.5l3.9 3.9q0.5 0.4 0.5 1.1t-0.5 1.2z m-29.5 17.1l18.4-18.5 6.3 6.3-18.4 18.4h-6.3v-6.2z"></path></g></svg>Edit this page</a></div></div></div><div class="margin-vert--lg"><nav class="pagination-nav" aria-label="Blog list page navigation"><div class="pagination-nav__item"><a class="pagination-nav__link" href="/formo/submitting"><div class="pagination-nav__sublabel">Previous</div><div class="pagination-nav__label">« Submitting a form</div></a></div><div class="pagination-nav__item pagination-nav__item--next"></div></nav></div></div></div><div class="col col--3"><div class="tableOfContents_2xL- thin-scrollbar"><ul class="table-of-contents table-of-contents__left-border"><li><a href="#define-a-sub-form" class="table-of-contents__link">Define a sub form</a></li><li><a href="#accessing-sub-forms" class="table-of-contents__link">Accessing sub forms</a></li></ul></div></div></div></div></main></div></div><footer class="footer footer--dark"><div class="container"><div class="footer__bottom text--center"><div class="footer__copyright">Copyright © 2022 buildo srl. Built with Docusaurus.</div></div></div></footer></div>
+<script src="/formo/styles.a00f43f9.js"></script>
+<script src="/formo/runtime~main.3efeec41.js"></script>
+<script src="/formo/main.cb462907.js"></script>
+<script src="/formo/common.0c7ffcac.js"></script>
+<script src="/formo/2.f3406e25.js"></script>
+<script src="/formo/1be78505.51171ab1.js"></script>
+<script src="/formo/935f2afb.a046cfba.js"></script>
+<script src="/formo/17896441.b0622eec.js"></script>
+<script src="/formo/5b3a4455.9761a566.js"></script>
+</body>
+</html>
