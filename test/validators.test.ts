@@ -3,7 +3,7 @@ import { validators } from "../src/validators";
 
 describe("validators", () => {
   describe("inSequence", () => {
-    test("it should success validation", async () => {
+    test("it should succeed", async () => {
       const result = await validators.inSequence(
         validators.validator((a: string) => success(a)),
         validators.validator((b: string) => success(b))
@@ -12,7 +12,7 @@ describe("validators", () => {
       expect(isSuccess(result)).toBeTruthy();
     });
 
-    test("it should fail validation", async () => {
+    test("it should fail", async () => {
       const successValidator = validators.validator((a: string) => success(a));
       const failValidator = validators.validator((b: string) => failure(b));
 
