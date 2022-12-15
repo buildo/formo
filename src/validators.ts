@@ -93,7 +93,7 @@ function inSequence(
       if (r.type === "failure") {
         return r;
       }
-      input = r.success;
+      value = r.success;
     }
     return success(value);
   };
