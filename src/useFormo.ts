@@ -527,7 +527,7 @@ export function useFormo<
         subfieldName
       ]!;
       const result = (await subfieldValidation(
-        (values as V)[name][index][subfieldName] as any
+        (values as unknown as V)[name][index][subfieldName] as any
       )) as Result<NonEmptyArray<FieldError>, Values[K]>;
       return matchResult(result, {
         failure: (e) => {
@@ -560,7 +560,7 @@ export function useFormo<
         subfield: subfieldName,
         errors: undefined,
       });
-      return success(values[name]);
+      return success((values as unknown as V)[name][index][subfieldName] as Values[K]);
     }
   }
 

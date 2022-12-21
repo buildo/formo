@@ -229,6 +229,77 @@ describe("formo", () => {
     expect(onSubmit).toHaveBeenCalledWith({ city: "Rome" });
   });
 
+  test("onSubmit receives correct values with no validators", async () => {
+    const onSubmit = jest.fn(async () => success(null));
+
+    const { result } = renderHook(() =>
+      useFormo(
+        {
+          initialValues: {
+            family: "Rossi",
+            persons: subFormValue([
+              {
+                name: "Mario",
+                age: 25,
+              },
+            ]),
+          },
+          fieldValidators: (_) => ({}),
+          subFormValidators: (_) => ({}),
+        },
+        {
+          onSubmit,
+        }
+      )
+    );
+
+    await act(async () => {
+      result.current.handleSubmit();
+    });
+
+    expect(onSubmit).toHaveBeenCalledTimes(1);
+    expect(onSubmit).toHaveBeenCalledWith({ family: "Rossi", persons: [{ name: "Mario", age: 25 }] });
+  });
+
+  test("onSubmit receives correct values with validators", async () => {
+    const onSubmit = jest.fn(async () => success(null));
+
+    const { result } = renderHook(() =>
+      useFormo(
+        {
+          initialValues: {
+            family: "Rossi",
+            persons: subFormValue([
+              {
+                name: "Mario",
+                age: 25,
+              },
+            ]),
+          },
+          fieldValidators: (_) => ({
+            family: validators.minLength(1, "required"),
+          }),
+          subFormValidators: (_) => ({
+            persons: {
+              name: validators.minLength(1, "required"),
+              age: validators.fromPredicate((age) => age >= 0, "invalid age"),
+            },
+          }),
+        },
+        {
+          onSubmit,
+        }
+      )
+    );
+
+    await act(async () => {
+      result.current.handleSubmit();
+    });
+
+    expect(onSubmit).toHaveBeenCalledTimes(1);
+    expect(onSubmit).toHaveBeenCalledWith({ family: "Rossi", persons: [{ name: "Mario", age: 25 }] });
+  });
+
   describe("field validations", () => {
     test("validation shows field error and prevents submit", async () => {
       const onSubmit = jest.fn(() => Promise.resolve(success(null)));
